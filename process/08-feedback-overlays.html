@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feedback & Overlays — Rexi Design Process</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&family=Merriweather:ital,wght@1,300&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root {
+    --bg: #1a1a1a;
+    --bg-elevated: #1e1e1e;
+    --glass-bg-1: rgba(255,255,255,0.03);
+    --glass-bg-2: rgba(255,255,255,0.04);
+    --glass-bg-3: rgba(255,255,255,0.06);
+    --glass-bg-4: rgba(255,255,255,0.10);
+    --glass-border-subtle: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-border-hover: rgba(255,255,255,0.14);
+    --glass-inset: rgba(255,255,255,0.04);
+    --glass-inset-bright: rgba(255,255,255,0.08);
+    --text-bright: rgba(255,255,255,0.95);
+    --text: #e5e5e5;
+    --text-muted: rgba(255,255,255,0.45);
+    --text-dim: rgba(255,255,255,0.25);
+    --text-faint: rgba(255,255,255,0.16);
+    --accent-emerald: #34d399;
+    --accent-emerald-muted: #34d39914;
+    --accent-amber: #fbbf24;
+    --accent-amber-muted: #fbbf2414;
+    --accent-red: #f87171;
+    --accent-red-muted: #f8717114;
+    --accent-blue: #3b82f6;
+    --accent-blue-muted: #3b82f614;
+    --accent-purple: #8b5cf6;
+    --radius-xs: 4px;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 14px;
+    --radius-2xl: 20px;
+    --radius-pill: 100px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Figtree', sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    padding: 48px;
+  }
+
+  h1 {
+    font-weight: 800;
+    font-size: 36px;
+    letter-spacing: -0.03em;
+    line-height: 1.0;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 15px;
+    margin-bottom: 48px;
+  }
+
+  h2 {
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+  }
+  h2 .num {
+    color: var(--text-dim);
+    font-weight: 600;
+    margin-right: 8px;
+  }
+  .section-desc {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 24px;
+    max-width: 700px;
+  }
+
+  .section {
+    margin-bottom: 64px;
+  }
+
+  /* --- TOASTS --- */
+  .toast-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .toast-demo {
+    flex: 1;
+    min-width: 300px;
+    max-width: 400px;
+  }
+  .toast-demo-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .toast {
+    background: var(--bg-elevated);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 14px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.30);
+    position: relative;
+  }
+  .toast .t-icon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+  }
+  .toast .t-icon.success { color: var(--accent-emerald); }
+  .toast .t-icon.error { color: var(--accent-red); }
+  .toast .t-icon.warning { color: var(--accent-amber); }
+  .toast .t-icon.info { color: var(--accent-blue); }
+  .toast .t-body { flex: 1; }
+  .toast .t-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .toast .t-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-top: 2px;
+  }
+  .toast .t-close {
+    flex-shrink: 0;
+    color: var(--text-dim);
+    cursor: pointer;
+  }
+  .toast .t-close svg {
+    width: 14px;
+    height: 14px;
+  }
+  .toast .t-action {
+    margin-top: 8px;
+  }
+  .toast .t-action button {
+    font-family: 'Figtree', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-bright);
+    background: var(--glass-bg-4);
+    border: 1px solid var(--glass-border-hover);
+    border-radius: var(--radius-md);
+    padding: 5px 14px;
+    cursor: pointer;
+  }
+  .toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 18px;
+    right: 18px;
+    height: 2px;
+    border-radius: 1px;
+    overflow: hidden;
+  }
+  .toast-progress-bar {
+    height: 100%;
+    border-radius: 1px;
+    width: 65%;
+    animation: progress-shrink 4s linear infinite;
+  }
+  .toast-progress-bar.success { background: var(--accent-emerald); opacity: 0.4; }
+  .toast-progress-bar.error { background: var(--accent-red); opacity: 0.4; }
+  .toast-progress-bar.warning { background: var(--accent-amber); opacity: 0.4; }
+  .toast-progress-bar.info { background: var(--accent-blue); opacity: 0.4; }
+
+  @keyframes progress-shrink {
+    from { width: 100%; }
+    to { width: 0%; }
+  }
+
+  /* --- SKELETONS --- */
+  .skeleton-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .skeleton-demo {
+    flex: 1;
+    min-width: 280px;
+    max-width: 420px;
+  }
+  .skeleton-demo-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  .sk-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 50%, rgba(255,255,255,0.03) 100%);
+    border: 1px solid var(--glass-border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+  }
+  .sk-line {
+    border-radius: var(--radius-xs);
+    background: var(--glass-bg-3);
+    position: relative;
+    overflow: hidden;
+  }
+  .sk-line::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%);
+    animation: shimmer 2s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  .sk-pulse {
+    border-radius: var(--radius-xs);
+    background: var(--glass-bg-3);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* Stat card skeleton */
+  .sk-stat-label { width: 60px; height: 10px; margin-bottom: 10px; }
+  .sk-stat-value { width: 120px; height: 36px; margin-bottom: 8px; }
+  .sk-stat-trend { width: 80px; height: 12px; }
+
+  /* Table skeleton */
+  .sk-table { display: flex; flex-direction: column; gap: 0; }
+  .sk-table-header {
+    display: flex;
+    gap: 16px;
+    padding: 10px 16px;
+    background: var(--glass-bg-3);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  }
+  .sk-table-row {
+    display: flex;
+    gap: 16px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--glass-bg-1);
+  }
+  .sk-th { height: 10px; border-radius: 3px; }
+  .sk-td { height: 12px; border-radius: 3px; }
+
+  /* Row skeleton */
+  .sk-row-list { display: flex; flex-direction: column; gap: 1px; }
+  .sk-row-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--glass-bg-1);
+  }
+  .sk-avatar { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; }
+  .sk-row-lines { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+
+  /* --- EMPTY STATES --- */
+  .empty-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .empty-demo {
+    flex: 1;
+    min-width: 300px;
+    max-width: 440px;
+  }
+  .empty-demo-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 48px 32px;
+    border: 1px dashed var(--glass-border);
+    border-radius: var(--radius-lg);
+    min-height: 260px;
+  }
+  .empty-icon {
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+  .empty-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+  .empty-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .empty-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    max-width: 280px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .empty-btn {
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-bright);
+    background: var(--glass-bg-4);
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: var(--radius-lg);
+    padding: 10px 22px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: inset 0 1px 0 var(--glass-inset-bright);
+  }
+  .empty-btn svg { width: 16px; height: 16px; }
+
+  /* --- MODAL --- */
+  .modal-demos {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .modal-demo {
+    flex: 1;
+    min-width: 360px;
+    max-width: 500px;
+  }
+  .modal-demo-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .modal-backdrop {
+    background: rgba(0,0,0,0.50);
+    border-radius: var(--radius-lg);
+    padding: 40px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 340px;
+  }
+  .modal {
+    background: var(--bg-elevated);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.40);
+    width: 100%;
+    max-width: 420px;
+    overflow: hidden;
+  }
+  .modal-header {
+    padding: 20px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .modal-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: -0.02em;
+  }
+  .modal-close {
+    color: var(--text-dim);
+    cursor: pointer;
+  }
+  .modal-close svg {
+    width: 16px;
+    height: 16px;
+  }
+  .modal-body {
+    padding: 12px 24px 24px;
+  }
+  .modal-body p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .modal-input {
+    width: 100%;
+    background: var(--glass-bg-1);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    margin-top: 16px;
+  }
+  .modal-input::placeholder { color: var(--text-muted); }
+  .modal-input:focus {
+    border-color: var(--glass-border-hover);
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.20);
+  }
+  .modal-footer {
+    padding: 0 24px 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .btn-ghost {
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-lg);
+    padding: 10px 18px;
+    cursor: pointer;
+  }
+  .btn-primary {
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-bright);
+    background: var(--glass-bg-4);
+    border: 1px solid rgba(255,255,255,0.16);
+    border-radius: var(--radius-lg);
+    padding: 10px 22px;
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 var(--glass-inset-bright);
+  }
+  .btn-destructive {
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent-red);
+    background: rgba(248,113,113,0.06);
+    border: 1px solid rgba(248,113,113,0.14);
+    border-radius: var(--radius-lg);
+    padding: 10px 22px;
+    cursor: pointer;
+  }
+
+  /* Destructive modal */
+  .modal-icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  .modal-icon-wrap.danger {
+    background: var(--accent-red-muted);
+    color: var(--accent-red);
+  }
+  .modal-icon-wrap svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* --- COMMAND PALETTE --- */
+  .cmd-backdrop {
+    background: rgba(0,0,0,0.50);
+    border-radius: var(--radius-lg);
+    padding: 32px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  .cmd-palette {
+    background: var(--bg-elevated);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.40);
+    width: 100%;
+    max-width: 560px;
+    overflow: hidden;
+  }
+  .cmd-search {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--glass-border-subtle);
+  }
+  .cmd-search svg { color: var(--text-dim); width: 18px; height: 18px; flex-shrink: 0; }
+  .cmd-search input {
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: 'Figtree', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    flex: 1;
+  }
+  .cmd-search input::placeholder { color: var(--text-dim); }
+  .cmd-search .cmd-kbd {
+    font-size: 10px;
+    color: var(--text-dim);
+    background: var(--glass-bg-3);
+    border: 1px solid var(--glass-border-subtle);
+    border-radius: var(--radius-xs);
+    padding: 2px 6px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+  .cmd-group-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 12px 18px 6px;
+  }
+  .cmd-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .cmd-item:hover, .cmd-item.active {
+    background: var(--glass-bg-4);
+  }
+  .cmd-item svg { color: var(--text-muted); width: 16px; height: 16px; flex-shrink: 0; }
+  .cmd-item.active svg { color: var(--text); }
+  .cmd-item span {
+    font-size: 13px;
+    color: var(--text-muted);
+    flex: 1;
+  }
+  .cmd-item.active span { color: var(--text); }
+  .cmd-item .cmd-shortcut {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+  .cmd-footer {
+    padding: 10px 18px;
+    border-top: 1px solid var(--glass-border-subtle);
+    display: flex;
+    gap: 16px;
+    justify-content: flex-end;
+  }
+  .cmd-footer-hint {
+    font-size: 10px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .cmd-footer-hint kbd {
+    font-size: 9px;
+    background: var(--glass-bg-3);
+    border: 1px solid var(--glass-border-subtle);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  /* --- SHEET --- */
+  .sheet-demo-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .sheet-demo {
+    flex: 1;
+    min-width: 400px;
+  }
+  .sheet-demo-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .sheet-container {
+    background: rgba(0,0,0,0.25);
+    border-radius: var(--radius-lg);
+    display: flex;
+    min-height: 400px;
+    overflow: hidden;
+    position: relative;
+  }
+  .sheet-bg-content {
+    flex: 1;
+    padding: 24px;
+    opacity: 0.3;
+  }
+  .sheet-bg-content .sk-row-item {
+    border-bottom-color: var(--glass-bg-1);
+  }
+  .sheet-panel {
+    width: 380px;
+    background: var(--bg-elevated);
+    border-left: 1px solid var(--glass-border);
+    box-shadow: -8px 0 24px rgba(0,0,0,0.20);
+    display: flex;
+    flex-direction: column;
+  }
+  .sheet-header {
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--glass-border-subtle);
+  }
+  .sheet-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-bright);
+  }
+  .sheet-close {
+    color: var(--text-dim);
+    cursor: pointer;
+  }
+  .sheet-close svg {
+    width: 16px;
+    height: 16px;
+  }
+  .sheet-body {
+    padding: 24px;
+    flex: 1;
+    overflow-y: auto;
+  }
+  .sheet-field {
+    margin-bottom: 20px;
+  }
+  .sheet-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .sheet-value {
+    font-size: 13px;
+    color: var(--text);
+  }
+  .sheet-value.stat {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--text-bright);
+    letter-spacing: -0.03em;
+  }
+  .sheet-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--glass-bg-1);
+  }
+  .sheet-row-label {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .sheet-row-value {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .sheet-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--glass-border-subtle);
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  /* --- DROPDOWN --- */
+  .dropdown-demos {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .dropdown-demo {
+    min-width: 200px;
+  }
+  .dropdown-demo-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .dropdown {
+    background: var(--bg-elevated);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.30);
+    padding: 4px;
+    min-width: 200px;
+  }
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-muted);
+    transition: background 0.1s;
+  }
+  .dropdown-item:hover, .dropdown-item.active {
+    background: var(--glass-bg-4);
+    color: var(--text);
+  }
+  .dropdown-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .dropdown-item .shortcut {
+    margin-left: auto;
+    font-size: 10px;
+    color: var(--text-dim);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+  .dropdown-sep {
+    height: 1px;
+    background: var(--glass-border-subtle);
+    margin: 4px 0;
+  }
+  .dropdown-item.danger { color: var(--accent-red); }
+  .dropdown-item.danger:hover { background: var(--accent-red-muted); }
+
+  /* Source dot in dropdown */
+  .source-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .source-dot.emerald { background: var(--accent-emerald); }
+  .source-dot.blue { background: var(--accent-blue); }
+  .source-dot.purple { background: var(--accent-purple); }
+
+  /* Spec table */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+  }
+  .spec-table th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 8px 12px;
+    background: var(--glass-bg-3);
+    border-bottom: 1px solid var(--glass-border);
+  }
+  .spec-table th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+  .spec-table th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+  .spec-table td {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--glass-bg-1);
+  }
+  .spec-table td code {
+    font-size: 11px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--text);
+    background: var(--glass-bg-3);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+</style>
+</head>
+<body>
+<!-- ═══ Site Nav ═══ -->
+<nav style="position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;background:rgba(26,26,26,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);font-family:'Figtree',sans-serif;">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="../index.html" style="font-weight:900;font-size:18px;color:#3b82f6;letter-spacing:-0.03em;text-decoration:none;">Rx</a>
+    <span style="font-size:13px;color:rgba(255,255,255,0.45);">
+      <a href="../process.html" style="color:rgba(255,255,255,0.45);text-decoration:none;">Process</a>
+      <span style="margin:0 8px;color:rgba(255,255,255,0.25);">→</span>
+      <span style="color:rgba(255,255,255,0.95);font-weight:600;">Feedback & Overlays</span>
+    </span>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <a href="../reference.html" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.45);padding:6px 14px;border-radius:6px;text-decoration:none;">Reference</a>
+    <a href="../process.html" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.95);background:rgba(255,255,255,0.06);padding:6px 14px;border-radius:6px;text-decoration:none;">Process</a>
+  </div>
+</nav>
+<!-- ═══ Decision Summary ═══ -->
+<div style="margin:24px 32px;padding:16px 20px;background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:8px;font-family:'Figtree',sans-serif;">
+  <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#3b82f6;margin-bottom:4px;">Decision #11</div>
+  <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:-0.01em;margin-bottom:4px;">Feedback & Overlays</div>
+  <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;">Toasts, modals, command palette, dropdowns, and sheet overlays.</div>
+</div>
+<div style="margin:16px 24px;padding:12px 16px;background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:8px;font-family:'Figtree',sans-serif;">
+  <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#3b82f6;margin-bottom:3px;">Decision #11</div>
+  <div style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:-0.01em;margin-bottom:3px;">Feedback &amp; Overlays</div>
+  <div style="font-size:12px;color:rgba(255,255,255,0.45);line-height:1.5;">Toasts, modals, command palette, dropdowns, sheet</div>
+</div>
+
+<h1>Feedback & Overlays</h1>
+<p class="subtitle">Toasts, skeletons, empty states, modals, command palette, sheets, dropdowns</p>
+
+<!-- ==================== TOASTS ==================== -->
+<div class="section">
+  <h2><span class="num">01</span>Toasts</h2>
+  <p class="section-desc">Sonner integration. Position: bottom-right. <code>bg-elevated</code> background. Semantic icon + progress bar. Auto-dismiss 4s. P4: color is information.</p>
+
+  <div class="toast-row">
+    <div class="toast-demo">
+      <div class="toast-demo-label">Success</div>
+      <div class="toast">
+        <i data-lucide="check-circle-2" class="t-icon success"></i>
+        <div class="t-body">
+          <div class="t-title">Reconciliation complete</div>
+          <div class="t-desc">142 transactions matched successfully</div>
+        </div>
+        <i data-lucide="x" class="t-close"></i>
+        <div class="toast-progress"><div class="toast-progress-bar success"></div></div>
+      </div>
+    </div>
+
+    <div class="toast-demo">
+      <div class="toast-demo-label">Error</div>
+      <div class="toast">
+        <i data-lucide="alert-circle" class="t-icon error"></i>
+        <div class="t-body">
+          <div class="t-title">Import failed</div>
+          <div class="t-desc">CSV file has 3 malformed rows</div>
+          <div class="t-action">
+            <button>View details</button>
+          </div>
+        </div>
+        <i data-lucide="x" class="t-close"></i>
+        <div class="toast-progress"><div class="toast-progress-bar error"></div></div>
+      </div>
+    </div>
+
+    <div class="toast-demo">
+      <div class="toast-demo-label">Warning</div>
+      <div class="toast">
+        <i data-lucide="alert-triangle" class="t-icon warning"></i>
+        <div class="t-body">
+          <div class="t-title">Rate limit approaching</div>
+          <div class="t-desc">85% of API quota used today</div>
+        </div>
+        <i data-lucide="x" class="t-close"></i>
+        <div class="toast-progress"><div class="toast-progress-bar warning"></div></div>
+      </div>
+    </div>
+
+    <div class="toast-demo">
+      <div class="toast-demo-label">Info</div>
+      <div class="toast">
+        <i data-lucide="info" class="t-icon info"></i>
+        <div class="t-body">
+          <div class="t-title">New source connected</div>
+          <div class="t-desc">QuickBooks sync will start shortly</div>
+        </div>
+        <i data-lucide="x" class="t-close"></i>
+        <div class="toast-progress"><div class="toast-progress-bar info"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SKELETONS ==================== -->
+<div class="section">
+  <h2><span class="num">02</span>Loading Skeletons</h2>
+  <p class="section-desc">Shimmer animation on glass surfaces. Matches actual content layout for minimal layout shift. Skeleton color: <code>glass-bg-3</code> (white 6%) with a 4% white shimmer pass.</p>
+
+  <div class="skeleton-row">
+    <div class="skeleton-demo">
+      <div class="skeleton-demo-label">Stat Cards (shimmer)</div>
+      <div class="sk-card">
+        <div class="sk-line sk-stat-label"></div>
+        <div class="sk-line sk-stat-value"></div>
+        <div class="sk-line sk-stat-trend"></div>
+      </div>
+    </div>
+
+    <div class="skeleton-demo">
+      <div class="skeleton-demo-label">Table (shimmer)</div>
+      <div class="sk-table">
+        <div class="sk-table-header">
+          <div class="sk-line sk-th" style="width:80px; height:10px"></div>
+          <div class="sk-line sk-th" style="width:120px; height:10px"></div>
+          <div class="sk-line sk-th" style="width:60px; height:10px"></div>
+          <div class="sk-line sk-th" style="width:90px; height:10px"></div>
+        </div>
+        <div class="sk-table-row">
+          <div class="sk-line sk-td" style="width:70px; height:12px"></div>
+          <div class="sk-line sk-td" style="width:110px; height:12px"></div>
+          <div class="sk-line sk-td" style="width:50px; height:12px"></div>
+          <div class="sk-line sk-td" style="width:80px; height:12px"></div>
+        </div>
+        <div class="sk-table-row">
+          <div class="sk-line sk-td" style="width:90px; height:12px"></div>
+          <div class="sk-line sk-td" style="width:100px; height:12px"></div>
+          <div class="sk-line sk-td" style="width:55px; height:12px"></div>
+          <div class="sk-line sk-td" style="width:70px; height:12px"></div>
+        </div>
+        <div class="sk-table-row">
+          <div class="sk-line sk-td" style="width:75px; height:12px"></div>
+          <div class="sk-line sk-td" style="width:115px; height:12px"></div>
+          <div class="sk-line sk-td" style="width:45px; height:12px"></div>
+          <div class="sk-line sk-td" style="width:85px; height:12px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="skeleton-demo">
+      <div class="skeleton-demo-label">List Rows (shimmer)</div>
+      <div class="sk-row-list">
+        <div class="sk-row-item">
+          <div class="sk-line sk-avatar"></div>
+          <div class="sk-row-lines">
+            <div class="sk-line" style="width:140px; height:12px"></div>
+            <div class="sk-line" style="width:90px; height:10px"></div>
+          </div>
+        </div>
+        <div class="sk-row-item">
+          <div class="sk-line sk-avatar"></div>
+          <div class="sk-row-lines">
+            <div class="sk-line" style="width:120px; height:12px"></div>
+            <div class="sk-line" style="width:100px; height:10px"></div>
+          </div>
+        </div>
+        <div class="sk-row-item">
+          <div class="sk-line sk-avatar"></div>
+          <div class="sk-row-lines">
+            <div class="sk-line" style="width:160px; height:12px"></div>
+            <div class="sk-line" style="width:80px; height:10px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== EMPTY STATES ==================== -->
+<div class="section">
+  <h2><span class="num">03</span>Empty States</h2>
+  <p class="section-desc">Icon-driven, not illustration-driven. Dashed border container. P3: minimal visual weight. P1: narrate the next action, not "no data found".</p>
+
+  <div class="empty-row">
+    <div class="empty-demo">
+      <div class="empty-demo-label">First-time / No Data</div>
+      <div class="empty-state">
+        <div class="empty-icon"><i data-lucide="database"></i></div>
+        <div class="empty-title">Connect your first source</div>
+        <div class="empty-desc">Import transactions from your ERP, bank, or accounting system to start reconciling.</div>
+        <button class="empty-btn">
+          <i data-lucide="plus"></i>
+          Add source
+        </button>
+      </div>
+    </div>
+
+    <div class="empty-demo">
+      <div class="empty-demo-label">No Results (filter/search)</div>
+      <div class="empty-state">
+        <div class="empty-icon"><i data-lucide="search"></i></div>
+        <div class="empty-title">No transactions match</div>
+        <div class="empty-desc">Try adjusting your filters or search terms to find what you're looking for.</div>
+        <button class="empty-btn" style="background:transparent; border-color:transparent; box-shadow:none; color:var(--text-muted);">
+          Clear filters
+        </button>
+      </div>
+    </div>
+
+    <div class="empty-demo">
+      <div class="empty-demo-label">Success / All Done</div>
+      <div class="empty-state">
+        <div class="empty-icon" style="color:var(--accent-emerald)"><i data-lucide="check-circle-2"></i></div>
+        <div class="empty-title">All exceptions resolved</div>
+        <div class="empty-desc">Every transaction has been matched or addressed. Nice work.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODALS ==================== -->
+<div class="section">
+  <h2><span class="num">04</span>Modals & Dialogs</h2>
+  <p class="section-desc"><code>bg-elevated</code> (#1e1e1e). Backdrop: black 50%. Radius: <code>radius-xl</code> (14px). Shadow: deep. Two variants: standard + destructive confirmation.</p>
+
+  <div class="modal-demos">
+    <div class="modal-demo">
+      <div class="modal-demo-label">Standard (form)</div>
+      <div class="modal-backdrop">
+        <div class="modal">
+          <div class="modal-header">
+            <div class="modal-title">Create dashboard</div>
+            <i data-lucide="x" class="modal-close"></i>
+          </div>
+          <div class="modal-body">
+            <p>Give your dashboard a name. You can change it later.</p>
+            <input class="modal-input" type="text" placeholder="e.g. Monthly Reconciliation">
+          </div>
+          <div class="modal-footer">
+            <button class="btn-ghost">Cancel</button>
+            <button class="btn-primary">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-demo">
+      <div class="modal-demo-label">Destructive confirmation</div>
+      <div class="modal-backdrop">
+        <div class="modal">
+          <div class="modal-body" style="padding-top:24px; text-align:center;">
+            <div style="display:flex;justify-content:center;">
+              <div class="modal-icon-wrap danger">
+                <i data-lucide="trash-2"></i>
+              </div>
+            </div>
+            <div class="modal-title" style="margin-top:4px;">Delete dashboard?</div>
+            <p style="margin-top:8px;">This will permanently delete <strong style="color:var(--text);">"Q1 Reconciliation"</strong> and all its widgets. This action cannot be undone.</p>
+          </div>
+          <div class="modal-footer" style="justify-content:center; padding-bottom:24px;">
+            <button class="btn-ghost">Cancel</button>
+            <button class="btn-destructive">Delete dashboard</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== COMMAND PALETTE ==================== -->
+<div class="section">
+  <h2><span class="num">05</span>Command Palette</h2>
+  <p class="section-desc">Linear/Raycast style. <code>bg-elevated</code> background. Search + grouped results. <code>Cmd+K</code> trigger. Active item: <code>glass-bg-4</code>.</p>
+
+  <div class="cmd-backdrop">
+    <div class="cmd-palette">
+      <div class="cmd-search">
+        <i data-lucide="search"></i>
+        <input type="text" placeholder="Type a command or search..." value="recon">
+        <span class="cmd-kbd">ESC</span>
+      </div>
+      <div class="cmd-group-label">Actions</div>
+      <div class="cmd-item active">
+        <i data-lucide="play-circle"></i>
+        <span>Run reconciliation</span>
+        <span class="cmd-shortcut">Cmd+R</span>
+      </div>
+      <div class="cmd-item">
+        <i data-lucide="file-text"></i>
+        <span>View reconciliation report</span>
+      </div>
+      <div class="cmd-group-label">Dashboards</div>
+      <div class="cmd-item">
+        <i data-lucide="layout-dashboard"></i>
+        <span>Reconciliation Overview</span>
+      </div>
+      <div class="cmd-item">
+        <i data-lucide="layout-dashboard"></i>
+        <span>Monthly Reconciliation Q1</span>
+      </div>
+      <div class="cmd-group-label">Pages</div>
+      <div class="cmd-item">
+        <i data-lucide="settings"></i>
+        <span>Reconciliation Settings</span>
+      </div>
+      <div class="cmd-footer">
+        <span class="cmd-footer-hint"><kbd>&uarr;</kbd><kbd>&darr;</kbd> Navigate</span>
+        <span class="cmd-footer-hint"><kbd>&crarr;</kbd> Select</span>
+        <span class="cmd-footer-hint"><kbd>ESC</kbd> Close</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== DROPDOWNS ==================== -->
+<div class="section">
+  <h2><span class="num">06</span>Dropdowns</h2>
+  <p class="section-desc"><code>bg-elevated</code> background. Radius: 10px. Hover: <code>glass-bg-4</code>. 4px internal padding. Icons at 16px. Consistent with command palette item style.</p>
+
+  <div class="dropdown-demos">
+    <div class="dropdown-demo">
+      <div class="dropdown-demo-label">Actions Menu</div>
+      <div class="dropdown">
+        <div class="dropdown-item active">
+          <i data-lucide="pencil"></i>
+          <span>Rename</span>
+          <span class="shortcut">Cmd+E</span>
+        </div>
+        <div class="dropdown-item">
+          <i data-lucide="copy"></i>
+          <span>Duplicate</span>
+          <span class="shortcut">Cmd+D</span>
+        </div>
+        <div class="dropdown-item">
+          <i data-lucide="share"></i>
+          <span>Share</span>
+        </div>
+        <div class="dropdown-sep"></div>
+        <div class="dropdown-item danger">
+          <i data-lucide="trash-2"></i>
+          <span>Delete</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dropdown-demo">
+      <div class="dropdown-demo-label">Source Filter</div>
+      <div class="dropdown">
+        <div class="dropdown-item active">
+          <span>All sources</span>
+        </div>
+        <div class="dropdown-sep"></div>
+        <div class="dropdown-item">
+          <span class="source-dot emerald"></span>
+          <span>QuickBooks</span>
+        </div>
+        <div class="dropdown-item">
+          <span class="source-dot blue"></span>
+          <span>Stripe</span>
+        </div>
+        <div class="dropdown-item">
+          <span class="source-dot purple"></span>
+          <span>SAP</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dropdown-demo">
+      <div class="dropdown-demo-label">User Menu</div>
+      <div class="dropdown" style="min-width:220px;">
+        <div style="padding:10px 12px 8px; border-bottom:1px solid var(--glass-border-subtle); margin-bottom:4px;">
+          <div style="font-size:13px; font-weight:600; color:var(--text);">Alex Teper</div>
+          <div style="font-size:11px; color:var(--text-dim);">alex@rexi.ai</div>
+        </div>
+        <div class="dropdown-item">
+          <i data-lucide="settings"></i>
+          <span>Settings</span>
+        </div>
+        <div class="dropdown-item">
+          <i data-lucide="users"></i>
+          <span>Team</span>
+        </div>
+        <div class="dropdown-sep"></div>
+        <div class="dropdown-item">
+          <i data-lucide="log-out"></i>
+          <span>Sign out</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SHEET ==================== -->
+<div class="section">
+  <h2><span class="num">07</span>Sheet (Side Panel)</h2>
+  <p class="section-desc"><code>bg-elevated</code> background. Slides from right. Width: 380px. Left border + shadow. Background content dims. Detail views, transaction inspection.</p>
+
+  <div class="sheet-demo-row">
+    <div class="sheet-demo">
+      <div class="sheet-demo-label">Transaction Detail</div>
+      <div class="sheet-container">
+        <div class="sheet-bg-content">
+          <div class="sk-row-list">
+            <div class="sk-row-item"><div class="sk-pulse sk-avatar"></div><div class="sk-row-lines"><div class="sk-pulse" style="width:140px;height:12px"></div><div class="sk-pulse" style="width:90px;height:10px"></div></div></div>
+            <div class="sk-row-item"><div class="sk-pulse sk-avatar"></div><div class="sk-row-lines"><div class="sk-pulse" style="width:120px;height:12px"></div><div class="sk-pulse" style="width:100px;height:10px"></div></div></div>
+            <div class="sk-row-item"><div class="sk-pulse sk-avatar"></div><div class="sk-row-lines"><div class="sk-pulse" style="width:160px;height:12px"></div><div class="sk-pulse" style="width:80px;height:10px"></div></div></div>
+            <div class="sk-row-item"><div class="sk-pulse sk-avatar"></div><div class="sk-row-lines"><div class="sk-pulse" style="width:130px;height:12px"></div><div class="sk-pulse" style="width:95px;height:10px"></div></div></div>
+            <div class="sk-row-item"><div class="sk-pulse sk-avatar"></div><div class="sk-row-lines"><div class="sk-pulse" style="width:150px;height:12px"></div><div class="sk-pulse" style="width:85px;height:10px"></div></div></div>
+          </div>
+        </div>
+        <div class="sheet-panel">
+          <div class="sheet-header">
+            <div class="sheet-title">Transaction #4821</div>
+            <i data-lucide="x" class="sheet-close"></i>
+          </div>
+          <div class="sheet-body">
+            <div class="sheet-field">
+              <div class="sheet-label">Amount</div>
+              <div class="sheet-value stat">$12,450<span style="font-size:16px; font-weight:400; color:var(--text-muted); font-family:'Merriweather',serif; font-style:italic;">.00</span></div>
+            </div>
+            <div class="sheet-field">
+              <div class="sheet-label">Status</div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="width:5px; height:5px; border-radius:50%; background:var(--accent-emerald);"></span>
+                <span style="font-size:11px; font-weight:500; color:var(--accent-emerald);">Matched</span>
+              </div>
+            </div>
+            <div style="margin-top:8px;">
+              <div class="sheet-row">
+                <span class="sheet-row-label">Date</span>
+                <span class="sheet-row-value">Mar 12, 2026</span>
+              </div>
+              <div class="sheet-row">
+                <span class="sheet-row-label">Source</span>
+                <span class="sheet-row-value" style="display:flex; align-items:center; gap:6px;">
+                  <span class="source-dot blue"></span> Stripe
+                </span>
+              </div>
+              <div class="sheet-row">
+                <span class="sheet-row-label">Reference</span>
+                <span class="sheet-row-value" style="font-family:'SF Mono','Fira Code',monospace; font-size:11px;">pi_3Nk8sF2eZv</span>
+              </div>
+              <div class="sheet-row">
+                <span class="sheet-row-label">Category</span>
+                <span class="sheet-row-value">Revenue</span>
+              </div>
+              <div class="sheet-row" style="border:none;">
+                <span class="sheet-row-label">Matched with</span>
+                <span class="sheet-row-value" style="font-family:'SF Mono','Fira Code',monospace; font-size:11px;">INV-2026-0312</span>
+              </div>
+            </div>
+          </div>
+          <div class="sheet-footer">
+            <button class="btn-ghost" style="font-size:12px;">Unmatch</button>
+            <button class="btn-primary" style="font-size:12px;">View in ledger</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SPEC SUMMARY ==================== -->
+<div class="section">
+  <h2><span class="num">08</span>Spec Summary</h2>
+
+  <table class="spec-table">
+    <thead>
+      <tr>
+        <th>Component</th>
+        <th>Background</th>
+        <th>Border</th>
+        <th>Radius</th>
+        <th>Shadow</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="color:var(--text); font-weight:500;">Toast</td>
+        <td><code>bg-elevated</code></td>
+        <td><code>glass-border</code></td>
+        <td><code>radius-lg</code> (12px)</td>
+        <td><code>0 8px 24px black 30%</code></td>
+        <td>Semantic icon + progress bar. Bottom-right. 4s auto-dismiss.</td>
+      </tr>
+      <tr>
+        <td style="color:var(--text); font-weight:500;">Skeleton</td>
+        <td><code>glass-bg-3</code></td>
+        <td>none</td>
+        <td><code>radius-xs</code> (4px)</td>
+        <td>none</td>
+        <td>Shimmer animation: 4% white sweep, 2s ease-in-out.</td>
+      </tr>
+      <tr>
+        <td style="color:var(--text); font-weight:500;">Empty State</td>
+        <td>transparent</td>
+        <td><code>glass-border</code> dashed</td>
+        <td><code>radius-lg</code></td>
+        <td>none</td>
+        <td>Icon 32px <code>text-dim</code>. P1: narrate next action.</td>
+      </tr>
+      <tr>
+        <td style="color:var(--text); font-weight:500;">Modal</td>
+        <td><code>bg-elevated</code></td>
+        <td><code>glass-border</code></td>
+        <td><code>radius-xl</code> (14px)</td>
+        <td><code>0 16px 48px black 40%</code></td>
+        <td>Backdrop: black 50%. Max-width 420px.</td>
+      </tr>
+      <tr>
+        <td style="color:var(--text); font-weight:500;">Command Palette</td>
+        <td><code>bg-elevated</code></td>
+        <td><code>glass-border</code></td>
+        <td><code>radius-xl</code> (14px)</td>
+        <td><code>0 16px 48px black 40%</code></td>
+        <td>Max-width 560px. Active: <code>glass-bg-4</code>. Cmd+K.</td>
+      </tr>
+      <tr>
+        <td style="color:var(--text); font-weight:500;">Dropdown</td>
+        <td><code>bg-elevated</code></td>
+        <td><code>glass-border</code></td>
+        <td>10px</td>
+        <td><code>0 8px 24px black 30%</code></td>
+        <td>4px internal padding. Hover: <code>glass-bg-4</code>.</td>
+      </tr>
+      <tr>
+        <td style="color:var(--text); font-weight:500;">Sheet</td>
+        <td><code>bg-elevated</code></td>
+        <td>left: <code>glass-border</code></td>
+        <td>none (full height)</td>
+        <td><code>-8px 0 24px black 20%</code></td>
+        <td>Width 380px. Right slide. Bg content dims.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  lucide.createIcons();
+</script>
+<!-- ═══ Footer Nav ═══ -->
+<div style="display:flex;justify-content:space-between;align-items:center;padding:24px 32px;border-top:1px solid rgba(255,255,255,0.04);font-family:'Figtree',sans-serif;margin-top:40px;">
+  <a href="07-iconography.html" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);text-decoration:none;">← Iconography</a>
+  <a href="09-sidebar-navigation.html" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);text-decoration:none;">Sidebar Navigation →</a>
+</div>
+</body>
+</html>

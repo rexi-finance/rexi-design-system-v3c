@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inputs & Forms — Rexi Design Process</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@1,300&display=swap');
+
+  :root {
+    --bg: #1a1a1a;
+    --bg-elevated: #1e1e1e;
+    --glass-bg-1: rgba(255,255,255,0.03);
+    --glass-bg-2: rgba(255,255,255,0.04);
+    --glass-bg-3: rgba(255,255,255,0.06);
+    --glass-bg-4: rgba(255,255,255,0.10);
+    --glass-border-subtle: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-border-hover: rgba(255,255,255,0.14);
+    --glass-inset-bright: rgba(255,255,255,0.08);
+    --text-bright: rgba(255,255,255,0.95);
+    --text: #e5e5e5;
+    --text-muted: rgba(255,255,255,0.45);
+    --text-dim: rgba(255,255,255,0.25);
+    --text-faint: rgba(255,255,255,0.16);
+    --accent-emerald: #34d399;
+    --accent-red: #f87171;
+    --accent-amber: #fbbf24;
+    --accent-blue: #3b82f6;
+    --accent-purple: #8b5cf6;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Figtree',sans-serif; }
+  body { background:var(--bg); color:var(--text); min-height:100vh; padding:48px; }
+
+  h2 { font-size:32px; font-weight:800; letter-spacing:-0.7px; }
+  .subtitle { font-size:14px; color:var(--text-muted); margin-top:8px; line-height:1.6; margin-bottom:40px; }
+  .section-title {
+    font-size:9px; font-weight:600; letter-spacing:3px; text-transform:uppercase;
+    color:var(--text-dim); margin-bottom:16px;
+  }
+  .divider { height:1px; background:rgba(255,255,255,0.06); margin:48px 0; }
+
+  .note-box {
+    background:rgba(59,130,246,0.04); border:1px solid rgba(59,130,246,0.12);
+    border-radius:10px; padding:16px 20px; margin-top:24px;
+  }
+  .note-box p { font-size:12px; color:var(--text-muted); line-height:1.6; }
+  .note-box strong { color:var(--text); }
+
+  .compare-header {
+    font-size:11px; font-weight:600; color:var(--text-muted);
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.06);
+    margin-bottom:16px;
+  }
+  .compare-header span {
+    font-weight:400; color:var(--text-dim); font-family:'SF Mono',monospace; font-size:10px;
+  }
+
+  .specs-block {
+    margin-top:16px; font-size:10px; color:var(--text-dim); line-height:1.8;
+    font-family:'SF Mono',monospace; background:rgba(255,255,255,0.02);
+    padding:12px 16px; border-radius:8px;
+  }
+
+  .ok-tag {
+    display:inline-block; font-size:9px; letter-spacing:0.5px;
+    color:var(--accent-emerald); background:rgba(52,211,153,0.08);
+    padding:2px 8px; border-radius:4px; margin-left:4px;
+  }
+  .new-tag {
+    display:inline-block; font-size:9px; letter-spacing:0.5px;
+    color:var(--accent-blue); background:rgba(59,130,246,0.08);
+    padding:2px 8px; border-radius:4px; margin-left:4px;
+  }
+  .warn-tag {
+    display:inline-block; font-size:9px; letter-spacing:0.5px;
+    color:var(--accent-amber); background:rgba(251,191,36,0.08);
+    padding:2px 8px; border-radius:4px; margin-left:4px;
+  }
+
+  /* Shared input base */
+  .input-label {
+    font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--text-dim); margin-bottom:6px;
+  }
+  .input-helper {
+    font-size:11px; color:var(--text-dim); margin-top:4px;
+  }
+  .input-error-text {
+    font-size:11px; color:var(--accent-red); margin-top:4px;
+  }
+
+  /* Buttons — glass border-signal */
+  .btn {
+    font-family:'Figtree',sans-serif; font-size:13px; padding:10px 22px;
+    border-radius:12px; cursor:pointer; display:inline-flex; align-items:center;
+    gap:6px; border:1px solid transparent;
+  }
+  .btn-primary {
+    background:var(--glass-bg-4); border-color:rgba(255,255,255,0.16);
+    box-shadow:0 1px 0 var(--glass-inset-bright); color:#FFF; font-weight:600;
+  }
+  .btn-ghost {
+    background:transparent; color:var(--text-muted); font-weight:500;
+  }
+</style>
+</head>
+<body>
+<!-- ═══ Site Nav ═══ -->
+<nav style="position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;background:rgba(26,26,26,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);font-family:'Figtree',sans-serif;">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="../index.html" style="font-weight:900;font-size:18px;color:#3b82f6;letter-spacing:-0.03em;text-decoration:none;">Rx</a>
+    <span style="font-size:13px;color:rgba(255,255,255,0.45);">
+      <a href="../process.html" style="color:rgba(255,255,255,0.45);text-decoration:none;">Process</a>
+      <span style="margin:0 8px;color:rgba(255,255,255,0.25);">→</span>
+      <span style="color:rgba(255,255,255,0.95);font-weight:600;">Inputs & Forms</span>
+    </span>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <a href="../reference.html" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.45);padding:6px 14px;border-radius:6px;text-decoration:none;">Reference</a>
+    <a href="../process.html" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.95);background:rgba(255,255,255,0.06);padding:6px 14px;border-radius:6px;text-decoration:none;">Process</a>
+  </div>
+</nav>
+<!-- ═══ Decision Summary ═══ -->
+<div style="margin:24px 32px;padding:16px 20px;background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:8px;font-family:'Figtree',sans-serif;">
+  <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#3b82f6;margin-bottom:4px;">Decision #7</div>
+  <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:-0.01em;margin-bottom:4px;">Inputs & Forms</div>
+  <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;">Glass base inputs with blue focus ring. 5 states: default, focus, filled, error, disabled.</div>
+</div>
+<div style="margin:16px 24px;padding:12px 16px;background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:8px;font-family:'Figtree',sans-serif;">
+  <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#3b82f6;margin-bottom:3px;">Decision #7</div>
+  <div style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:-0.01em;margin-bottom:3px;">Inputs &amp; Forms</div>
+  <div style="font-size:12px;color:rgba(255,255,255,0.45);line-height:1.5;">Glass base + blue focus ring, 5 states, 3 focus proposals</div>
+</div>
+
+<h2>Inputs & Forms</h2>
+<p class="subtitle">
+  Definamos cómo se ven los inputs. Hay 3 propuestas de focus state. Todos comparten el mismo base: glass fill + glass border + radius 8px.
+</p>
+
+<!-- ============================== -->
+<!-- INPUT STATES REFERENCE          -->
+<!-- ============================== -->
+
+<div class="section-title">ESTADOS DE UN INPUT — BASE COMÚN</div>
+<div style="display:flex; gap:32px; margin-bottom:40px;">
+
+  <!-- Resting -->
+  <div style="flex:1;">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">Resting</div>
+    <div class="input-label">RULE NAME</div>
+    <div style="
+      padding:10px 14px; border-radius:8px;
+      background:var(--glass-bg-1); border:1px solid var(--glass-border);
+    ">
+      <span style="font-size:13px; color:var(--text-muted);">e.g. Stripe settlement match</span>
+    </div>
+    <div class="specs-block" style="margin-top:8px;">
+      fill: white 3% · border: white 6%<br>
+      radius: 8px · padding: 10px 14px<br>
+      placeholder: text-muted (45%)
+    </div>
+  </div>
+
+  <!-- Filled -->
+  <div style="flex:1;">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">Filled</div>
+    <div class="input-label">RULE NAME</div>
+    <div style="
+      padding:10px 14px; border-radius:8px;
+      background:var(--glass-bg-1); border:1px solid var(--glass-border);
+    ">
+      <span style="font-size:13px; color:var(--text);">Stripe settlement match</span>
+    </div>
+    <div class="specs-block" style="margin-top:8px;">
+      Same as resting<br>
+      text: #e5e5e5 (text)<br>
+      font: 13px, 400
+    </div>
+  </div>
+
+  <!-- Disabled -->
+  <div style="flex:1;">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">Disabled</div>
+    <div class="input-label" style="color:var(--text-faint);">RULE NAME</div>
+    <div style="
+      padding:10px 14px; border-radius:8px;
+      background:rgba(255,255,255,0.02); border:1px solid var(--glass-border-subtle);
+      cursor:not-allowed;
+    ">
+      <span style="font-size:13px; color:var(--text-faint);">Not available</span>
+    </div>
+    <div class="specs-block" style="margin-top:8px;">
+      fill: white 2% · border: white 4%<br>
+      label+text: text-faint (16%)<br>
+      cursor: not-allowed
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div style="flex:1;">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">Error</div>
+    <div class="input-label">RULE NAME</div>
+    <div style="
+      padding:10px 14px; border-radius:8px;
+      background:var(--glass-bg-1); border:1px solid rgba(248,113,113,0.30);
+    ">
+      <span style="font-size:13px; color:var(--text);">S</span>
+    </div>
+    <div class="input-error-text">Must be at least 3 characters</div>
+    <div class="specs-block" style="margin-top:8px;">
+      border: red 30% (semantic)<br>
+      error text: accent-red, 11px
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============================== -->
+<!-- FOCUS STATE — 3 PROPOSALS       -->
+<!-- ============================== -->
+
+<h2 style="font-size:24px; margin-bottom:8px;">Focus State — 3 propuestas</h2>
+<p style="font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:32px;">
+  El focus state es lo que más impacta cómo se siente interactuar con un input. Las 3 propuestas usan la misma base pero difieren en cómo marcan el foco.
+</p>
+
+<div style="display:flex; gap:28px; margin-bottom:32px;">
+
+  <!-- A: Border-only -->
+  <div style="flex:1;">
+    <div class="compare-header">A — BORDER ONLY <span>— glass coherent</span></div>
+    <p style="font-size:11px; color:var(--text-muted); margin-bottom:16px; line-height:1.5;">
+      El border sube de 6% a 14% al focus. Misma lógica que los botones: más border = más activo. Sin color de marca.
+    </p>
+
+    <div class="input-label">RULE NAME</div>
+    <div style="
+      padding:10px 14px; border-radius:8px;
+      background:var(--glass-bg-1); border:1px solid var(--glass-border-hover);
+    ">
+      <span style="font-size:13px; color:var(--text);">Stripe settlem</span><span style="display:inline-block; width:1px; height:16px; background:var(--text); vertical-align:middle; animation:blink 1s step-end infinite;"></span>
+    </div>
+    <div class="input-helper">Nombre descriptivo para identificar la regla</div>
+
+    <div class="specs-block">
+      <strong style="color:var(--text-muted);">Focus change:</strong><br>
+      border: 6% → <strong style="color:var(--text);">14%</strong> (glass-border-hover)<br>
+      fill: sin cambio · no ring · no color<br><br>
+      <strong style="color:var(--text-muted);">Pro:</strong> 100% glass coherent<br>
+      <strong style="color:var(--text-muted);">Con:</strong> Sutil — puede ser difícil de notar en algunos monitores. Accessibility score bajo sin focus ring visible.
+    </div>
+    <div style="margin-top:8px;">
+      <span class="warn-tag">Accessibility concern</span>
+    </div>
+  </div>
+
+  <!-- B: Blue border -->
+  <div style="flex:1;">
+    <div class="compare-header">B — BLUE BORDER <span>— brand focus</span></div>
+    <p style="font-size:11px; color:var(--text-muted); margin-bottom:16px; line-height:1.5;">
+      El border cambia a accent-blue en focus. Convención estándar (Figma, Linear, Vercel). El color de marca marca el foco.
+    </p>
+
+    <div class="input-label">RULE NAME</div>
+    <div style="
+      padding:10px 14px; border-radius:8px;
+      background:var(--glass-bg-1); border:1px solid rgba(59,130,246,0.50);
+    ">
+      <span style="font-size:13px; color:var(--text);">Stripe settlem</span><span style="display:inline-block; width:1px; height:16px; background:var(--text); vertical-align:middle; animation:blink 1s step-end infinite;"></span>
+    </div>
+    <div class="input-helper">Nombre descriptivo para identificar la regla</div>
+
+    <div class="specs-block">
+      <strong style="color:var(--text-muted);">Focus change:</strong><br>
+      border: 6% → <strong style="color:var(--accent-blue);">accent-blue 50%</strong><br>
+      fill: sin cambio · no ring<br><br>
+      <strong style="color:var(--text-muted);">Pro:</strong> Claro, familiar, buena accessibility<br>
+      <strong style="color:var(--text-muted);">Con:</strong> Introduce color al sistema glass. ¿Viola P4 (color = información)? Blue = brand, pero ¿focus es info?
+    </div>
+    <div style="margin-top:8px;">
+      <span class="ok-tag">Accessibility OK</span>
+      <span class="warn-tag">Color = info tension</span>
+    </div>
+  </div>
+
+  <!-- C: White border + blue ring -->
+  <div style="flex:1;">
+    <div class="compare-header">C — BORDER + RING <span>— glass + a11y</span></div>
+    <p style="font-size:11px; color:var(--text-muted); margin-bottom:16px; line-height:1.5;">
+      Border sube a 14% (glass coherent) + un focus ring sutil de blue. La border mantiene glass; el ring da accessibility.
+    </p>
+
+    <div class="input-label">RULE NAME</div>
+    <div style="
+      padding:10px 14px; border-radius:8px;
+      background:var(--glass-bg-1); border:1px solid var(--glass-border-hover);
+      box-shadow:0 0 0 2px rgba(59,130,246,0.20);
+    ">
+      <span style="font-size:13px; color:var(--text);">Stripe settlem</span><span style="display:inline-block; width:1px; height:16px; background:var(--text); vertical-align:middle; animation:blink 1s step-end infinite;"></span>
+    </div>
+    <div class="input-helper">Nombre descriptivo para identificar la regla</div>
+
+    <div class="specs-block">
+      <strong style="color:var(--text-muted);">Focus change:</strong><br>
+      border: 6% → <strong style="color:var(--text);">14%</strong> (glass-border-hover)<br>
+      ring: <strong style="color:var(--accent-blue);">0 0 0 2px blue 20%</strong><br>
+      fill: sin cambio<br><br>
+      <strong style="color:var(--text-muted);">Pro:</strong> Glass coherent + accessible. Ring es sutil (20% opacity).<br>
+      <strong style="color:var(--text-muted);">Con:</strong> Dos señales simultáneas (border + ring).
+    </div>
+    <div style="margin-top:8px;">
+      <span class="ok-tag">Glass coherent</span>
+      <span class="ok-tag">Accessibility OK</span>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============================== -->
+<!-- FOCUS IN FORM CONTEXT           -->
+<!-- ============================== -->
+
+<div class="section-title">EN CONTEXTO — FORMULARIO COMPLETO</div>
+<p style="font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:24px;">
+  Cada propuesta aplicada a un form real. El segundo campo ("Source") está en focus.
+</p>
+
+<div style="display:flex; gap:24px;">
+
+  <!-- Form A -->
+  <div style="flex:1;">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">A — Border Only</div>
+    <div style="background:var(--bg-elevated); border-radius:14px; border:1px solid rgba(255,255,255,0.06); padding:28px; display:flex; flex-direction:column; gap:20px;">
+      <div style="font-size:16px; font-weight:700; color:var(--text);">Create Rule</div>
+
+      <div>
+        <div class="input-label">RULE NAME</div>
+        <div style="padding:10px 14px; border-radius:8px; background:var(--glass-bg-1); border:1px solid var(--glass-border);">
+          <span style="font-size:13px; color:var(--text);">Stripe settlement match</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="input-label">SOURCE</div>
+        <div style="padding:10px 14px; border-radius:8px; background:var(--glass-bg-1); border:1px solid var(--glass-border-hover); display:flex; justify-content:space-between;">
+          <span style="font-size:13px; color:var(--text-muted);">Select source...</span>
+          <span style="font-size:11px; color:var(--text-dim);">v</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="input-label">MATCH THRESHOLD</div>
+        <div style="padding:10px 14px; border-radius:8px; background:var(--glass-bg-1); border:1px solid var(--glass-border);">
+          <span style="font-size:13px; color:var(--text);">95%</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="input-label">NOTES</div>
+        <div style="padding:10px 14px; border-radius:8px; background:var(--glass-bg-1); border:1px solid var(--glass-border); min-height:60px;">
+          <span style="font-size:13px; color:var(--text-muted);">Optional description...</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:4px;">
+        <div class="btn btn-ghost">Cancel</div>
+        <div class="btn btn-primary">Create Rule</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form B -->
+  <div style="flex:1;">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">B — Blue Border</div>
+    <div style="background:var(--bg-elevated); border-radius:14px; border:1px solid rgba(255,255,255,0.06); padding:28px; display:flex; flex-direction:column; gap:20px;">
+      <div style="font-size:16px; font-weight:700; color:var(--text);">Create Rule</div>
+
+      <div>
+        <div class="input-label">RULE NAME</div>
+        <div style="padding:10px 14px; border-radius:8px; background:var(--glass-bg-1); border:1px solid var(--glass-border);">
+          <span style="font-size:13px; color:var(--text);">Stripe settlement match</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="input-label">SOURCE</div>
+        <div style="padding:10px 14px; border-radius:8px; background:var(--glass-bg-1); border:1px solid rgba(59,130,246,0.50); display:flex; justify-content:space-between;">
+          <span style="font-size:13px; color:var(--text-muted);">Select source...</span>
+          <span style="font-size:11px; color:var(--text-dim);">v</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="input-label">MATCH THRESHOLD</div>
+        <div style="padding:10px 14px; border-radius:8px; background:var(--glass-bg-1); border:1px solid var(--glass-border);">
+          <span style="font-size:13px; color:var(--text);">95%</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="input-label">NOTES</div>
+        <div style="padding:10px 14px; border-radius:8px; background:var(--glass-bg-1); border:1px solid var(--glass-border); min-height:60px;">
+          <span style="font-size:13px; color:var(--text-muted);">Optional description...</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:4px;">
+        <div class="btn btn-ghost">Cancel</div>
+        <div class="btn btn-primary">Create Rule</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form C -->
+  <div style="flex:1;">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">C — Border + Ring</div>
+    <div style="background:var(--bg-elevated); border-radius:14px; border:1px solid rgba(255,255,255,0.06); padding:28px; display:flex; flex-direction:column; gap:20px;">
+      <div style="font-size:16px; font-weight:700; color:var(--text);">Create Rule</div>
+
+      <div>
+        <div class="input-label">RULE NAME</div>
+        <div style="padding:10px 14px; border-radius:8px; background:var(--glass-bg-1); border:1px solid var(--glass-border);">
+          <span style="font-size:13px; color:var(--text);">Stripe settlement match</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="input-label">SOURCE</div>
+        <div style="padding:10px 14px; border-radius:8px; background:var(--glass-bg-1); border:1px solid var(--glass-border-hover); box-shadow:0 0 0 2px rgba(59,130,246,0.20); display:flex; justify-content:space-between;">
+          <span style="font-size:13px; color:var(--text-muted);">Select source...</span>
+          <span style="font-size:11px; color:var(--text-dim);">v</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="input-label">MATCH THRESHOLD</div>
+        <div style="padding:10px 14px; border-radius:8px; background:var(--glass-bg-1); border:1px solid var(--glass-border);">
+          <span style="font-size:13px; color:var(--text);">95%</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="input-label">NOTES</div>
+        <div style="padding:10px 14px; border-radius:8px; background:var(--glass-bg-1); border:1px solid var(--glass-border); min-height:60px;">
+          <span style="font-size:13px; color:var(--text-muted);">Optional description...</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:4px;">
+        <div class="btn btn-ghost">Cancel</div>
+        <div class="btn btn-primary">Create Rule</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============================== -->
+<!-- SELECT / DROPDOWN OPEN          -->
+<!-- ============================== -->
+
+<div class="section-title">SELECT DROPDOWN — ABIERTO</div>
+<p style="font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:24px;">
+  Así se ve un select con su dropdown abierto. Dropdown usa bg-elevated (Layer 1).
+</p>
+
+<div style="display:flex; gap:24px;">
+
+  <!-- Select A -->
+  <div style="flex:1;">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">A — Border Only</div>
+    <div style="position:relative;">
+      <div class="input-label">SOURCE</div>
+      <div style="padding:10px 14px; border-radius:8px; background:var(--glass-bg-1); border:1px solid var(--glass-border-hover); display:flex; justify-content:space-between;">
+        <span style="font-size:13px; color:var(--text-muted);">Select source...</span>
+        <span style="font-size:11px; color:var(--text-dim);">v</span>
+      </div>
+      <!-- Dropdown -->
+      <div style="margin-top:4px; background:var(--bg-elevated); border:1px solid var(--glass-border); border-radius:10px; padding:4px; box-shadow:0 8px 24px rgba(0,0,0,0.3);">
+        <div style="padding:8px 12px; border-radius:6px; font-size:13px; color:var(--text-muted); cursor:pointer;">
+          Select source...
+        </div>
+        <div style="padding:8px 12px; border-radius:6px; background:var(--glass-bg-4); font-size:13px; color:var(--text); cursor:pointer; display:flex; align-items:center; gap:8px;">
+          <span style="width:8px; height:8px; border-radius:50%; background:var(--accent-purple);"></span>
+          Stripe
+        </div>
+        <div style="padding:8px 12px; border-radius:6px; font-size:13px; color:var(--text); cursor:pointer; display:flex; align-items:center; gap:8px;">
+          <span style="width:8px; height:8px; border-radius:50%; background:var(--accent-blue);"></span>
+          QuickBooks
+        </div>
+        <div style="padding:8px 12px; border-radius:6px; font-size:13px; color:var(--text); cursor:pointer; display:flex; align-items:center; gap:8px;">
+          <span style="width:8px; height:8px; border-radius:50%; background:var(--accent-emerald);"></span>
+          Mercury
+        </div>
+        <div style="padding:8px 12px; border-radius:6px; font-size:13px; color:var(--text); cursor:pointer; display:flex; align-items:center; gap:8px;">
+          <span style="width:8px; height:8px; border-radius:50%; background:var(--accent-blue);"></span>
+          PayPal
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Select B -->
+  <div style="flex:1;">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">B — Blue Border</div>
+    <div style="position:relative;">
+      <div class="input-label">SOURCE</div>
+      <div style="padding:10px 14px; border-radius:8px; background:var(--glass-bg-1); border:1px solid rgba(59,130,246,0.50); display:flex; justify-content:space-between;">
+        <span style="font-size:13px; color:var(--text-muted);">Select source...</span>
+        <span style="font-size:11px; color:var(--text-dim);">v</span>
+      </div>
+      <!-- Dropdown -->
+      <div style="margin-top:4px; background:var(--bg-elevated); border:1px solid var(--glass-border); border-radius:10px; padding:4px; box-shadow:0 8px 24px rgba(0,0,0,0.3);">
+        <div style="padding:8px 12px; border-radius:6px; font-size:13px; color:var(--text-muted); cursor:pointer;">
+          Select source...
+        </div>
+        <div style="padding:8px 12px; border-radius:6px; background:var(--glass-bg-4); font-size:13px; color:var(--text); cursor:pointer; display:flex; align-items:center; gap:8px;">
+          <span style="width:8px; height:8px; border-radius:50%; background:var(--accent-purple);"></span>
+          Stripe
+        </div>
+        <div style="padding:8px 12px; border-radius:6px; font-size:13px; color:var(--text); cursor:pointer; display:flex; align-items:center; gap:8px;">
+          <span style="width:8px; height:8px; border-radius:50%; background:var(--accent-blue);"></span>
+          QuickBooks
+        </div>
+        <div style="padding:8px 12px; border-radius:6px; font-size:13px; color:var(--text); cursor:pointer; display:flex; align-items:center; gap:8px;">
+          <span style="width:8px; height:8px; border-radius:50%; background:var(--accent-emerald);"></span>
+          Mercury
+        </div>
+        <div style="padding:8px 12px; border-radius:6px; font-size:13px; color:var(--text); cursor:pointer; display:flex; align-items:center; gap:8px;">
+          <span style="width:8px; height:8px; border-radius:50%; background:var(--accent-blue);"></span>
+          PayPal
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Select C -->
+  <div style="flex:1;">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">C — Border + Ring</div>
+    <div style="position:relative;">
+      <div class="input-label">SOURCE</div>
+      <div style="padding:10px 14px; border-radius:8px; background:var(--glass-bg-1); border:1px solid var(--glass-border-hover); box-shadow:0 0 0 2px rgba(59,130,246,0.20); display:flex; justify-content:space-between;">
+        <span style="font-size:13px; color:var(--text-muted);">Select source...</span>
+        <span style="font-size:11px; color:var(--text-dim);">v</span>
+      </div>
+      <!-- Dropdown -->
+      <div style="margin-top:4px; background:var(--bg-elevated); border:1px solid var(--glass-border); border-radius:10px; padding:4px; box-shadow:0 8px 24px rgba(0,0,0,0.3);">
+        <div style="padding:8px 12px; border-radius:6px; font-size:13px; color:var(--text-muted); cursor:pointer;">
+          Select source...
+        </div>
+        <div style="padding:8px 12px; border-radius:6px; background:var(--glass-bg-4); font-size:13px; color:var(--text); cursor:pointer; display:flex; align-items:center; gap:8px;">
+          <span style="width:8px; height:8px; border-radius:50%; background:var(--accent-purple);"></span>
+          Stripe
+        </div>
+        <div style="padding:8px 12px; border-radius:6px; font-size:13px; color:var(--text); cursor:pointer; display:flex; align-items:center; gap:8px;">
+          <span style="width:8px; height:8px; border-radius:50%; background:var(--accent-blue);"></span>
+          QuickBooks
+        </div>
+        <div style="padding:8px 12px; border-radius:6px; font-size:13px; color:var(--text); cursor:pointer; display:flex; align-items:center; gap:8px;">
+          <span style="width:8px; height:8px; border-radius:50%; background:var(--accent-emerald);"></span>
+          Mercury
+        </div>
+        <div style="padding:8px 12px; border-radius:6px; font-size:13px; color:var(--text); cursor:pointer; display:flex; align-items:center; gap:8px;">
+          <span style="width:8px; height:8px; border-radius:50%; background:var(--accent-blue);"></span>
+          PayPal
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============================== -->
+<!-- TOGGLE / CHECKBOX / RADIO       -->
+<!-- ============================== -->
+
+<div class="section-title">CONTROLES — TOGGLE, CHECKBOX, RADIO</div>
+<p style="font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:24px;">
+  Controles binarios. Usan accent-blue cuando activos (P4: blue = brand/neutral action). Glass cuando inactivos.
+</p>
+
+<div style="display:flex; gap:48px; margin-bottom:24px;">
+
+  <!-- Toggle -->
+  <div>
+    <div class="input-label" style="margin-bottom:12px;">TOGGLE</div>
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <!-- Off -->
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:36px; height:20px; border-radius:100px; background:var(--glass-bg-3); border:1px solid var(--glass-border); position:relative; cursor:pointer;">
+          <div style="width:14px; height:14px; border-radius:50%; background:var(--text-muted); position:absolute; top:2px; left:2px;"></div>
+        </div>
+        <span style="font-size:13px; color:var(--text-muted);">Auto-match off</span>
+      </div>
+      <!-- On -->
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:36px; height:20px; border-radius:100px; background:rgba(59,130,246,0.30); border:1px solid rgba(59,130,246,0.40); position:relative; cursor:pointer;">
+          <div style="width:14px; height:14px; border-radius:50%; background:var(--accent-blue); position:absolute; top:2px; right:2px;"></div>
+        </div>
+        <span style="font-size:13px; color:var(--text);">Auto-match on</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkbox -->
+  <div>
+    <div class="input-label" style="margin-bottom:12px;">CHECKBOX</div>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <!-- Unchecked -->
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="width:16px; height:16px; border-radius:4px; background:var(--glass-bg-1); border:1px solid var(--glass-border); flex-shrink:0;"></div>
+        <span style="font-size:13px; color:var(--text);">Include refunds</span>
+      </div>
+      <!-- Checked -->
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="width:16px; height:16px; border-radius:4px; background:rgba(59,130,246,0.25); border:1px solid rgba(59,130,246,0.40); flex-shrink:0; display:flex; align-items:center; justify-content:center;">
+          <span style="font-size:10px; color:var(--accent-blue); font-weight:700;">✓</span>
+        </div>
+        <span style="font-size:13px; color:var(--text);">Include settlements</span>
+      </div>
+      <!-- Disabled -->
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="width:16px; height:16px; border-radius:4px; background:rgba(255,255,255,0.02); border:1px solid var(--glass-border-subtle); flex-shrink:0; cursor:not-allowed;"></div>
+        <span style="font-size:13px; color:var(--text-faint);">Include drafts</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Radio -->
+  <div>
+    <div class="input-label" style="margin-bottom:12px;">RADIO</div>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <!-- Unselected -->
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="width:16px; height:16px; border-radius:50%; background:var(--glass-bg-1); border:1px solid var(--glass-border); flex-shrink:0;"></div>
+        <span style="font-size:13px; color:var(--text);">Exact match</span>
+      </div>
+      <!-- Selected -->
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="width:16px; height:16px; border-radius:50%; background:rgba(59,130,246,0.25); border:1px solid rgba(59,130,246,0.40); flex-shrink:0; display:flex; align-items:center; justify-content:center;">
+          <div style="width:6px; height:6px; border-radius:50%; background:var(--accent-blue);"></div>
+        </div>
+        <span style="font-size:13px; color:var(--text);">Fuzzy match</span>
+      </div>
+      <!-- Unselected -->
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="width:16px; height:16px; border-radius:50%; background:var(--glass-bg-1); border:1px solid var(--glass-border); flex-shrink:0;"></div>
+        <span style="font-size:13px; color:var(--text);">Manual only</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="specs-block" style="max-width:600px;">
+  <strong style="color:var(--text-muted);">Controles activos:</strong><br>
+  fill: blue 25% · border: blue 40%<br>
+  indicator: accent-blue sólido<br><br>
+  <strong style="color:var(--text-muted);">Controles inactivos:</strong><br>
+  fill: glass-bg-1 (white 3%) · border: glass-border (white 6%)<br><br>
+  <strong style="color:var(--text-muted);">Regla P4:</strong> Blue = brand/neutral action.
+  Los controles activos usan blue porque representan una acción/selección del usuario, no información del sistema.
+</div>
+
+<div class="divider"></div>
+
+<!-- ============================== -->
+<!-- ANALYSIS                        -->
+<!-- ============================== -->
+
+<div class="note-box">
+  <p><strong>Resumen — Focus State:</strong></p>
+  <p style="margin-top:8px;">
+    <strong>A — Border Only:</strong> Máxima coherencia glass. Pero la diferencia entre resting (6%) y focus (14%) puede ser sutil en monitores de baja calidad. Accessibility score bajo — WCAG recomienda un focus indicator visible y distinguible.<br><br>
+    <strong>B — Blue Border:</strong> Más visible y familiar (Figma, Linear, Vercel usan blue focus). Pero introduce color en un lugar que no es estrictamente "información" — es un estado de interacción. En un UI con pocos colores, puede ser un acento agradable o una distracción.<br><br>
+    <strong>C — Border + Ring:</strong> Best of both worlds. La border se mantiene glass (14%). El ring blue es tan sutil (20% opacity) que no distrae pero cumple accessibility. Es lo que usa shadcn/ui de base. Dos señales puede parecer redundante, pero cada una tiene un propósito distinto: border = glass system, ring = accessibility.
+  </p>
+  <p style="margin-top:12px;">
+    <strong>Mi recomendación: C</strong> — el glass system se mantiene intacto en los borders, y el focus ring sutil da accessibility sin romper la estética. Es el approach más robusto.
+  </p>
+</div>
+
+<style>
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+</style>
+<!-- ═══ Footer Nav ═══ -->
+<div style="display:flex;justify-content:space-between;align-items:center;padding:24px 32px;border-top:1px solid rgba(255,255,255,0.04);font-family:'Figtree',sans-serif;margin-top:40px;">
+  <a href="04-dashboard.html" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);text-decoration:none;">← Dashboard</a>
+  <a href="06-status-indicators.html" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);text-decoration:none;">Status Indicators →</a>
+</div>
+</body>
+</html>

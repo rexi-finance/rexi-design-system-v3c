@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Button System — Rexi Design Process</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@1,300&display=swap');
+
+  :root {
+    --bg: #1a1a1a;
+    --text: #e5e5e5;
+    --text-bright: rgba(255,255,255,0.95);
+    --text-muted: rgba(255,255,255,0.45);
+    --text-dim: rgba(255,255,255,0.25);
+    --text-faint: rgba(255,255,255,0.16);
+    --accent-emerald: #34d399;
+    --accent-red: #f87171;
+    --accent-amber: #fbbf24;
+    --accent-blue: #3b82f6;
+    --glass-border-subtle: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-border-hover: rgba(255,255,255,0.14);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Figtree',sans-serif; }
+  body { background:var(--bg); color:var(--text); min-height:100vh; padding:48px; }
+
+  h2 { font-size:32px; font-weight:800; letter-spacing:-0.7px; }
+  .subtitle { font-size:14px; color:var(--text-muted); margin-top:8px; line-height:1.6; margin-bottom:40px; }
+  .section-title {
+    font-size:9px; font-weight:600; letter-spacing:3px; text-transform:uppercase;
+    color:var(--text-dim); margin-bottom:16px;
+  }
+  .divider { height:1px; background:rgba(255,255,255,0.06); margin:48px 0; }
+
+  .note-box {
+    background:rgba(59,130,246,0.04); border:1px solid rgba(59,130,246,0.12);
+    border-radius:10px; padding:16px 20px; margin-top:24px;
+  }
+  .note-box p { font-size:12px; color:var(--text-muted); line-height:1.6; }
+  .note-box strong { color:var(--text); }
+
+  /* Glass card (final spec) */
+  .glass-card {
+    border-radius:12px; padding:16px;
+    background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01), rgba(255,255,255,0.03));
+    border:1px solid rgba(255,255,255,0.04);
+    box-shadow:0 1px 3px rgba(0,0,0,0.125);
+    display:flex; flex-direction:column; gap:6px;
+  }
+  .glass-card .label {
+    font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim);
+  }
+  .glass-card .value {
+    font-size:24px; font-weight:700; color:var(--text); letter-spacing:-0.5px; line-height:1;
+  }
+  .glass-card .trend { font-size:11px; }
+
+  /* Table styles */
+  .table-header {
+    display:flex; padding:8px 16px; border-radius:6px; background:rgba(255,255,255,0.06); margin-bottom:2px;
+  }
+  .table-header span {
+    font-size:10px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--text-dim);
+  }
+  .table-row {
+    display:flex; align-items:center; padding:10px 16px;
+    border-bottom:1px solid rgba(255,255,255,0.03);
+  }
+  .table-row:hover { background:rgba(255,255,255,0.02); }
+
+  /* Status dot */
+  .status-dot {
+    width:5px; height:5px; border-radius:50%; display:inline-block; margin-right:6px;
+  }
+
+  /* Sidebar nav */
+  .sidebar-icon {
+    width:20px; height:20px; border-radius:5px; background:rgba(255,255,255,0.06);
+  }
+  .sidebar-icon.active {
+    background:rgba(255,255,255,0.10);
+  }
+
+  /* Main compare layout */
+  .compare-wrapper {
+    display:flex; gap:32px; margin-bottom:32px;
+  }
+  .compare-panel {
+    flex:1; display:flex; flex-direction:column; gap:4px;
+  }
+  .compare-label {
+    font-size:10px; font-weight:600; letter-spacing:2px; text-transform:uppercase;
+    color:var(--text-dim); padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.06);
+    margin-bottom:12px;
+  }
+
+  /* Dashboard frame */
+  .dashboard-frame {
+    background:var(--bg); border-radius:12px; overflow:hidden;
+    border:1px solid rgba(255,255,255,0.06); display:flex; height:620px;
+  }
+  .dash-sidebar {
+    width:52px; display:flex; flex-direction:column; align-items:center;
+    padding-top:16px; gap:14px; flex-shrink:0;
+  }
+  .dash-main {
+    flex:1; padding:28px 32px; overflow:hidden; display:flex; flex-direction:column;
+  }
+
+  /* Tabs */
+  .tab-row { display:flex; gap:16px; margin-bottom:16px; }
+  .tab {
+    font-size:11px; font-weight:500; color:var(--text-muted); padding-bottom:6px;
+    border-bottom:2px solid transparent; cursor:pointer;
+  }
+  .tab.active { color:var(--text); border-bottom-color:var(--text); font-weight:600; }
+
+  /* Modal overlay */
+  .modal-overlay {
+    margin-top:auto; border-radius:12px; padding:20px 24px;
+    background:#1e1e1e; border:1px solid rgba(255,255,255,0.06);
+    display:flex; flex-direction:column; gap:16px;
+  }
+</style>
+</head>
+<body>
+<!-- ═══ Site Nav ═══ -->
+<nav style="position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;background:rgba(26,26,26,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);font-family:'Figtree',sans-serif;">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="../index.html" style="font-weight:900;font-size:18px;color:#3b82f6;letter-spacing:-0.03em;text-decoration:none;">Rx</a>
+    <span style="font-size:13px;color:rgba(255,255,255,0.45);">
+      <a href="../process.html" style="color:rgba(255,255,255,0.45);text-decoration:none;">Process</a>
+      <span style="margin:0 8px;color:rgba(255,255,255,0.25);">→</span>
+      <span style="color:rgba(255,255,255,0.95);font-weight:600;">Button System</span>
+    </span>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <a href="../reference.html" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.45);padding:6px 14px;border-radius:6px;text-decoration:none;">Reference</a>
+    <a href="../process.html" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.95);background:rgba(255,255,255,0.06);padding:6px 14px;border-radius:6px;text-decoration:none;">Process</a>
+  </div>
+</nav>
+<!-- ═══ Decision Summary ═══ -->
+<div style="margin:24px 32px;padding:16px 20px;background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:8px;font-family:'Figtree',sans-serif;">
+  <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#3b82f6;margin-bottom:4px;">Decision #5</div>
+  <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:-0.01em;margin-bottom:4px;">Button System</div>
+  <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;">Glass border-signal system with 5 variants. No solid backgrounds.</div>
+</div>
+<div style="margin:16px 24px;padding:12px 16px;background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:8px;font-family:'Figtree',sans-serif;">
+  <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#3b82f6;margin-bottom:3px;">Decision #6</div>
+  <div style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:-0.01em;margin-bottom:3px;">Button System</div>
+  <div style="font-size:12px;color:rgba(255,255,255,0.45);line-height:1.5;">Glass vs Solid comparison in real UI contexts</div>
+</div>
+
+<h2>Button Systems — En contexto real</h2>
+<p class="subtitle">
+  Misma UI, mismos componentes, misma card (la final con border 4%). La única diferencia: los botones.<br>
+  <strong>Glass Border-Signal</strong> (propuesta B) vs <strong>Solid White</strong> (propuesta anterior).
+</p>
+
+<!-- ================================================ -->
+<!-- SCENE 1: DASHBOARD — HEADER + CARDS + TABLE      -->
+<!-- ================================================ -->
+
+<div class="section-title">ESCENA 1 — DASHBOARD (HEADER + CARDS + TABLE)</div>
+
+<div class="compare-wrapper">
+
+  <!-- GLASS: Border Signal -->
+  <div class="compare-panel">
+    <div class="compare-label">GLASS — BORDER SIGNAL</div>
+    <div class="dashboard-frame">
+      <!-- Sidebar -->
+      <div class="dash-sidebar">
+        <div style="width:16px; height:16px; border-radius:4px; background:rgba(59,130,246,0.7);"></div>
+        <div class="sidebar-icon active"></div>
+        <div class="sidebar-icon"></div>
+        <div class="sidebar-icon"></div>
+        <div class="sidebar-icon"></div>
+      </div>
+      <!-- Main -->
+      <div class="dash-main">
+        <!-- Header -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+          <div>
+            <div style="font-size:16px; font-weight:700; color:var(--text);">Reconciliation</div>
+            <div style="font-size:11px; color:var(--text-dim); margin-top:2px;">Processing 2,847 transactions</div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <!-- Ghost -->
+            <div style="padding:10px 20px; border-radius:12px; background:transparent; cursor:pointer;">
+              <span style="font-size:13px; font-weight:500; color:var(--text-muted);">Filters</span>
+            </div>
+            <!-- Secondary -->
+            <div style="padding:10px 20px; border-radius:12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.12); cursor:pointer;">
+              <span style="font-size:13px; font-weight:500; color:var(--text);">Export</span>
+            </div>
+            <!-- Primary -->
+            <div style="padding:10px 20px; border-radius:12px; background:rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.16); box-shadow:0 1px 0 rgba(255,255,255,0.08); cursor:pointer; display:inline-flex; gap:6px; align-items:center;">
+              <span style="font-size:13px; font-weight:600; color:#FFFFFF;">New Rule</span>
+              <span style="font-size:14px; color:#FFFFFF;">+</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Focal stat -->
+        <div style="margin-bottom:24px;">
+          <div style="font-size:9px; font-weight:600; letter-spacing:4px; text-transform:uppercase; color:var(--text-dim);">MATCH RATE</div>
+          <div style="display:flex; align-items:baseline; gap:4px; margin-top:4px;">
+            <span style="font-size:48px; font-weight:900; color:var(--text-bright); letter-spacing:-2px; line-height:0.92;">99.2</span>
+            <span style="font-family:'Merriweather',serif; font-style:italic; font-weight:300; font-size:28px; color:var(--text-dim);">%</span>
+          </div>
+          <div style="font-size:11px; color:rgba(52,211,153,0.6); margin-top:4px;">+0.3% from last week</div>
+        </div>
+
+        <!-- Cards row -->
+        <div style="display:flex; gap:10px; margin-bottom:20px;">
+          <div class="glass-card" style="flex:1;">
+            <div class="label">TRANSACTIONS</div>
+            <div class="value">2,847</div>
+            <div class="trend" style="color:rgba(52,211,153,0.6);">+142 today</div>
+          </div>
+          <div class="glass-card" style="flex:1;">
+            <div class="label">UNMATCHED</div>
+            <div class="value">98</div>
+            <div class="trend" style="color:rgba(248,113,113,0.6);">-12 yesterday</div>
+          </div>
+          <div class="glass-card" style="flex:1;">
+            <div class="label">SOURCES</div>
+            <div class="value">6</div>
+            <div class="trend" style="color:var(--text-dim);">All connected</div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tab-row">
+          <div class="tab active">All</div>
+          <div class="tab">Matched</div>
+          <div class="tab">Unmatched</div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-header">
+          <span style="flex:1;">Source</span>
+          <span style="width:100px;">Amount</span>
+          <span style="width:80px;">Status</span>
+          <span style="width:60px;"></span>
+        </div>
+        <div class="table-row">
+          <span style="flex:1; font-size:12px; font-weight:500; color:var(--text);">Stripe Settlement</span>
+          <span style="width:100px; font-size:12px; color:var(--text);">$124,891</span>
+          <span style="width:80px; display:flex; align-items:center;">
+            <span class="status-dot" style="background:var(--accent-emerald);"></span>
+            <span style="font-size:10px; color:var(--accent-emerald);">Matched</span>
+          </span>
+          <span style="width:60px; text-align:right;">
+            <!-- Ghost btn inline -->
+            <span style="font-size:11px; font-weight:500; color:var(--text-muted); cursor:pointer;">View</span>
+          </span>
+        </div>
+        <div class="table-row">
+          <span style="flex:1; font-size:12px; font-weight:500; color:var(--text);">QuickBooks Invoice</span>
+          <span style="width:100px; font-size:12px; color:var(--text);">$124,891</span>
+          <span style="width:80px; display:flex; align-items:center;">
+            <span class="status-dot" style="background:var(--accent-emerald);"></span>
+            <span style="font-size:10px; color:var(--accent-emerald);">Matched</span>
+          </span>
+          <span style="width:60px; text-align:right;">
+            <span style="font-size:11px; font-weight:500; color:var(--text-muted); cursor:pointer;">View</span>
+          </span>
+        </div>
+        <div class="table-row">
+          <span style="flex:1; font-size:12px; font-weight:500; color:var(--text);">Bank Transfer #4821</span>
+          <span style="width:100px; font-size:12px; color:var(--text);">$8,450</span>
+          <span style="width:80px; display:flex; align-items:center;">
+            <span class="status-dot" style="background:var(--accent-red);"></span>
+            <span style="font-size:10px; color:var(--accent-red);">Unmatched</span>
+          </span>
+          <span style="width:60px; text-align:right;">
+            <span style="font-size:11px; font-weight:500; color:var(--text-muted); cursor:pointer;">View</span>
+          </span>
+        </div>
+        <div class="table-row">
+          <span style="flex:1; font-size:12px; font-weight:500; color:var(--text);">PayPal Payout</span>
+          <span style="width:100px; font-size:12px; color:var(--text);">$32,100</span>
+          <span style="width:80px; display:flex; align-items:center;">
+            <span class="status-dot" style="background:var(--accent-amber);"></span>
+            <span style="font-size:10px; color:var(--accent-amber);">Pending</span>
+          </span>
+          <span style="width:60px; text-align:right;">
+            <span style="font-size:11px; font-weight:500; color:var(--text-muted); cursor:pointer;">View</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOLID WHITE -->
+  <div class="compare-panel">
+    <div class="compare-label">SOLID WHITE</div>
+    <div class="dashboard-frame">
+      <!-- Sidebar -->
+      <div class="dash-sidebar">
+        <div style="width:16px; height:16px; border-radius:4px; background:rgba(59,130,246,0.7);"></div>
+        <div class="sidebar-icon active"></div>
+        <div class="sidebar-icon"></div>
+        <div class="sidebar-icon"></div>
+        <div class="sidebar-icon"></div>
+      </div>
+      <!-- Main -->
+      <div class="dash-main">
+        <!-- Header -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+          <div>
+            <div style="font-size:16px; font-weight:700; color:var(--text);">Reconciliation</div>
+            <div style="font-size:11px; color:var(--text-dim); margin-top:2px;">Processing 2,847 transactions</div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <!-- Ghost -->
+            <div style="padding:10px 20px; border-radius:8px; background:transparent; cursor:pointer;">
+              <span style="font-size:13px; font-weight:500; color:var(--text-muted);">Filters</span>
+            </div>
+            <!-- Secondary -->
+            <div style="padding:10px 20px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); cursor:pointer;">
+              <span style="font-size:13px; font-weight:500; color:var(--text);">Export</span>
+            </div>
+            <!-- Primary: solid white -->
+            <div style="padding:10px 20px; border-radius:8px; background:#e5e5e5; cursor:pointer; display:inline-flex; gap:6px; align-items:center;">
+              <span style="font-size:13px; font-weight:600; color:#1a1a1a;">New Rule</span>
+              <span style="font-size:14px; color:#1a1a1a;">+</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Focal stat -->
+        <div style="margin-bottom:24px;">
+          <div style="font-size:9px; font-weight:600; letter-spacing:4px; text-transform:uppercase; color:var(--text-dim);">MATCH RATE</div>
+          <div style="display:flex; align-items:baseline; gap:4px; margin-top:4px;">
+            <span style="font-size:48px; font-weight:900; color:var(--text-bright); letter-spacing:-2px; line-height:0.92;">99.2</span>
+            <span style="font-family:'Merriweather',serif; font-style:italic; font-weight:300; font-size:28px; color:var(--text-dim);">%</span>
+          </div>
+          <div style="font-size:11px; color:rgba(52,211,153,0.6); margin-top:4px;">+0.3% from last week</div>
+        </div>
+
+        <!-- Cards row -->
+        <div style="display:flex; gap:10px; margin-bottom:20px;">
+          <div class="glass-card" style="flex:1;">
+            <div class="label">TRANSACTIONS</div>
+            <div class="value">2,847</div>
+            <div class="trend" style="color:rgba(52,211,153,0.6);">+142 today</div>
+          </div>
+          <div class="glass-card" style="flex:1;">
+            <div class="label">UNMATCHED</div>
+            <div class="value">98</div>
+            <div class="trend" style="color:rgba(248,113,113,0.6);">-12 yesterday</div>
+          </div>
+          <div class="glass-card" style="flex:1;">
+            <div class="label">SOURCES</div>
+            <div class="value">6</div>
+            <div class="trend" style="color:var(--text-dim);">All connected</div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tab-row">
+          <div class="tab active">All</div>
+          <div class="tab">Matched</div>
+          <div class="tab">Unmatched</div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-header">
+          <span style="flex:1;">Source</span>
+          <span style="width:100px;">Amount</span>
+          <span style="width:80px;">Status</span>
+          <span style="width:60px;"></span>
+        </div>
+        <div class="table-row">
+          <span style="flex:1; font-size:12px; font-weight:500; color:var(--text);">Stripe Settlement</span>
+          <span style="width:100px; font-size:12px; color:var(--text);">$124,891</span>
+          <span style="width:80px; display:flex; align-items:center;">
+            <span class="status-dot" style="background:var(--accent-emerald);"></span>
+            <span style="font-size:10px; color:var(--accent-emerald);">Matched</span>
+          </span>
+          <span style="width:60px; text-align:right;">
+            <span style="font-size:11px; font-weight:500; color:var(--text-muted); cursor:pointer;">View</span>
+          </span>
+        </div>
+        <div class="table-row">
+          <span style="flex:1; font-size:12px; font-weight:500; color:var(--text);">QuickBooks Invoice</span>
+          <span style="width:100px; font-size:12px; color:var(--text);">$124,891</span>
+          <span style="width:80px; display:flex; align-items:center;">
+            <span class="status-dot" style="background:var(--accent-emerald);"></span>
+            <span style="font-size:10px; color:var(--accent-emerald);">Matched</span>
+          </span>
+          <span style="width:60px; text-align:right;">
+            <span style="font-size:11px; font-weight:500; color:var(--text-muted); cursor:pointer;">View</span>
+          </span>
+        </div>
+        <div class="table-row">
+          <span style="flex:1; font-size:12px; font-weight:500; color:var(--text);">Bank Transfer #4821</span>
+          <span style="width:100px; font-size:12px; color:var(--text);">$8,450</span>
+          <span style="width:80px; display:flex; align-items:center;">
+            <span class="status-dot" style="background:var(--accent-red);"></span>
+            <span style="font-size:10px; color:var(--accent-red);">Unmatched</span>
+          </span>
+          <span style="width:60px; text-align:right;">
+            <span style="font-size:11px; font-weight:500; color:var(--text-muted); cursor:pointer;">View</span>
+          </span>
+        </div>
+        <div class="table-row">
+          <span style="flex:1; font-size:12px; font-weight:500; color:var(--text);">PayPal Payout</span>
+          <span style="width:100px; font-size:12px; color:var(--text);">$32,100</span>
+          <span style="width:80px; display:flex; align-items:center;">
+            <span class="status-dot" style="background:var(--accent-amber);"></span>
+            <span style="font-size:10px; color:var(--accent-amber);">Pending</span>
+          </span>
+          <span style="width:60px; text-align:right;">
+            <span style="font-size:11px; font-weight:500; color:var(--text-muted); cursor:pointer;">View</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ================================================ -->
+<!-- SCENE 2: BULK ACTION TOOLBAR                     -->
+<!-- ================================================ -->
+
+<div class="section-title">ESCENA 2 — TOOLBAR DE ACCIONES BULK</div>
+
+<div class="compare-wrapper">
+  <div class="compare-panel">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">Glass — Border Signal</div>
+    <div style="padding:16px 20px; border-radius:10px; background:var(--bg); border:1px solid rgba(255,255,255,0.04); display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-size:14px; font-weight:700; color:var(--text);">3 selected</span>
+      <div style="display:flex; gap:8px;">
+        <div style="padding:10px 20px; border-radius:12px; background:rgba(248,113,113,0.06); border:1px solid rgba(248,113,113,0.14); cursor:pointer;">
+          <span style="font-size:13px; font-weight:500; color:#f87171;">Delete</span>
+        </div>
+        <div style="padding:10px 20px; border-radius:12px; background:transparent; cursor:pointer;">
+          <span style="font-size:13px; font-weight:500; color:var(--text-muted);">Skip</span>
+        </div>
+        <div style="padding:10px 20px; border-radius:12px; background:rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.16); box-shadow:0 1px 0 rgba(255,255,255,0.08); cursor:pointer;">
+          <span style="font-size:13px; font-weight:600; color:#FFFFFF;">Match All</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="compare-panel">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">Solid White</div>
+    <div style="padding:16px 20px; border-radius:10px; background:var(--bg); border:1px solid rgba(255,255,255,0.04); display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-size:14px; font-weight:700; color:var(--text);">3 selected</span>
+      <div style="display:flex; gap:8px;">
+        <div style="padding:10px 20px; border-radius:8px; background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.15); cursor:pointer;">
+          <span style="font-size:13px; font-weight:500; color:#f87171;">Delete</span>
+        </div>
+        <div style="padding:10px 20px; border-radius:8px; background:transparent; cursor:pointer;">
+          <span style="font-size:13px; font-weight:500; color:var(--text-muted);">Skip</span>
+        </div>
+        <div style="padding:10px 20px; border-radius:8px; background:#e5e5e5; cursor:pointer;">
+          <span style="font-size:13px; font-weight:600; color:#1a1a1a;">Match All</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ================================================ -->
+<!-- SCENE 3: MODAL / CONFIRMATION DIALOG             -->
+<!-- ================================================ -->
+
+<div class="section-title">ESCENA 3 — MODAL DE CONFIRMACIÓN</div>
+
+<div class="compare-wrapper">
+  <div class="compare-panel">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">Glass — Border Signal</div>
+    <div style="background:rgba(0,0,0,0.4); border-radius:12px; padding:40px; display:flex; align-items:center; justify-content:center;">
+      <div style="width:380px; background:#1e1e1e; border-radius:14px; border:1px solid rgba(255,255,255,0.06); padding:28px; display:flex; flex-direction:column; gap:16px;">
+        <div style="font-size:16px; font-weight:700; color:var(--text);">Delete 3 transactions?</div>
+        <div style="font-size:13px; color:var(--text-muted); line-height:1.6;">This action cannot be undone. These transactions will be permanently removed from the reconciliation.</div>
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:4px;">
+          <!-- Ghost cancel -->
+          <div style="padding:10px 20px; border-radius:12px; background:transparent; cursor:pointer;">
+            <span style="font-size:13px; font-weight:500; color:var(--text-muted);">Cancel</span>
+          </div>
+          <!-- Destructive primary -->
+          <div style="padding:10px 20px; border-radius:12px; background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.14); cursor:pointer;">
+            <span style="font-size:13px; font-weight:600; color:#f87171;">Delete</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="compare-panel">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">Solid White</div>
+    <div style="background:rgba(0,0,0,0.4); border-radius:12px; padding:40px; display:flex; align-items:center; justify-content:center;">
+      <div style="width:380px; background:#1e1e1e; border-radius:14px; border:1px solid rgba(255,255,255,0.06); padding:28px; display:flex; flex-direction:column; gap:16px;">
+        <div style="font-size:16px; font-weight:700; color:var(--text);">Delete 3 transactions?</div>
+        <div style="font-size:13px; color:var(--text-muted); line-height:1.6;">This action cannot be undone. These transactions will be permanently removed from the reconciliation.</div>
+        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:4px;">
+          <!-- Ghost cancel -->
+          <div style="padding:10px 20px; border-radius:8px; background:transparent; cursor:pointer;">
+            <span style="font-size:13px; font-weight:500; color:var(--text-muted);">Cancel</span>
+          </div>
+          <!-- Destructive primary -->
+          <div style="padding:10px 20px; border-radius:8px; background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.15); cursor:pointer;">
+            <span style="font-size:13px; font-weight:600; color:#f87171;">Delete</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ================================================ -->
+<!-- SCENE 4: FORM — CREATE RULE                      -->
+<!-- ================================================ -->
+
+<div class="section-title">ESCENA 4 — FORMULARIO (CREATE RULE)</div>
+
+<div class="compare-wrapper">
+  <div class="compare-panel">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">Glass — Border Signal</div>
+    <div style="background:#1e1e1e; border-radius:14px; border:1px solid rgba(255,255,255,0.06); padding:28px; display:flex; flex-direction:column; gap:20px;">
+      <div style="font-size:16px; font-weight:700; color:var(--text);">Create Rule</div>
+      <!-- Input field -->
+      <div>
+        <div style="font-size:10px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--text-dim); margin-bottom:6px;">RULE NAME</div>
+        <div style="padding:10px 14px; border-radius:8px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);">
+          <span style="font-size:13px; color:var(--text-muted);">e.g. Stripe settlement match</span>
+        </div>
+      </div>
+      <!-- Select -->
+      <div>
+        <div style="font-size:10px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--text-dim); margin-bottom:6px;">SOURCE</div>
+        <div style="padding:10px 14px; border-radius:8px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between;">
+          <span style="font-size:13px; color:var(--text);">Stripe</span>
+          <span style="font-size:11px; color:var(--text-dim);">v</span>
+        </div>
+      </div>
+      <!-- Buttons -->
+      <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:4px;">
+        <div style="padding:10px 20px; border-radius:12px; background:transparent; cursor:pointer;">
+          <span style="font-size:13px; font-weight:500; color:var(--text-muted);">Cancel</span>
+        </div>
+        <!-- Disabled state (no name yet) -->
+        <div style="padding:10px 20px; border-radius:12px; background:rgba(255,255,255,0.03); cursor:not-allowed; border:1px solid rgba(255,255,255,0.04);">
+          <span style="font-size:13px; font-weight:600; color:var(--text-faint);">Create Rule</span>
+        </div>
+      </div>
+      <!-- With name filled -->
+      <div style="font-size:10px; color:var(--text-dim); margin-top:-8px;">Con name rellenado ↓</div>
+      <div style="display:flex; gap:8px; justify-content:flex-end;">
+        <div style="padding:10px 20px; border-radius:12px; background:transparent; cursor:pointer;">
+          <span style="font-size:13px; font-weight:500; color:var(--text-muted);">Cancel</span>
+        </div>
+        <div style="padding:10px 20px; border-radius:12px; background:rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.16); box-shadow:0 1px 0 rgba(255,255,255,0.08); cursor:pointer;">
+          <span style="font-size:13px; font-weight:600; color:#FFFFFF;">Create Rule</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="compare-panel">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">Solid White</div>
+    <div style="background:#1e1e1e; border-radius:14px; border:1px solid rgba(255,255,255,0.06); padding:28px; display:flex; flex-direction:column; gap:20px;">
+      <div style="font-size:16px; font-weight:700; color:var(--text);">Create Rule</div>
+      <!-- Input field -->
+      <div>
+        <div style="font-size:10px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--text-dim); margin-bottom:6px;">RULE NAME</div>
+        <div style="padding:10px 14px; border-radius:8px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06);">
+          <span style="font-size:13px; color:var(--text-muted);">e.g. Stripe settlement match</span>
+        </div>
+      </div>
+      <!-- Select -->
+      <div>
+        <div style="font-size:10px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--text-dim); margin-bottom:6px;">SOURCE</div>
+        <div style="padding:10px 14px; border-radius:8px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); display:flex; justify-content:space-between;">
+          <span style="font-size:13px; color:var(--text);">Stripe</span>
+          <span style="font-size:11px; color:var(--text-dim);">v</span>
+        </div>
+      </div>
+      <!-- Buttons -->
+      <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:4px;">
+        <div style="padding:10px 20px; border-radius:8px; background:transparent; cursor:pointer;">
+          <span style="font-size:13px; font-weight:500; color:var(--text-muted);">Cancel</span>
+        </div>
+        <!-- Disabled state -->
+        <div style="padding:10px 20px; border-radius:8px; background:rgba(255,255,255,0.04); cursor:not-allowed;">
+          <span style="font-size:13px; font-weight:600; color:var(--text-faint);">Create Rule</span>
+        </div>
+      </div>
+      <!-- With name filled -->
+      <div style="font-size:10px; color:var(--text-dim); margin-top:-8px;">Con name rellenado ↓</div>
+      <div style="display:flex; gap:8px; justify-content:flex-end;">
+        <div style="padding:10px 20px; border-radius:8px; background:transparent; cursor:pointer;">
+          <span style="font-size:13px; font-weight:500; color:var(--text-muted);">Cancel</span>
+        </div>
+        <div style="padding:10px 20px; border-radius:8px; background:#e5e5e5; cursor:pointer;">
+          <span style="font-size:13px; font-weight:600; color:#1a1a1a;">Create Rule</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ================================================ -->
+<!-- ANALYSIS                                          -->
+<!-- ================================================ -->
+
+<div class="note-box">
+  <p><strong>Observaciones:</strong></p>
+  <p style="margin-top:8px;">
+    <strong>Dashboard header:</strong> Glass Border-Signal mantiene la cohesión — todo vive en el mismo sistema glass. Solid White crea un punto focal fuerte en el primary, pero el botón blanco compite visualmente con el hero stat (99.2%).<br><br>
+    <strong>Bulk toolbar:</strong> Ambos funcionan bien. El solid white "Match All" es más urgente/llamativo. El glass primary es más sutil pero la jerarquía Delete → Skip → Match sigue siendo clara.<br><br>
+    <strong>Modal:</strong> Prácticamente idénticos — en modals destructivos el botón rojo domina en ambos sistemas.<br><br>
+    <strong>Form disabled→enabled:</strong> La transición de disabled a enabled es más dramática en Solid White (gris tenue → blanco brillante). En Glass la transición es más sutil (casi invisible → glass brillante con border). Esto puede ser mejor o peor dependiendo de si querés un "flash" de activación o una transición suave.
+  </p>
+  <p style="margin-top:12px;">
+    <strong>La tensión central:</strong> Glass Border-Signal respeta el Principio #5 (one focal point) — el botón no compite con el hero stat. Solid White tiene máximo contraste pero introduce un segundo punto focal en el header.
+  </p>
+</div>
+<!-- ═══ Footer Nav ═══ -->
+<div style="display:flex;justify-content:space-between;align-items:center;padding:24px 32px;border-top:1px solid rgba(255,255,255,0.04);font-family:'Figtree',sans-serif;margin-top:40px;">
+  <a href="02-cards-buttons.html" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);text-decoration:none;">← Cards & Buttons</a>
+  <a href="04-dashboard.html" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);text-decoration:none;">Dashboard →</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sidebar Navigation — Rexi Design Process</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&family=Merriweather:ital,wght@1,300&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root {
+    --bg: #1a1a1a;
+    --bg-elevated: #1e1e1e;
+    --glass-bg-1: rgba(255,255,255,0.03);
+    --glass-bg-2: rgba(255,255,255,0.04);
+    --glass-bg-3: rgba(255,255,255,0.06);
+    --glass-bg-4: rgba(255,255,255,0.10);
+    --glass-border-subtle: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-border-hover: rgba(255,255,255,0.14);
+    --glass-inset: rgba(255,255,255,0.04);
+    --glass-inset-bright: rgba(255,255,255,0.08);
+    --text-bright: rgba(255,255,255,0.95);
+    --text: #e5e5e5;
+    --text-muted: rgba(255,255,255,0.45);
+    --text-dim: rgba(255,255,255,0.25);
+    --text-faint: rgba(255,255,255,0.16);
+    --accent-emerald: #34d399;
+    --accent-amber: #fbbf24;
+    --accent-red: #f87171;
+    --accent-blue: #3b82f6;
+    --accent-purple: #8b5cf6;
+    --radius-xs: 4px;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 14px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Figtree', sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    padding: 48px;
+  }
+
+  h1 {
+    font-weight: 800;
+    font-size: 36px;
+    letter-spacing: -0.03em;
+    line-height: 1.0;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 15px;
+    margin-bottom: 48px;
+  }
+  h2 {
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+  }
+  h2 .num {
+    color: var(--text-dim);
+    font-weight: 600;
+    margin-right: 8px;
+  }
+  .section-desc {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 24px;
+    max-width: 700px;
+  }
+  .section {
+    margin-bottom: 64px;
+  }
+  .option-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  /* ==================== DEMO FRAMES ==================== */
+  .demos-row {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .demo-frame {
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: flex;
+    min-height: 520px;
+    background: var(--bg);
+  }
+
+  /* ==================== SIDEBAR COLLAPSED ==================== */
+  .sidebar-collapsed {
+    width: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 0;
+    gap: 0;
+    flex-shrink: 0;
+  }
+  .sb-logo {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 12px;
+    color: white;
+  }
+  .sb-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    flex: 1;
+    width: 100%;
+    padding: 0 8px;
+  }
+  .sb-item {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .sb-item svg { color: var(--text-muted); }
+  .sb-item:hover { background: var(--glass-bg-2); }
+  .sb-item.active {
+    background: var(--glass-bg-4);
+  }
+  .sb-item.active svg { color: var(--text); stroke-width: 2; }
+  .sb-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 0 8px;
+    width: 100%;
+  }
+  .sb-divider {
+    width: 24px;
+    height: 1px;
+    background: var(--glass-border-subtle);
+    margin: 8px 0;
+  }
+  /* Tooltip */
+  .sb-item .tooltip {
+    display: none;
+    position: absolute;
+    left: 52px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--bg-elevated);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.30);
+    z-index: 10;
+  }
+  .sb-item:hover .tooltip { display: block; }
+
+  /* ==================== SIDEBAR EXPANDED ==================== */
+  .sidebar-expanded {
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 0;
+    flex-shrink: 0;
+    border-right: 1px solid var(--glass-border-subtle);
+  }
+  .sb-exp-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 16px;
+    margin-bottom: 24px;
+  }
+  .sb-exp-brand {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: -0.02em;
+  }
+  .sb-exp-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    padding: 0 8px;
+  }
+  .sb-exp-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .sb-exp-item svg {
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .sb-exp-item span {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+  .sb-exp-item:hover { background: var(--glass-bg-2); }
+  .sb-exp-item.active {
+    background: var(--glass-bg-4);
+  }
+  .sb-exp-item.active svg { color: var(--text); stroke-width: 2; }
+  .sb-exp-item.active span { color: var(--text); font-weight: 600; }
+  .sb-exp-section {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 16px 12px 6px;
+  }
+  .sb-exp-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 8px;
+  }
+  .sb-exp-divider {
+    height: 1px;
+    background: var(--glass-border-subtle);
+    margin: 8px 12px;
+  }
+  /* Badge count */
+  .sb-exp-item .badge {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent-amber);
+    background: rgba(251,191,36,0.10);
+    padding: 1px 7px;
+    border-radius: 100px;
+  }
+  .sb-item .badge-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-amber);
+  }
+
+  /* ==================== CONTENT AREA ==================== */
+  .content-area {
+    flex: 1;
+    padding: 32px;
+    min-width: 0;
+  }
+  .content-header {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text-bright);
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .content-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+  .content-cards {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .mini-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 50%, rgba(255,255,255,0.03) 100%);
+    border: 1px solid var(--glass-border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+    flex: 1;
+  }
+  .mini-card-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .mini-card-value {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--text-bright);
+    letter-spacing: -0.03em;
+  }
+  .mini-card-trend {
+    font-size: 11px;
+    color: var(--accent-emerald);
+    margin-top: 2px;
+  }
+  .content-table-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--glass-bg-1);
+    gap: 12px;
+  }
+  .content-table-row .name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    flex: 1;
+  }
+  .content-table-row .amount {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .content-table-row .status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ==================== OPTION C: HOVER EXPAND ==================== */
+  .sidebar-hover {
+    width: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 0;
+    flex-shrink: 0;
+    transition: width 0.2s ease;
+    overflow: hidden;
+    position: relative;
+  }
+  .demo-frame-hover:hover .sidebar-hover {
+    width: 220px;
+    align-items: stretch;
+    border-right: 1px solid var(--glass-border-subtle);
+    background: var(--bg);
+    z-index: 5;
+  }
+  .sh-logo-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    margin-bottom: 24px;
+    min-height: 28px;
+  }
+  .sh-brand {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: -0.02em;
+    opacity: 0;
+    white-space: nowrap;
+    transition: opacity 0.15s ease;
+  }
+  .demo-frame-hover:hover .sh-brand { opacity: 1; }
+  .sh-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    padding: 0 8px;
+  }
+  .sh-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+    min-height: 40px;
+  }
+  .sh-item svg {
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .sh-item .sh-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .demo-frame-hover:hover .sh-label { opacity: 1; }
+  .sh-item:hover { background: var(--glass-bg-2); }
+  .sh-item.active { background: var(--glass-bg-4); }
+  .sh-item.active svg { color: var(--text); stroke-width: 2; }
+  .sh-item.active .sh-label { color: var(--text); font-weight: 600; }
+  .sh-section {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 16px 12px 6px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    white-space: nowrap;
+  }
+  .demo-frame-hover:hover .sh-section { opacity: 1; }
+  .sh-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 8px;
+  }
+  .sh-divider {
+    height: 1px;
+    background: var(--glass-border-subtle);
+    margin: 8px 12px;
+  }
+  .sh-item .sh-badge {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent-amber);
+    background: rgba(251,191,36,0.10);
+    padding: 1px 7px;
+    border-radius: 100px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .demo-frame-hover:hover .sh-badge { opacity: 1; }
+  .sh-item .sh-badge-dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent-amber);
+  }
+
+  /* ==================== OPTION D: TOGGLE BUTTON ==================== */
+  .sidebar-toggle {
+    width: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 0;
+    flex-shrink: 0;
+    transition: width 0.2s ease;
+    overflow: hidden;
+  }
+  .sidebar-toggle.expanded {
+    width: 220px;
+    align-items: stretch;
+    border-right: 1px solid var(--glass-border-subtle);
+  }
+  .st-logo-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    margin-bottom: 24px;
+    min-height: 28px;
+  }
+  .st-brand {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    display: none;
+  }
+  .sidebar-toggle.expanded .st-brand { display: block; }
+  .st-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    padding: 0 8px;
+  }
+  .st-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+    min-height: 40px;
+  }
+  .st-item svg { color: var(--text-muted); flex-shrink: 0; }
+  .st-item .st-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    display: none;
+  }
+  .sidebar-toggle.expanded .st-label { display: block; }
+  .st-item:hover { background: var(--glass-bg-2); }
+  .st-item.active { background: var(--glass-bg-4); }
+  .st-item.active svg { color: var(--text); stroke-width: 2; }
+  .st-item.active .st-label { color: var(--text); font-weight: 600; }
+  .st-section {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 16px 12px 6px;
+    display: none;
+    white-space: nowrap;
+  }
+  .sidebar-toggle.expanded .st-section { display: block; }
+  .st-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 8px;
+  }
+  .st-divider {
+    height: 1px;
+    background: var(--glass-border-subtle);
+    margin: 8px 12px;
+  }
+  .st-toggle-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: none;
+    background: transparent;
+  }
+  .st-toggle-btn:hover { background: var(--glass-bg-2); }
+  .st-toggle-btn svg { color: var(--text-dim); }
+  .sidebar-toggle.expanded .st-toggle-btn { margin-left: auto; }
+  .st-item .st-badge {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent-amber);
+    background: rgba(251,191,36,0.10);
+    padding: 1px 7px;
+    border-radius: 100px;
+    display: none;
+  }
+  .sidebar-toggle.expanded .st-badge { display: block; }
+
+  /* Collapsed tooltip for toggle version */
+  .st-item .tooltip {
+    display: none;
+    position: absolute;
+    left: 52px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--bg-elevated);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.30);
+    z-index: 10;
+  }
+  .sidebar-toggle:not(.expanded) .st-item { position: relative; }
+  .sidebar-toggle:not(.expanded) .st-item:hover .tooltip { display: block; }
+
+  /* ==================== OPTION E: BRANDBOOK V3c ==================== */
+  .sidebar-brandbook {
+    width: 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    flex-shrink: 0;
+    justify-content: space-between;
+  }
+  .bb-logo {
+    font-family: 'Merriweather', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 18px;
+    color: rgba(255,255,255,0.60);
+  }
+  .bb-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  .bb-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+  }
+  .bb-icon svg {
+    color: rgba(255,255,255,0.30);
+  }
+  .bb-icon .tooltip {
+    display: none;
+    position: absolute;
+    left: 42px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--bg-elevated);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.30);
+    z-index: 10;
+  }
+  .bb-icon:hover .tooltip { display: block; }
+
+  /* Active item — glass card with accent bar */
+  .bb-active {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.063) 0%, rgba(255,255,255,0.024) 100%);
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+  }
+  .bb-active svg {
+    color: rgba(255,255,255,0.82);
+  }
+  .bb-active::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 13px;
+    width: 3px;
+    height: 18px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.62);
+  }
+  .bb-active .tooltip {
+    display: none;
+    position: absolute;
+    left: 52px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--bg-elevated);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.30);
+    z-index: 10;
+  }
+  .bb-active:hover .tooltip { display: block; }
+
+  /* Avatar */
+  .bb-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 100px;
+    background: var(--glass-bg-3);
+    border: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+
+  /* Notes below demos */
+  .demo-notes {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .demo-notes strong { color: var(--text); font-weight: 600; }
+</style>
+</head>
+<body>
+<!-- ═══ Site Nav ═══ -->
+<nav style="position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;background:rgba(26,26,26,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);font-family:'Figtree',sans-serif;">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="../index.html" style="font-weight:900;font-size:18px;color:#3b82f6;letter-spacing:-0.03em;text-decoration:none;">Rx</a>
+    <span style="font-size:13px;color:rgba(255,255,255,0.45);">
+      <a href="../process.html" style="color:rgba(255,255,255,0.45);text-decoration:none;">Process</a>
+      <span style="margin:0 8px;color:rgba(255,255,255,0.25);">→</span>
+      <span style="color:rgba(255,255,255,0.95);font-weight:600;">Sidebar Navigation</span>
+    </span>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <a href="../reference.html" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.45);padding:6px 14px;border-radius:6px;text-decoration:none;">Reference</a>
+    <a href="../process.html" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.95);background:rgba(255,255,255,0.06);padding:6px 14px;border-radius:6px;text-decoration:none;">Process</a>
+  </div>
+</nav>
+<!-- ═══ Decision Summary ═══ -->
+<div style="margin:24px 32px;padding:16px 20px;background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:8px;font-family:'Figtree',sans-serif;">
+  <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#3b82f6;margin-bottom:4px;">Decision #12</div>
+  <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:-0.01em;margin-bottom:4px;">Sidebar Navigation</div>
+  <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;">64px collapsed-only sidebar. Floating on bg. Glass active indicator.</div>
+</div>
+<div style="margin:16px 24px;padding:12px 16px;background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:8px;font-family:'Figtree',sans-serif;">
+  <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#3b82f6;margin-bottom:3px;">Decision #12</div>
+  <div style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:-0.01em;margin-bottom:3px;">Sidebar Navigation</div>
+  <div style="font-size:12px;color:rgba(255,255,255,0.45);line-height:1.5;">64px collapsed-only, floating on bg, 5 layout proposals</div>
+</div>
+
+<h1>Sidebar & Navigation</h1>
+<p class="subtitle">Collapsed, expanded, hover-expand, and toggle variants</p>
+
+<!-- ==================== OPTION A: COLLAPSED ONLY ==================== -->
+<div class="section">
+  <h2><span class="num">A</span>Collapsed Only (icon + tooltip)</h2>
+  <p class="section-desc">Current decision from brandbook. Icons float on <code>bg</code>. Active: <code>glass-bg-4</code>. Hover shows tooltip. Maximizes content area. P3: subtract.</p>
+
+  <div class="demo-frame" style="max-width:700px;">
+    <div class="sidebar-collapsed">
+      <div class="sb-logo">R</div>
+      <div class="sb-nav">
+        <div class="sb-item active">
+          <i data-lucide="layout-dashboard" style="width:20px;height:20px"></i>
+          <span class="tooltip">Dashboards</span>
+        </div>
+        <div class="sb-item">
+          <i data-lucide="arrow-left-right" style="width:20px;height:20px"></i>
+          <span class="tooltip">Reconciliation</span>
+        </div>
+        <div class="sb-item">
+          <i data-lucide="receipt" style="width:20px;height:20px"></i>
+          <span class="tooltip">Transactions</span>
+          <span class="badge-dot"></span>
+        </div>
+        <div class="sb-item">
+          <i data-lucide="plug" style="width:20px;height:20px"></i>
+          <span class="tooltip">Sources</span>
+        </div>
+        <div class="sb-item">
+          <i data-lucide="file-bar-chart" style="width:20px;height:20px"></i>
+          <span class="tooltip">Reports</span>
+        </div>
+      </div>
+      <div class="sb-divider"></div>
+      <div class="sb-bottom">
+        <div class="sb-item">
+          <i data-lucide="settings" style="width:20px;height:20px"></i>
+          <span class="tooltip">Settings</span>
+        </div>
+        <div class="sb-item">
+          <i data-lucide="circle-user" style="width:20px;height:20px"></i>
+          <span class="tooltip">Account</span>
+        </div>
+      </div>
+    </div>
+    <div class="content-area">
+      <div class="content-header">Dashboards</div>
+      <div class="content-sub">3 dashboards</div>
+      <div class="content-cards">
+        <div class="mini-card">
+          <div class="mini-card-label">MATCH RATE</div>
+          <div class="mini-card-value">94.2<span style="font-size:14px; font-weight:400; color:var(--text-muted); font-family:'Merriweather',serif; font-style:italic;">%</span></div>
+          <div class="mini-card-trend">+2.1% vs last week</div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-label">EXCEPTIONS</div>
+          <div class="mini-card-value">18</div>
+          <div class="mini-card-trend" style="color:var(--accent-amber);">3 need review</div>
+        </div>
+      </div>
+      <div class="content-table-row">
+        <span class="status-dot" style="background:var(--accent-emerald)"></span>
+        <span class="name">Stripe ↔ QuickBooks</span>
+        <span class="amount">$142,380</span>
+      </div>
+      <div class="content-table-row">
+        <span class="status-dot" style="background:var(--accent-amber)"></span>
+        <span class="name">SAP ↔ Bank of America</span>
+        <span class="amount">$89,120</span>
+      </div>
+      <div class="content-table-row">
+        <span class="status-dot" style="background:var(--accent-emerald)"></span>
+        <span class="name">PayPal ↔ Xero</span>
+        <span class="amount">$34,560</span>
+      </div>
+    </div>
+  </div>
+  <div class="demo-notes">
+    <strong>Pros:</strong> Max content space. Clean. P3 compliant. Works for power users who know the icons.<br>
+    <strong>Cons:</strong> New users must hover each icon to learn. No room for section grouping or badges.
+  </div>
+</div>
+
+<!-- ==================== OPTION B: ALWAYS EXPANDED ==================== -->
+<div class="section">
+  <h2><span class="num">B</span>Always Expanded</h2>
+  <p class="section-desc">220px sidebar with labels, section groups, and badge counts. Right border: <code>glass-border-subtle</code>. More discoverable but uses horizontal space.</p>
+
+  <div class="demo-frame" style="max-width:820px;">
+    <div class="sidebar-expanded">
+      <div class="sb-exp-header">
+        <div class="sb-logo">R</div>
+        <span class="sb-exp-brand">Rexi</span>
+      </div>
+      <div class="sb-exp-nav">
+        <div class="sb-exp-item active">
+          <i data-lucide="layout-dashboard" style="width:20px;height:20px"></i>
+          <span>Dashboards</span>
+        </div>
+        <div class="sb-exp-item">
+          <i data-lucide="arrow-left-right" style="width:20px;height:20px"></i>
+          <span>Reconciliation</span>
+        </div>
+        <div class="sb-exp-item">
+          <i data-lucide="receipt" style="width:20px;height:20px"></i>
+          <span>Transactions</span>
+          <span class="badge">12</span>
+        </div>
+        <div class="sb-exp-item">
+          <i data-lucide="plug" style="width:20px;height:20px"></i>
+          <span>Sources</span>
+        </div>
+        <div class="sb-exp-item">
+          <i data-lucide="file-bar-chart" style="width:20px;height:20px"></i>
+          <span>Reports</span>
+        </div>
+        <div class="sb-exp-section">Settings</div>
+        <div class="sb-exp-item">
+          <i data-lucide="users" style="width:20px;height:20px"></i>
+          <span>Team</span>
+        </div>
+        <div class="sb-exp-item">
+          <i data-lucide="shield" style="width:20px;height:20px"></i>
+          <span>Roles & Permissions</span>
+        </div>
+        <div class="sb-exp-item">
+          <i data-lucide="sliders-horizontal" style="width:20px;height:20px"></i>
+          <span>Preferences</span>
+        </div>
+      </div>
+      <div class="sb-exp-divider"></div>
+      <div class="sb-exp-bottom">
+        <div class="sb-exp-item">
+          <i data-lucide="settings" style="width:20px;height:20px"></i>
+          <span>Settings</span>
+        </div>
+        <div class="sb-exp-item">
+          <i data-lucide="circle-user" style="width:20px;height:20px"></i>
+          <span>Alex Teper</span>
+        </div>
+      </div>
+    </div>
+    <div class="content-area">
+      <div class="content-header">Dashboards</div>
+      <div class="content-sub">3 dashboards</div>
+      <div class="content-cards">
+        <div class="mini-card">
+          <div class="mini-card-label">MATCH RATE</div>
+          <div class="mini-card-value">94.2<span style="font-size:14px; font-weight:400; color:var(--text-muted); font-family:'Merriweather',serif; font-style:italic;">%</span></div>
+          <div class="mini-card-trend">+2.1% vs last week</div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-label">EXCEPTIONS</div>
+          <div class="mini-card-value">18</div>
+          <div class="mini-card-trend" style="color:var(--accent-amber);">3 need review</div>
+        </div>
+      </div>
+      <div class="content-table-row">
+        <span class="status-dot" style="background:var(--accent-emerald)"></span>
+        <span class="name">Stripe ↔ QuickBooks</span>
+        <span class="amount">$142,380</span>
+      </div>
+      <div class="content-table-row">
+        <span class="status-dot" style="background:var(--accent-amber)"></span>
+        <span class="name">SAP ↔ Bank of America</span>
+        <span class="amount">$89,120</span>
+      </div>
+      <div class="content-table-row">
+        <span class="status-dot" style="background:var(--accent-emerald)"></span>
+        <span class="name">PayPal ↔ Xero</span>
+        <span class="amount">$34,560</span>
+      </div>
+    </div>
+  </div>
+  <div class="demo-notes">
+    <strong>Pros:</strong> Discoverable. Supports section grouping, badges, user name. Easy onboarding.<br>
+    <strong>Cons:</strong> 220px always consumed. Less minimal. May conflict with P3 if nav items are few.
+  </div>
+</div>
+
+<!-- ==================== OPTION C: HOVER EXPAND ==================== -->
+<div class="section">
+  <h2><span class="num">C</span>Hover to Expand</h2>
+  <p class="section-desc">Collapsed by default (56px). Expands to 220px on hover with smooth transition. Content area does NOT shift — sidebar overlays. Linear-style.</p>
+
+  <div class="demo-frame demo-frame-hover" style="max-width:820px; position:relative;">
+    <div class="sidebar-hover">
+      <div class="sh-logo-row">
+        <div class="sb-logo">R</div>
+        <span class="sh-brand">Rexi</span>
+      </div>
+      <div class="sh-nav">
+        <div class="sh-item active">
+          <i data-lucide="layout-dashboard" style="width:20px;height:20px"></i>
+          <span class="sh-label">Dashboards</span>
+        </div>
+        <div class="sh-item">
+          <i data-lucide="arrow-left-right" style="width:20px;height:20px"></i>
+          <span class="sh-label">Reconciliation</span>
+        </div>
+        <div class="sh-item">
+          <i data-lucide="receipt" style="width:20px;height:20px"></i>
+          <span class="sh-label">Transactions</span>
+          <span class="sh-badge">12</span>
+        </div>
+        <div class="sh-item">
+          <i data-lucide="plug" style="width:20px;height:20px"></i>
+          <span class="sh-label">Sources</span>
+        </div>
+        <div class="sh-item">
+          <i data-lucide="file-bar-chart" style="width:20px;height:20px"></i>
+          <span class="sh-label">Reports</span>
+        </div>
+        <div class="sh-section">Settings</div>
+        <div class="sh-item">
+          <i data-lucide="users" style="width:20px;height:20px"></i>
+          <span class="sh-label">Team</span>
+        </div>
+        <div class="sh-item">
+          <i data-lucide="shield" style="width:20px;height:20px"></i>
+          <span class="sh-label">Roles & Permissions</span>
+        </div>
+      </div>
+      <div class="sh-divider"></div>
+      <div class="sh-bottom">
+        <div class="sh-item">
+          <i data-lucide="settings" style="width:20px;height:20px"></i>
+          <span class="sh-label">Settings</span>
+        </div>
+        <div class="sh-item">
+          <i data-lucide="circle-user" style="width:20px;height:20px"></i>
+          <span class="sh-label">Alex Teper</span>
+        </div>
+      </div>
+    </div>
+    <div class="content-area">
+      <div class="content-header">Dashboards</div>
+      <div class="content-sub">3 dashboards</div>
+      <div class="content-cards">
+        <div class="mini-card">
+          <div class="mini-card-label">MATCH RATE</div>
+          <div class="mini-card-value">94.2<span style="font-size:14px; font-weight:400; color:var(--text-muted); font-family:'Merriweather',serif; font-style:italic;">%</span></div>
+          <div class="mini-card-trend">+2.1% vs last week</div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-label">EXCEPTIONS</div>
+          <div class="mini-card-value">18</div>
+          <div class="mini-card-trend" style="color:var(--accent-amber);">3 need review</div>
+        </div>
+      </div>
+      <div class="content-table-row">
+        <span class="status-dot" style="background:var(--accent-emerald)"></span>
+        <span class="name">Stripe ↔ QuickBooks</span>
+        <span class="amount">$142,380</span>
+      </div>
+      <div class="content-table-row">
+        <span class="status-dot" style="background:var(--accent-amber)"></span>
+        <span class="name">SAP ↔ Bank of America</span>
+        <span class="amount">$89,120</span>
+      </div>
+      <div class="content-table-row">
+        <span class="status-dot" style="background:var(--accent-emerald)"></span>
+        <span class="name">PayPal ↔ Xero</span>
+        <span class="amount">$34,560</span>
+      </div>
+    </div>
+  </div>
+  <div class="demo-notes">
+    <strong>Pros:</strong> Best of both. Max content in resting state. Full context on hover. No layout shift.<br>
+    <strong>Cons:</strong> Overlays content briefly. Can feel fidgety if user's mouse crosses the sidebar zone unintentionally.
+  </div>
+</div>
+
+<!-- ==================== OPTION D: TOGGLE ==================== -->
+<div class="section">
+  <h2><span class="num">D</span>Toggle (Persist Choice)</h2>
+  <p class="section-desc">User clicks a button to expand/collapse. State persists (localStorage). Content area resizes. Respects user preference.</p>
+
+  <div style="display:flex; gap:16px; margin-bottom:16px;">
+    <button onclick="toggleSidebar()" style="font-family:'Figtree'; font-size:12px; font-weight:600; color:var(--text); background:var(--glass-bg-4); border:1px solid var(--glass-border-hover); border-radius:var(--radius-md); padding:6px 16px; cursor:pointer;">
+      Toggle sidebar
+    </button>
+  </div>
+
+  <div class="demo-frame" style="max-width:820px;" id="toggle-demo">
+    <div class="sidebar-toggle" id="toggle-sidebar">
+      <div class="st-logo-row">
+        <div class="sb-logo">R</div>
+        <span class="st-brand">Rexi</span>
+      </div>
+      <div class="st-nav">
+        <div class="st-item active">
+          <i data-lucide="layout-dashboard" style="width:20px;height:20px"></i>
+          <span class="st-label">Dashboards</span>
+          <span class="tooltip">Dashboards</span>
+        </div>
+        <div class="st-item">
+          <i data-lucide="arrow-left-right" style="width:20px;height:20px"></i>
+          <span class="st-label">Reconciliation</span>
+          <span class="tooltip">Reconciliation</span>
+        </div>
+        <div class="st-item">
+          <i data-lucide="receipt" style="width:20px;height:20px"></i>
+          <span class="st-label">Transactions</span>
+          <span class="st-badge">12</span>
+          <span class="tooltip">Transactions</span>
+        </div>
+        <div class="st-item">
+          <i data-lucide="plug" style="width:20px;height:20px"></i>
+          <span class="st-label">Sources</span>
+          <span class="tooltip">Sources</span>
+        </div>
+        <div class="st-item">
+          <i data-lucide="file-bar-chart" style="width:20px;height:20px"></i>
+          <span class="st-label">Reports</span>
+          <span class="tooltip">Reports</span>
+        </div>
+        <div class="st-section">Settings</div>
+        <div class="st-item">
+          <i data-lucide="users" style="width:20px;height:20px"></i>
+          <span class="st-label">Team</span>
+          <span class="tooltip">Team</span>
+        </div>
+        <div class="st-item">
+          <i data-lucide="shield" style="width:20px;height:20px"></i>
+          <span class="st-label">Roles & Permissions</span>
+          <span class="tooltip">Roles</span>
+        </div>
+      </div>
+      <div class="st-divider"></div>
+      <div class="st-bottom">
+        <div class="st-item">
+          <i data-lucide="settings" style="width:20px;height:20px"></i>
+          <span class="st-label">Settings</span>
+          <span class="tooltip">Settings</span>
+        </div>
+        <div class="st-item">
+          <i data-lucide="circle-user" style="width:20px;height:20px"></i>
+          <span class="st-label">Alex Teper</span>
+          <span class="tooltip">Account</span>
+        </div>
+      </div>
+    </div>
+    <div class="content-area">
+      <div class="content-header">Dashboards</div>
+      <div class="content-sub">3 dashboards</div>
+      <div class="content-cards">
+        <div class="mini-card">
+          <div class="mini-card-label">MATCH RATE</div>
+          <div class="mini-card-value">94.2<span style="font-size:14px; font-weight:400; color:var(--text-muted); font-family:'Merriweather',serif; font-style:italic;">%</span></div>
+          <div class="mini-card-trend">+2.1% vs last week</div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-label">EXCEPTIONS</div>
+          <div class="mini-card-value">18</div>
+          <div class="mini-card-trend" style="color:var(--accent-amber);">3 need review</div>
+        </div>
+      </div>
+      <div class="content-table-row">
+        <span class="status-dot" style="background:var(--accent-emerald)"></span>
+        <span class="name">Stripe ↔ QuickBooks</span>
+        <span class="amount">$142,380</span>
+      </div>
+      <div class="content-table-row">
+        <span class="status-dot" style="background:var(--accent-amber)"></span>
+        <span class="name">SAP ↔ Bank of America</span>
+        <span class="amount">$89,120</span>
+      </div>
+      <div class="content-table-row">
+        <span class="status-dot" style="background:var(--accent-emerald)"></span>
+        <span class="name">PayPal ↔ Xero</span>
+        <span class="amount">$34,560</span>
+      </div>
+    </div>
+  </div>
+  <div class="demo-notes">
+    <strong>Pros:</strong> User controls. Persists preference. No accidental triggers. Clean transition.<br>
+    <strong>Cons:</strong> Content layout shifts on toggle. Requires storing state. Extra button to discover.
+  </div>
+</div>
+
+<!-- ==================== OPTION E: BRANDBOOK V3c ==================== -->
+<div class="section">
+  <h2><span class="num">E</span>Brandbook V3c — Hybrid Glass</h2>
+  <p class="section-desc">Exact brandbook sidebar. 64px wide, no background. Logo: Merriweather italic "Rx". Icons: 22px, white 30%. Active: glass card (44px) with gradient fill, blur, shadow, and a 3px left accent bar (white 62%). 20px icon gap. Avatar circle at bottom.</p>
+
+  <div class="demo-frame" style="max-width:700px;">
+    <div class="sidebar-brandbook">
+      <div class="bb-logo">Rx</div>
+      <div class="bb-nav">
+        <div class="bb-icon">
+          <i data-lucide="layout-dashboard" style="width:22px;height:22px"></i>
+          <span class="tooltip">Dashboards</span>
+        </div>
+        <div class="bb-icon">
+          <i data-lucide="link" style="width:22px;height:22px"></i>
+          <span class="tooltip">Connections</span>
+        </div>
+        <div class="bb-active">
+          <i data-lucide="git-compare" style="width:20px;height:20px"></i>
+          <span class="tooltip">Reconciliation</span>
+        </div>
+        <div class="bb-icon">
+          <i data-lucide="sparkles" style="width:22px;height:22px"></i>
+          <span class="tooltip">AI Insights</span>
+        </div>
+        <div class="bb-icon">
+          <i data-lucide="chart-bar" style="width:22px;height:22px"></i>
+          <span class="tooltip">Reports</span>
+        </div>
+        <div class="bb-icon">
+          <i data-lucide="settings" style="width:22px;height:22px"></i>
+          <span class="tooltip">Settings</span>
+        </div>
+      </div>
+      <div class="bb-avatar">AT</div>
+    </div>
+    <div class="content-area">
+      <div class="content-header">Reconciliation</div>
+      <div class="content-sub">Match rate at a glance</div>
+      <div class="content-cards">
+        <div class="mini-card">
+          <div class="mini-card-label">MATCH RATE</div>
+          <div class="mini-card-value">99.2<span style="font-size:14px; font-weight:400; color:var(--text-muted); font-family:'Merriweather',serif; font-style:italic;">%</span></div>
+          <div class="mini-card-trend">+1.4% vs last week</div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-label">EXCEPTIONS</div>
+          <div class="mini-card-value">6</div>
+          <div class="mini-card-trend" style="color:var(--accent-emerald);">All reviewed</div>
+        </div>
+      </div>
+      <div class="content-table-row">
+        <span class="status-dot" style="background:var(--accent-emerald)"></span>
+        <span class="name">Stripe ↔ QuickBooks</span>
+        <span class="amount">$142,380</span>
+      </div>
+      <div class="content-table-row">
+        <span class="status-dot" style="background:var(--accent-amber)"></span>
+        <span class="name">SAP ↔ Bank of America</span>
+        <span class="amount">$89,120</span>
+      </div>
+      <div class="content-table-row">
+        <span class="status-dot" style="background:var(--accent-emerald)"></span>
+        <span class="name">PayPal ↔ Xero</span>
+        <span class="amount">$34,560</span>
+      </div>
+    </div>
+  </div>
+  <div class="demo-notes">
+    <strong>From brandbook:</strong> Glass card active state (gradient + blur + shadow) with 3px white accent bar on left. Icons white 30% inactive, white 82% active. "Rx" Merriweather italic logo. 20px gap between icons. Avatar initials circle at bottom.<br>
+    <strong>Pros:</strong> Most premium feel. Glass card active is distinctive. Accent bar adds subtle direction. Consistent with V3c aesthetic.<br>
+    <strong>Cons:</strong> Same discoverability limits as Option A. No labels without expansion.
+  </div>
+</div>
+
+<script>
+  lucide.createIcons();
+
+  function toggleSidebar() {
+    document.getElementById('toggle-sidebar').classList.toggle('expanded');
+  }
+</script>
+<!-- ═══ Footer Nav ═══ -->
+<div style="display:flex;justify-content:space-between;align-items:center;padding:24px 32px;border-top:1px solid rgba(255,255,255,0.04);font-family:'Figtree',sans-serif;margin-top:40px;">
+  <a href="08-feedback-overlays.html" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);text-decoration:none;">← Feedback & Overlays</a>
+  <a href="10-interactive-states.html" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);text-decoration:none;">Interactive States →</a>
+</div>
+</body>
+</html>

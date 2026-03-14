@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive States — Rexi Design Process</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&family=Merriweather:ital,wght@1,300&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root {
+    --bg: #1a1a1a;
+    --bg-elevated: #1e1e1e;
+    --glass-bg-1: rgba(255,255,255,0.03);
+    --glass-bg-2: rgba(255,255,255,0.04);
+    --glass-bg-3: rgba(255,255,255,0.06);
+    --glass-bg-4: rgba(255,255,255,0.10);
+    --glass-border-subtle: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-border-hover: rgba(255,255,255,0.14);
+    --glass-inset: rgba(255,255,255,0.04);
+    --glass-inset-bright: rgba(255,255,255,0.08);
+    --text-bright: rgba(255,255,255,0.95);
+    --text: #e5e5e5;
+    --text-muted: rgba(255,255,255,0.45);
+    --text-dim: rgba(255,255,255,0.25);
+    --text-faint: rgba(255,255,255,0.16);
+    --accent-emerald: #34d399;
+    --accent-emerald-muted: #34d39914;
+    --accent-amber: #fbbf24;
+    --accent-amber-muted: #fbbf2414;
+    --accent-red: #f87171;
+    --accent-red-muted: #f8717114;
+    --accent-blue: #3b82f6;
+    --accent-blue-muted: #3b82f614;
+    --accent-purple: #8b5cf6;
+    --radius-xs: 4px;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 14px;
+    --radius-pill: 100px;
+    --transition-fast: 120ms ease;
+    --transition-normal: 180ms ease;
+    --transition-slow: 280ms ease;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Figtree', sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+    padding: 48px;
+  }
+
+  h1 {
+    font-weight: 800;
+    font-size: 36px;
+    letter-spacing: -0.03em;
+    line-height: 1.0;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 15px;
+    margin-bottom: 48px;
+  }
+  h2 {
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+  }
+  h2 .num {
+    color: var(--text-dim);
+    font-weight: 600;
+    margin-right: 8px;
+  }
+  .section-desc {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 24px;
+    max-width: 700px;
+  }
+  .section {
+    margin-bottom: 64px;
+  }
+  .label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  /* ==================== 01 TRANSITION TIMING ==================== */
+  .timing-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .timing-demo {
+    flex: 1;
+    min-width: 200px;
+    max-width: 300px;
+  }
+  .timing-box {
+    background: var(--glass-bg-1);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    text-align: center;
+    cursor: pointer;
+  }
+  .timing-box .value {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text-bright);
+    letter-spacing: -0.02em;
+    margin-bottom: 2px;
+  }
+  .timing-box .desc {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* Fast */
+  .timing-box.fast {
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+  }
+  .timing-box.fast:hover {
+    background: var(--glass-bg-3);
+    border-color: var(--glass-border-hover);
+  }
+  /* Normal */
+  .timing-box.normal {
+    transition: background var(--transition-normal), border-color var(--transition-normal);
+  }
+  .timing-box.normal:hover {
+    background: var(--glass-bg-3);
+    border-color: var(--glass-border-hover);
+  }
+  /* Slow */
+  .timing-box.slow {
+    transition: background var(--transition-slow), border-color var(--transition-slow);
+  }
+  .timing-box.slow:hover {
+    background: var(--glass-bg-3);
+    border-color: var(--glass-border-hover);
+  }
+
+  /* Timing spec table */
+  .timing-table {
+    width: 100%;
+    max-width: 700px;
+    border-collapse: collapse;
+  }
+  .timing-table th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 8px 12px;
+    background: var(--glass-bg-3);
+    border-bottom: 1px solid var(--glass-border);
+  }
+  .timing-table th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+  .timing-table th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+  .timing-table td {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--glass-bg-1);
+  }
+  .timing-table td code {
+    font-size: 11px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--text);
+    background: var(--glass-bg-3);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* ==================== 02 BUTTONS ==================== */
+  .buttons-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .btn {
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    border-radius: var(--radius-lg);
+    padding: 10px 22px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    outline: none;
+  }
+  .btn svg { flex-shrink: 0; }
+
+  /* Primary */
+  .btn-primary {
+    font-weight: 600;
+    color: var(--text-bright);
+    background: var(--glass-bg-4);
+    border: 1px solid rgba(255,255,255,0.16);
+    box-shadow: inset 0 1px 0 var(--glass-inset-bright);
+    transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  }
+  .btn-primary:hover {
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.20);
+  }
+  .btn-primary:active {
+    transform: scale(0.97);
+    background: var(--glass-bg-3);
+    box-shadow: none;
+  }
+  .btn-primary:focus-visible {
+    box-shadow: inset 0 1px 0 var(--glass-inset-bright), 0 0 0 2px var(--bg), 0 0 0 4px rgba(59,130,246,0.50);
+  }
+
+  /* Secondary */
+  .btn-secondary {
+    font-weight: 500;
+    color: var(--text);
+    background: var(--glass-bg-2);
+    border: 1px solid rgba(255,255,255,0.12);
+    transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+  }
+  .btn-secondary:hover {
+    background: var(--glass-bg-3);
+    border-color: rgba(255,255,255,0.16);
+  }
+  .btn-secondary:active {
+    transform: scale(0.97);
+    background: var(--glass-bg-1);
+  }
+  .btn-secondary:focus-visible {
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px rgba(59,130,246,0.50);
+  }
+
+  /* Ghost */
+  .btn-ghost {
+    font-weight: 500;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid transparent;
+    transition: color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+  }
+  .btn-ghost:hover {
+    color: var(--text);
+    background: var(--glass-bg-2);
+  }
+  .btn-ghost:active {
+    transform: scale(0.97);
+    background: var(--glass-bg-1);
+  }
+  .btn-ghost:focus-visible {
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px rgba(59,130,246,0.50);
+  }
+
+  /* Destructive */
+  .btn-destructive {
+    font-weight: 500;
+    color: var(--accent-red);
+    background: rgba(248,113,113,0.06);
+    border: 1px solid rgba(248,113,113,0.14);
+    transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+  }
+  .btn-destructive:hover {
+    background: rgba(248,113,113,0.10);
+    border-color: rgba(248,113,113,0.20);
+  }
+  .btn-destructive:active {
+    transform: scale(0.97);
+    background: rgba(248,113,113,0.04);
+  }
+  .btn-destructive:focus-visible {
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px rgba(248,113,113,0.40);
+  }
+
+  /* Disabled */
+  .btn-disabled {
+    font-weight: 600;
+    color: var(--text-faint);
+    background: var(--glass-bg-1);
+    border: 1px solid var(--glass-border-subtle);
+    cursor: not-allowed;
+  }
+
+  .btn-state-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: 6px;
+  }
+
+  /* ==================== 03 INPUTS ==================== */
+  .inputs-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .input-demo {
+    flex: 1;
+    min-width: 200px;
+    max-width: 280px;
+  }
+  .input-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .input {
+    width: 100%;
+    background: var(--glass-bg-1);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
+  }
+  .input::placeholder { color: var(--text-muted); }
+  .input:hover {
+    border-color: var(--glass-border-hover);
+  }
+  .input:focus {
+    border-color: var(--glass-border-hover);
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.20);
+  }
+  .input-error {
+    border-color: rgba(248,113,113,0.30) !important;
+  }
+  .input-error:focus {
+    box-shadow: 0 0 0 2px rgba(248,113,113,0.15) !important;
+  }
+  .input-error-msg {
+    font-size: 11px;
+    color: var(--accent-red);
+    margin-top: 4px;
+  }
+  .input-disabled {
+    background: rgba(255,255,255,0.02);
+    border-color: var(--glass-border-subtle);
+    color: var(--text-faint);
+    cursor: not-allowed;
+  }
+
+  /* ==================== 04 TABLE ROWS ==================== */
+  .table-demo {
+    max-width: 600px;
+    margin-bottom: 16px;
+  }
+  .table-header {
+    display: flex;
+    gap: 16px;
+    padding: 8px 16px;
+    background: var(--glass-bg-3);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  }
+  .table-header span {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .table-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--glass-bg-1);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+  }
+  .table-row:hover {
+    background: var(--glass-bg-2);
+  }
+  .table-row:active {
+    background: var(--glass-bg-3);
+  }
+  .table-row.selected {
+    background: var(--glass-bg-4);
+  }
+  .table-row .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .table-row .name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    flex: 1;
+  }
+  .table-row .amount {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    min-width: 80px;
+    text-align: right;
+  }
+  .table-row .date {
+    font-size: 12px;
+    color: var(--text-muted);
+    min-width: 90px;
+  }
+
+  /* ==================== 05 CARDS ==================== */
+  .cards-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 50%, rgba(255,255,255,0.03) 100%);
+    border: 1px solid var(--glass-border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    min-width: 160px;
+    cursor: pointer;
+    transition: border-color var(--transition-normal), box-shadow var(--transition-normal), transform var(--transition-normal);
+  }
+  .card:hover {
+    border-color: var(--glass-border-hover);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+  .card:active {
+    transform: scale(0.98);
+    border-color: var(--glass-border);
+    box-shadow: none;
+  }
+  .card:focus-visible {
+    border-color: var(--glass-border-hover);
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px rgba(59,130,246,0.50);
+    outline: none;
+  }
+  .card .card-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .card .card-value {
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--text-bright);
+    letter-spacing: -0.03em;
+  }
+  .card .card-trend {
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  /* ==================== 06 LINKS & TEXT ==================== */
+  .links-row {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .link-demo {
+    min-width: 180px;
+  }
+  .link {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent-blue);
+    text-decoration: none;
+    cursor: pointer;
+    transition: color var(--transition-fast);
+    border-bottom: 1px solid transparent;
+  }
+  .link:hover {
+    color: #60a5fa;
+    border-bottom-color: rgba(96,165,250,0.30);
+  }
+  .link:active {
+    color: #93bbfd;
+  }
+  .link:focus-visible {
+    outline: none;
+    border-radius: 2px;
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px rgba(59,130,246,0.50);
+  }
+
+  .nav-link {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: none;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    transition: color var(--transition-fast), background var(--transition-fast);
+    display: inline-block;
+  }
+  .nav-link:hover {
+    color: var(--text);
+    background: var(--glass-bg-2);
+  }
+  .nav-link.active {
+    color: var(--text);
+    background: var(--glass-bg-4);
+    font-weight: 600;
+  }
+
+  /* ==================== 07 TOGGLES / CHECKBOXES ==================== */
+  .controls-row {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .control-demo {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* Toggle */
+  .toggle {
+    width: 40px;
+    height: 22px;
+    border-radius: 100px;
+    background: var(--glass-bg-3);
+    border: 1px solid var(--glass-border);
+    cursor: pointer;
+    position: relative;
+    transition: background var(--transition-normal), border-color var(--transition-normal);
+  }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    transition: transform var(--transition-normal), background var(--transition-normal);
+  }
+  .toggle:hover {
+    border-color: var(--glass-border-hover);
+  }
+  .toggle.on {
+    background: rgba(59,130,246,0.25);
+    border-color: rgba(59,130,246,0.40);
+  }
+  .toggle.on::after {
+    transform: translateX(18px);
+    background: var(--accent-blue);
+  }
+  .toggle:focus-visible {
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px rgba(59,130,246,0.50);
+    outline: none;
+  }
+
+  /* Checkbox */
+  .checkbox {
+    width: 18px;
+    height: 18px;
+    border-radius: var(--radius-xs);
+    background: var(--glass-bg-1);
+    border: 1px solid var(--glass-border);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+  }
+  .checkbox:hover {
+    border-color: var(--glass-border-hover);
+  }
+  .checkbox.checked {
+    background: rgba(59,130,246,0.25);
+    border-color: rgba(59,130,246,0.40);
+  }
+  .checkbox.checked svg {
+    color: var(--accent-blue);
+  }
+  .checkbox:focus-visible {
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px rgba(59,130,246,0.50);
+    outline: none;
+  }
+
+  .control-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .control-label .state {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-left: 4px;
+  }
+
+  /* ==================== 08 FOCUS RING SPEC ==================== */
+  .focus-demos {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .focus-demo-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .focus-ring-example {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-lg);
+    background: var(--glass-bg-4);
+    border: 1px solid rgba(255,255,255,0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .focus-ring-example svg { color: var(--text); }
+  .focus-ring-example.blue-ring {
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px rgba(59,130,246,0.50);
+  }
+  .focus-ring-example.red-ring {
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px rgba(248,113,113,0.40);
+  }
+  .focus-ring-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    text-align: center;
+  }
+
+  /* ==================== SPEC TABLE ==================== */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+  }
+  .spec-table th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 8px 12px;
+    background: var(--glass-bg-3);
+    border-bottom: 1px solid var(--glass-border);
+  }
+  .spec-table th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+  .spec-table th:last-child { border-radius: 0 var(--radius-sm) 0 0; }
+  .spec-table td {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--glass-bg-1);
+  }
+  .spec-table td code {
+    font-size: 11px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--text);
+    background: var(--glass-bg-3);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .spec-table td:first-child {
+    color: var(--text);
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+<!-- ═══ Site Nav ═══ -->
+<nav style="position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;background:rgba(26,26,26,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);font-family:'Figtree',sans-serif;">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="../index.html" style="font-weight:900;font-size:18px;color:#3b82f6;letter-spacing:-0.03em;text-decoration:none;">Rx</a>
+    <span style="font-size:13px;color:rgba(255,255,255,0.45);">
+      <a href="../process.html" style="color:rgba(255,255,255,0.45);text-decoration:none;">Process</a>
+      <span style="margin:0 8px;color:rgba(255,255,255,0.25);">→</span>
+      <span style="color:rgba(255,255,255,0.95);font-weight:600;">Interactive States</span>
+    </span>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <a href="../reference.html" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.45);padding:6px 14px;border-radius:6px;text-decoration:none;">Reference</a>
+    <a href="../process.html" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.95);background:rgba(255,255,255,0.06);padding:6px 14px;border-radius:6px;text-decoration:none;">Process</a>
+  </div>
+</nav>
+<!-- ═══ Decision Summary ═══ -->
+<div style="margin:24px 32px;padding:16px 20px;background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:8px;font-family:'Figtree',sans-serif;">
+  <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#3b82f6;margin-bottom:4px;">Decision #13</div>
+  <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:-0.01em;margin-bottom:4px;">Interactive States</div>
+  <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;">3 speed tiers. scale() press feedback. Double-ring focus indicators.</div>
+</div>
+<div style="margin:16px 24px;padding:12px 16px;background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:8px;font-family:'Figtree',sans-serif;">
+  <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#3b82f6;margin-bottom:3px;">Decision #13</div>
+  <div style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:-0.01em;margin-bottom:3px;">Interactive States</div>
+  <div style="font-size:12px;color:rgba(255,255,255,0.45);line-height:1.5;">3 speed tiers, scale() press, double-ring focus</div>
+</div>
+
+<h1>Hover, Focus & Active States</h1>
+<p class="subtitle">Transition timing, focus rings, press states — interactive. Try hovering, clicking, and tabbing through.</p>
+
+<!-- ==================== 01 TRANSITIONS ==================== -->
+<div class="section">
+  <h2><span class="num">01</span>Transition Timing</h2>
+  <p class="section-desc">Three tokens. Fast for micro-interactions (hover, press). Normal for state changes (focus, expand). Slow for layout transitions (sidebar, modals). Hover these cards to feel the difference.</p>
+
+  <div class="timing-row">
+    <div class="timing-demo">
+      <div class="label">Fast — 120ms ease</div>
+      <div class="timing-box fast">
+        <div class="value">120ms</div>
+        <div class="desc">Hover, active, color changes</div>
+      </div>
+    </div>
+    <div class="timing-demo">
+      <div class="label">Normal — 180ms ease</div>
+      <div class="timing-box normal">
+        <div class="value">180ms</div>
+        <div class="desc">Focus rings, border changes</div>
+      </div>
+    </div>
+    <div class="timing-demo">
+      <div class="label">Slow — 280ms ease</div>
+      <div class="timing-box slow">
+        <div class="value">280ms</div>
+        <div class="desc">Sidebar, modals, sheets</div>
+      </div>
+    </div>
+  </div>
+
+  <table class="timing-table">
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Duration</th>
+        <th>Easing</th>
+        <th>Use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>transition-fast</code></td>
+        <td>120ms</td>
+        <td><code>ease</code></td>
+        <td>Hover bg, active press, color shifts, opacity</td>
+      </tr>
+      <tr>
+        <td><code>transition-normal</code></td>
+        <td>180ms</td>
+        <td><code>ease</code></td>
+        <td>Focus rings, border transitions, input states</td>
+      </tr>
+      <tr>
+        <td><code>transition-slow</code></td>
+        <td>280ms</td>
+        <td><code>ease</code></td>
+        <td>Sidebar expand, modal open/close, sheet slide</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== 02 BUTTONS ==================== -->
+<div class="section">
+  <h2><span class="num">02</span>Buttons — All States</h2>
+  <p class="section-desc">Hover brightens glass. Active: <code>scale(0.97)</code> + darken. Focus-visible: 2px gap ring. Try clicking and tabbing.</p>
+
+  <div class="label">Interactive — hover, click, and tab through</div>
+  <div class="buttons-row">
+    <div>
+      <button class="btn btn-primary">
+        <i data-lucide="plus" style="width:16px;height:16px"></i>
+        Primary
+      </button>
+      <div class="btn-state-label">hover → active → focus</div>
+    </div>
+    <div>
+      <button class="btn btn-secondary">
+        <i data-lucide="download" style="width:16px;height:16px"></i>
+        Secondary
+      </button>
+      <div class="btn-state-label">hover → active → focus</div>
+    </div>
+    <div>
+      <button class="btn btn-ghost">Ghost</button>
+      <div class="btn-state-label">hover → active → focus</div>
+    </div>
+    <div>
+      <button class="btn btn-destructive">
+        <i data-lucide="trash-2" style="width:16px;height:16px"></i>
+        Delete
+      </button>
+      <div class="btn-state-label">hover → active → focus</div>
+    </div>
+    <div>
+      <button class="btn btn-disabled" disabled>Disabled</button>
+      <div class="btn-state-label">no interaction</div>
+    </div>
+  </div>
+
+  <table class="spec-table" style="max-width:700px;">
+    <thead>
+      <tr><th>Variant</th><th>Hover</th><th>Active</th><th>Focus-visible</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Primary</td>
+        <td>bg → white 14%, border → white 20%</td>
+        <td><code>scale(0.97)</code>, bg → <code>glass-bg-3</code>, no shadow</td>
+        <td>Blue ring 50%, 2px gap</td>
+      </tr>
+      <tr>
+        <td>Secondary</td>
+        <td>bg → <code>glass-bg-3</code>, border → white 16%</td>
+        <td><code>scale(0.97)</code>, bg → <code>glass-bg-1</code></td>
+        <td>Blue ring 50%, 2px gap</td>
+      </tr>
+      <tr>
+        <td>Ghost</td>
+        <td>text → <code>text</code>, bg → <code>glass-bg-2</code></td>
+        <td><code>scale(0.97)</code>, bg → <code>glass-bg-1</code></td>
+        <td>Blue ring 50%, 2px gap</td>
+      </tr>
+      <tr>
+        <td>Destructive</td>
+        <td>bg → red 10%, border → red 20%</td>
+        <td><code>scale(0.97)</code>, bg → red 4%</td>
+        <td>Red ring 40%, 2px gap</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== 03 INPUTS ==================== -->
+<div class="section">
+  <h2><span class="num">03</span>Inputs — Hover, Focus, Error</h2>
+  <p class="section-desc">Hover raises border to 14%. Focus adds blue ring. Error uses red border + red ring. Try interacting.</p>
+
+  <div class="inputs-row">
+    <div class="input-demo">
+      <div class="input-label">Resting</div>
+      <input class="input" type="text" placeholder="Enter amount...">
+    </div>
+    <div class="input-demo">
+      <div class="input-label">With value</div>
+      <input class="input" type="text" value="$12,450.00">
+    </div>
+    <div class="input-demo">
+      <div class="input-label">Error</div>
+      <input class="input input-error" type="text" value="abc">
+      <div class="input-error-msg">Must be a valid number</div>
+    </div>
+    <div class="input-demo">
+      <div class="input-label">Disabled</div>
+      <input class="input input-disabled" type="text" value="Read only" disabled>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 04 TABLE ROWS ==================== -->
+<div class="section">
+  <h2><span class="num">04</span>Table Rows</h2>
+  <p class="section-desc">Hover: <code>glass-bg-2</code>. Active press: <code>glass-bg-3</code>. Selected: <code>glass-bg-4</code>. Try clicking the third row.</p>
+
+  <div class="table-demo">
+    <div class="table-header">
+      <span style="flex:1">SOURCE</span>
+      <span style="min-width:90px">DATE</span>
+      <span style="min-width:80px; text-align:right">AMOUNT</span>
+    </div>
+    <div class="table-row" tabindex="0">
+      <span class="dot" style="background:var(--accent-emerald)"></span>
+      <span class="name">Stripe ↔ QuickBooks</span>
+      <span class="date">Mar 12, 2026</span>
+      <span class="amount">$142,380</span>
+    </div>
+    <div class="table-row" tabindex="0">
+      <span class="dot" style="background:var(--accent-amber)"></span>
+      <span class="name">SAP ↔ Bank of America</span>
+      <span class="date">Mar 11, 2026</span>
+      <span class="amount">$89,120</span>
+    </div>
+    <div class="table-row selected" tabindex="0">
+      <span class="dot" style="background:var(--accent-emerald)"></span>
+      <span class="name">PayPal ↔ Xero</span>
+      <span class="date">Mar 10, 2026</span>
+      <span class="amount">$34,560</span>
+    </div>
+    <div class="table-row" tabindex="0">
+      <span class="dot" style="background:var(--accent-red)"></span>
+      <span class="name">Manual CSV ↔ QuickBooks</span>
+      <span class="date">Mar 09, 2026</span>
+      <span class="amount">$7,230</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 05 CARDS ==================== -->
+<div class="section">
+  <h2><span class="num">05</span>Cards — Hover & Press</h2>
+  <p class="section-desc">Hover: border rises to 14%, subtle shadow. Active: <code>scale(0.98)</code>, shadow gone. Try clicking.</p>
+
+  <div class="cards-row">
+    <div class="card" tabindex="0">
+      <div class="card-label">MATCH RATE</div>
+      <div class="card-value">94.2<span style="font-size:12px; font-weight:400; color:var(--text-muted); font-family:'Merriweather',serif; font-style:italic;">%</span></div>
+      <div class="card-trend" style="color:var(--accent-emerald);">+2.1%</div>
+    </div>
+    <div class="card" tabindex="0">
+      <div class="card-label">EXCEPTIONS</div>
+      <div class="card-value">18</div>
+      <div class="card-trend" style="color:var(--accent-amber);">3 need review</div>
+    </div>
+    <div class="card" tabindex="0">
+      <div class="card-label">TOTAL VOLUME</div>
+      <div class="card-value">$2.4<span style="font-size:12px; font-weight:400; color:var(--text-muted); font-family:'Merriweather',serif; font-style:italic;">M</span></div>
+      <div class="card-trend" style="color:var(--accent-emerald);">+12.5%</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 06 LINKS ==================== -->
+<div class="section">
+  <h2><span class="num">06</span>Links & Nav Items</h2>
+  <p class="section-desc">Text links: underline on hover. Nav items: bg highlight on hover, <code>glass-bg-4</code> when active.</p>
+
+  <div class="links-row">
+    <div class="link-demo">
+      <div class="label">Text Link</div>
+      <a class="link" href="javascript:void(0)">View reconciliation report</a>
+    </div>
+    <div class="link-demo">
+      <div class="label">Nav Tabs</div>
+      <div style="display:flex; gap:4px;">
+        <a class="nav-link active" href="javascript:void(0)">All</a>
+        <a class="nav-link" href="javascript:void(0)">Matched</a>
+        <a class="nav-link" href="javascript:void(0)">Exceptions</a>
+        <a class="nav-link" href="javascript:void(0)">Unmatched</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 07 CONTROLS ==================== -->
+<div class="section">
+  <h2><span class="num">07</span>Toggles & Checkboxes</h2>
+  <p class="section-desc">Inactive: glass. Active: blue 25% bg + blue 40% border. Transition: 180ms. Focus-visible: blue ring.</p>
+
+  <div class="controls-row">
+    <div class="control-demo">
+      <div class="label">Toggle</div>
+      <div class="control-label" onclick="this.querySelector('.toggle').classList.toggle('on')">
+        <div class="toggle" tabindex="0"></div>
+        Auto-reconcile <span class="state">(off)</span>
+      </div>
+      <div class="control-label" onclick="this.querySelector('.toggle').classList.toggle('on')">
+        <div class="toggle on" tabindex="0"></div>
+        Notifications <span class="state">(on)</span>
+      </div>
+    </div>
+    <div class="control-demo">
+      <div class="label">Checkbox</div>
+      <div class="control-label" onclick="this.querySelector('.checkbox').classList.toggle('checked')">
+        <div class="checkbox" tabindex="0">
+          <i data-lucide="check" style="width:12px;height:12px;display:none"></i>
+        </div>
+        Select all transactions
+      </div>
+      <div class="control-label" onclick="this.querySelector('.checkbox').classList.toggle('checked')">
+        <div class="checkbox checked" tabindex="0">
+          <i data-lucide="check" style="width:12px;height:12px"></i>
+        </div>
+        Include pending
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 08 FOCUS RING SPEC ==================== -->
+<div class="section">
+  <h2><span class="num">08</span>Focus Ring System</h2>
+  <p class="section-desc">Double-ring: 2px <code>bg</code> gap + 2px semantic color. Only on <code>:focus-visible</code> (keyboard nav only, not mouse clicks).</p>
+
+  <div class="focus-demos">
+    <div class="focus-demo-item">
+      <div class="focus-ring-example blue-ring">
+        <i data-lucide="plus" style="width:18px;height:18px"></i>
+      </div>
+      <span class="focus-ring-label">Standard<br><code style="font-size:10px;">blue 50%</code></span>
+    </div>
+    <div class="focus-demo-item">
+      <div class="focus-ring-example red-ring" style="background:rgba(248,113,113,0.06); border-color:rgba(248,113,113,0.14);">
+        <i data-lucide="trash-2" style="width:18px;height:18px;color:var(--accent-red)"></i>
+      </div>
+      <span class="focus-ring-label">Destructive<br><code style="font-size:10px;">red 40%</code></span>
+    </div>
+  </div>
+
+  <table class="spec-table" style="max-width:600px;">
+    <thead>
+      <tr><th>Property</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Trigger</td>
+        <td><code>:focus-visible</code> only (keyboard, not mouse)</td>
+      </tr>
+      <tr>
+        <td>Ring shape</td>
+        <td>Double ring: 2px bg gap + 2px color</td>
+      </tr>
+      <tr>
+        <td>CSS</td>
+        <td><code>box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px color</code></td>
+      </tr>
+      <tr>
+        <td>Standard color</td>
+        <td><code>rgba(59,130,246,0.50)</code> (blue 50%)</td>
+      </tr>
+      <tr>
+        <td>Destructive color</td>
+        <td><code>rgba(248,113,113,0.40)</code> (red 40%)</td>
+      </tr>
+      <tr>
+        <td>Input focus</td>
+        <td>Border → 14% + <code>box-shadow: 0 0 0 2px blue 20%</code></td>
+      </tr>
+      <tr>
+        <td>Transition</td>
+        <td><code>transition-normal</code> (180ms ease)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ==================== SUMMARY ==================== -->
+<div class="section">
+  <h2><span class="num">09</span>Complete Spec</h2>
+
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Hover</th><th>Active / Press</th><th>Focus-visible</th><th>Transition</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Button (primary)</td>
+        <td>bg white 14%, border white 20%</td>
+        <td><code>scale(0.97)</code>, bg <code>glass-bg-3</code></td>
+        <td>Blue ring 50%</td>
+        <td><code>120ms ease</code></td>
+      </tr>
+      <tr>
+        <td>Button (secondary)</td>
+        <td>bg <code>glass-bg-3</code>, border white 16%</td>
+        <td><code>scale(0.97)</code>, bg <code>glass-bg-1</code></td>
+        <td>Blue ring 50%</td>
+        <td><code>120ms ease</code></td>
+      </tr>
+      <tr>
+        <td>Button (ghost)</td>
+        <td>text → <code>text</code>, bg <code>glass-bg-2</code></td>
+        <td><code>scale(0.97)</code>, bg <code>glass-bg-1</code></td>
+        <td>Blue ring 50%</td>
+        <td><code>120ms ease</code></td>
+      </tr>
+      <tr>
+        <td>Button (destructive)</td>
+        <td>bg red 10%, border red 20%</td>
+        <td><code>scale(0.97)</code>, bg red 4%</td>
+        <td>Red ring 40%</td>
+        <td><code>120ms ease</code></td>
+      </tr>
+      <tr>
+        <td>Input</td>
+        <td>border → <code>glass-border-hover</code></td>
+        <td>—</td>
+        <td>Border 14% + blue ring 20%</td>
+        <td><code>180ms ease</code></td>
+      </tr>
+      <tr>
+        <td>Table row</td>
+        <td>bg <code>glass-bg-2</code></td>
+        <td>bg <code>glass-bg-3</code></td>
+        <td>—</td>
+        <td><code>120ms ease</code></td>
+      </tr>
+      <tr>
+        <td>Card</td>
+        <td>border 14%, shadow <code>0 4px 16px black 15%</code></td>
+        <td><code>scale(0.98)</code>, no shadow</td>
+        <td>Blue ring 50%</td>
+        <td><code>180ms ease</code></td>
+      </tr>
+      <tr>
+        <td>Link</td>
+        <td>Lighter blue, underline 30%</td>
+        <td>Lightest blue</td>
+        <td>Blue ring 50%</td>
+        <td><code>120ms ease</code></td>
+      </tr>
+      <tr>
+        <td>Toggle / Checkbox</td>
+        <td>border → <code>glass-border-hover</code></td>
+        <td>—</td>
+        <td>Blue ring 50%</td>
+        <td><code>180ms ease</code></td>
+      </tr>
+      <tr>
+        <td>Nav tab</td>
+        <td>text → <code>text</code>, bg <code>glass-bg-2</code></td>
+        <td>—</td>
+        <td>—</td>
+        <td><code>120ms ease</code></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  lucide.createIcons();
+</script>
+<!-- ═══ Footer Nav ═══ -->
+<div style="display:flex;justify-content:space-between;align-items:center;padding:24px 32px;border-top:1px solid rgba(255,255,255,0.04);font-family:'Figtree',sans-serif;margin-top:40px;">
+  <a href="09-sidebar-navigation.html" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);text-decoration:none;">← Sidebar Navigation</a>
+  <a href="11-charts-kpis.html" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);text-decoration:none;">Charts & KPIs →</a>
+</div>
+</body>
+</html>

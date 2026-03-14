@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charts & KPIs — Rexi Design Process</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&family=Merriweather:ital,wght@1,300&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root {
+    --bg: #1a1a1a;
+    --bg-elevated: #1e1e1e;
+    --glass-bg-1: rgba(255,255,255,0.03);
+    --glass-bg-2: rgba(255,255,255,0.04);
+    --glass-bg-3: rgba(255,255,255,0.06);
+    --glass-bg-4: rgba(255,255,255,0.10);
+    --glass-border-subtle: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-border-hover: rgba(255,255,255,0.14);
+    --glass-inset: rgba(255,255,255,0.04);
+    --glass-inset-bright: rgba(255,255,255,0.08);
+    --text-bright: rgba(255,255,255,0.95);
+    --text: #e5e5e5;
+    --text-muted: rgba(255,255,255,0.45);
+    --text-dim: rgba(255,255,255,0.25);
+    --text-faint: rgba(255,255,255,0.16);
+    --accent-emerald: #34d399;
+    --accent-emerald-muted: rgba(52,211,153,0.08);
+    --accent-amber: #fbbf24;
+    --accent-amber-muted: rgba(251,191,36,0.08);
+    --accent-red: #f87171;
+    --accent-red-muted: rgba(248,113,113,0.08);
+    --accent-blue: #3b82f6;
+    --accent-blue-muted: rgba(59,130,246,0.08);
+    --accent-purple: #8b5cf6;
+    --accent-purple-muted: rgba(139,92,246,0.08);
+    --accent-orange: #fb923c;
+    --transition-fast: 120ms ease;
+    --transition-normal: 180ms ease;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Figtree', sans-serif;
+    padding: 48px;
+    line-height: 1.5;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 48px;
+  }
+
+  .section {
+    margin-bottom: 56px;
+  }
+  .section-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+  }
+  .section-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    max-width: 600px;
+    line-height: 1.7;
+  }
+
+  /* ── Color Palette ── */
+  .palette-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .palette-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+  }
+  .swatch-label {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .swatch-label strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* ── Chart Container (glass card) ── */
+  .chart-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 50%, rgba(255,255,255,0.03) 100%);
+    border: 1px solid var(--glass-border-subtle);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.125);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .chart-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .chart-card-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .chart-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 4px;
+  }
+  .chart-legend {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .legend-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  /* ── Grid layouts ── */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  /* ── KPI Cards ── */
+  .kpi-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 50%, rgba(255,255,255,0.03) 100%);
+    border: 1px solid var(--glass-border-subtle);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.125);
+    padding: 16px;
+  }
+  .kpi-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .kpi-value {
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--text-bright);
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    margin-top: 4px;
+    line-height: 1.1;
+  }
+  .kpi-value .unit {
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--text-dim);
+  }
+  .kpi-trend {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    font-size: 11px;
+  }
+  .kpi-trend.positive { color: rgba(52,211,153,0.60); }
+  .kpi-trend.negative { color: rgba(248,113,113,0.60); }
+  .kpi-trend.neutral { color: var(--text-dim); }
+  .kpi-trend svg { width: 12px; height: 12px; }
+
+  /* ── Hero KPI (focal point) ── */
+  .kpi-hero {
+    text-align: left;
+    padding: 0;
+    margin-bottom: 32px;
+  }
+  .kpi-hero .kpi-label {
+    font-size: 10px;
+    letter-spacing: 1.2px;
+  }
+  .kpi-hero .kpi-value {
+    font-size: 72px;
+    letter-spacing: -3px;
+    line-height: 0.92;
+    margin-top: 8px;
+  }
+  .kpi-hero .kpi-value .unit {
+    font-weight: 400;
+    font-size: 32px;
+    color: rgba(52,211,153,0.40);
+  }
+  .kpi-hero .kpi-trend {
+    margin-top: 12px;
+    font-size: 12px;
+  }
+
+  /* ── Tooltip mockup ── */
+  .tooltip-mock {
+    position: absolute;
+    background: var(--bg-elevated);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.30);
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 10;
+  }
+  .tooltip-date {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .tooltip-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 0;
+  }
+  .tooltip-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .tooltip-label {
+    color: var(--text-muted);
+    flex: 1;
+  }
+  .tooltip-val {
+    color: var(--text);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Axis styling ── */
+  .axis-text {
+    font-family: 'Figtree', sans-serif;
+    font-size: 10px;
+    fill: var(--text-dim);
+    font-weight: 500;
+  }
+  .grid-line {
+    stroke: rgba(255,255,255,0.04);
+    stroke-width: 1;
+  }
+  .axis-line {
+    stroke: rgba(255,255,255,0.06);
+    stroke-width: 1;
+  }
+
+  /* ── Dividers ── */
+  hr.glass {
+    border: none;
+    height: 1px;
+    background: var(--glass-border-subtle);
+    margin: 48px 0;
+  }
+
+  /* ── Spec table ── */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .spec-table th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-muted);
+    padding: 8px 12px;
+    background: var(--glass-bg-3);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .spec-table th:first-child { border-radius: 6px 0 0 6px; }
+  .spec-table th:last-child { border-radius: 0 6px 6px 0; }
+  .spec-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--glass-bg-1);
+    color: var(--text-muted);
+  }
+  .spec-table td:first-child {
+    color: var(--text);
+    font-weight: 500;
+  }
+  .spec-table code {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    color: var(--accent-blue);
+    background: var(--accent-blue-muted);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* ── Badge ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .badge-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+  }
+  .badge-emerald { background: var(--accent-emerald-muted); color: var(--accent-emerald); }
+  .badge-emerald .badge-dot { background: var(--accent-emerald); }
+  .badge-amber { background: var(--accent-amber-muted); color: var(--accent-amber); }
+  .badge-amber .badge-dot { background: var(--accent-amber); }
+  .badge-red { background: var(--accent-red-muted); color: var(--accent-red); }
+  .badge-red .badge-dot { background: var(--accent-red); }
+
+  /* ── Comparison layout ── */
+  .compare-row {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+  .compare-item {
+    flex: 1;
+  }
+  .compare-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .compare-label .tag {
+    font-size: 9px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .tag-current {
+    background: var(--accent-red-muted);
+    color: var(--accent-red);
+  }
+  .tag-proposed {
+    background: var(--accent-emerald-muted);
+    color: var(--accent-emerald);
+  }
+</style>
+</head>
+<body>
+<!-- ═══ Site Nav ═══ -->
+<nav style="position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;background:rgba(26,26,26,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);font-family:'Figtree',sans-serif;">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="../index.html" style="font-weight:900;font-size:18px;color:#3b82f6;letter-spacing:-0.03em;text-decoration:none;">Rx</a>
+    <span style="font-size:13px;color:rgba(255,255,255,0.45);">
+      <a href="../process.html" style="color:rgba(255,255,255,0.45);text-decoration:none;">Process</a>
+      <span style="margin:0 8px;color:rgba(255,255,255,0.25);">→</span>
+      <span style="color:rgba(255,255,255,0.95);font-weight:600;">Charts & KPIs</span>
+    </span>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <a href="../reference.html" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.45);padding:6px 14px;border-radius:6px;text-decoration:none;">Reference</a>
+    <a href="../process.html" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.95);background:rgba(255,255,255,0.06);padding:6px 14px;border-radius:6px;text-decoration:none;">Process</a>
+  </div>
+</nav>
+<!-- ═══ Decision Summary ═══ -->
+<div style="margin:24px 32px;padding:16px 20px;background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:8px;font-family:'Figtree',sans-serif;">
+  <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#3b82f6;margin-bottom:4px;">Decision #14</div>
+  <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:-0.01em;margin-bottom:4px;">Charts & KPIs</div>
+  <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;">Semantic color palette for data viz. Emerald-first. Glass containers.</div>
+</div>
+<div style="margin:16px 24px;padding:12px 16px;background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:8px;font-family:'Figtree',sans-serif;">
+  <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#3b82f6;margin-bottom:3px;">Decision #14</div>
+  <div style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:-0.01em;margin-bottom:3px;">Charts &amp; KPIs</div>
+  <div style="font-size:12px;color:rgba(255,255,255,0.45);line-height:1.5;">Semantic palette, emerald-first, glass containers</div>
+</div>
+
+<h1>Charts & KPI Widgets</h1>
+<p class="subtitle">Decision E — Area/Line/Bar/Pie chart styling + KPI cards within the Rexi Glass design system</p>
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 01: COLOR PALETTE COMPARISON -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">01 — Chart Color Palette</div>
+  <div class="section-desc">
+    Replacing the 6 steel-gray CSS variables with semantic accent colors. Multi-series charts use the ordered palette below. When data has semantic meaning (matched/unmatched), use the semantic color directly.
+  </div>
+
+  <div class="compare-row">
+    <div class="compare-item">
+      <div class="compare-label">Current (steel grays) <span class="tag tag-current">Replace</span></div>
+      <div class="palette-row">
+        <div class="palette-item">
+          <div class="swatch" style="background:#c3cbd5"></div>
+          <div class="swatch-label"><strong>chart-1</strong><br>#c3cbd5</div>
+        </div>
+        <div class="palette-item">
+          <div class="swatch" style="background:#3f4c5a"></div>
+          <div class="swatch-label"><strong>chart-2</strong><br>#3f4c5a</div>
+        </div>
+        <div class="palette-item">
+          <div class="swatch" style="background:#8898aa"></div>
+          <div class="swatch-label"><strong>chart-3</strong><br>#8898aa</div>
+        </div>
+        <div class="palette-item">
+          <div class="swatch" style="background:#2a323c"></div>
+          <div class="swatch-label"><strong>chart-4</strong><br>#2a323c</div>
+        </div>
+        <div class="palette-item">
+          <div class="swatch" style="background:#a5b2c0"></div>
+          <div class="swatch-label"><strong>chart-5</strong><br>#a5b2c0</div>
+        </div>
+        <div class="palette-item">
+          <div class="swatch" style="background:#556577"></div>
+          <div class="swatch-label"><strong>chart-6</strong><br>#556577</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="compare-row">
+    <div class="compare-item">
+      <div class="compare-label">Proposed (semantic accents) <span class="tag tag-proposed">New</span></div>
+      <div class="palette-row">
+        <div class="palette-item">
+          <div class="swatch" style="background:#34d399"></div>
+          <div class="swatch-label"><strong>chart-1</strong><br>Emerald</div>
+        </div>
+        <div class="palette-item">
+          <div class="swatch" style="background:#3b82f6"></div>
+          <div class="swatch-label"><strong>chart-2</strong><br>Blue</div>
+        </div>
+        <div class="palette-item">
+          <div class="swatch" style="background:#8b5cf6"></div>
+          <div class="swatch-label"><strong>chart-3</strong><br>Purple</div>
+        </div>
+        <div class="palette-item">
+          <div class="swatch" style="background:#fbbf24"></div>
+          <div class="swatch-label"><strong>chart-4</strong><br>Amber</div>
+        </div>
+        <div class="palette-item">
+          <div class="swatch" style="background:#fb923c"></div>
+          <div class="swatch-label"><strong>chart-5</strong><br>Orange</div>
+        </div>
+        <div class="palette-item">
+          <div class="swatch" style="background:#f87171"></div>
+          <div class="swatch-label"><strong>chart-6</strong><br>Red</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-desc" style="margin-top: 16px;">
+    <strong>Ordering logic (P4):</strong> Emerald first (primary/positive data). Blue second (neutral/brand). Purple third (integrations). Amber/Orange/Red last (warm spectrum, attention signals). For single-series charts, always default to emerald.
+  </div>
+</div>
+
+<hr class="glass">
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 02: HERO KPI + AREA CHART (V3c style) -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">02 — Hero KPI + Area Chart</div>
+  <div class="section-desc">
+    V3c-inspired: hero stat directly on bg (no card — P5). Area chart with emerald gradient below. Secondary KPIs in glass cards.
+  </div>
+
+  <!-- Hero KPI (no container - P3/P5) -->
+  <div class="kpi-hero">
+    <div class="kpi-label">Match Rate</div>
+    <div class="kpi-value">99.2<span class="unit">%</span></div>
+    <div class="kpi-trend positive">
+      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+      +0.3% from last week
+    </div>
+  </div>
+
+  <!-- Area Chart -->
+  <div class="chart-card" style="margin-bottom: 20px;">
+    <div class="chart-card-header">
+      <div>
+        <div class="chart-card-label">Transactions Over Time</div>
+        <div class="chart-card-title">Weekly volume</div>
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent-emerald)"></div> Matched</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent-amber)"></div> Pending</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent-red)"></div> Unmatched</div>
+      </div>
+    </div>
+
+    <div style="position:relative;">
+      <svg width="100%" height="200" viewBox="0 0 800 200" preserveAspectRatio="none">
+        <defs>
+          <!-- Emerald gradient -->
+          <linearGradient id="emeraldGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#34d399" stop-opacity="0.30"/>
+            <stop offset="100%" stop-color="#34d399" stop-opacity="0.02"/>
+          </linearGradient>
+          <!-- Amber gradient -->
+          <linearGradient id="amberGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.20"/>
+            <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.02"/>
+          </linearGradient>
+          <!-- Red gradient -->
+          <linearGradient id="redGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#f87171" stop-opacity="0.15"/>
+            <stop offset="100%" stop-color="#f87171" stop-opacity="0.02"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Grid lines -->
+        <line x1="0" y1="50" x2="800" y2="50" class="grid-line"/>
+        <line x1="0" y1="100" x2="800" y2="100" class="grid-line"/>
+        <line x1="0" y1="150" x2="800" y2="150" class="grid-line"/>
+
+        <!-- Emerald area (stacked on top) -->
+        <path d="M0,140 C60,130 120,100 200,80 C280,60 340,50 400,40 C460,30 520,35 600,30 C680,25 740,20 800,15 L800,200 L0,200 Z" fill="url(#emeraldGrad)"/>
+        <path d="M0,140 C60,130 120,100 200,80 C280,60 340,50 400,40 C460,30 520,35 600,30 C680,25 740,20 800,15" fill="none" stroke="#34d399" stroke-width="2"/>
+
+        <!-- Amber area -->
+        <path d="M0,175 C60,172 120,168 200,170 C280,172 340,165 400,160 C460,155 520,158 600,155 C680,152 740,150 800,148 L800,200 L0,200 Z" fill="url(#amberGrad)"/>
+        <path d="M0,175 C60,172 120,168 200,170 C280,172 340,165 400,160 C460,155 520,158 600,155 C680,152 740,150 800,148" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-opacity="0.6"/>
+
+        <!-- Red area (bottom) -->
+        <path d="M0,190 C60,188 120,185 200,187 C280,189 340,184 400,182 C460,180 520,183 600,181 C680,179 740,178 800,177 L800,200 L0,200 Z" fill="url(#redGrad)"/>
+        <path d="M0,190 C60,188 120,185 200,187 C280,189 340,184 400,182 C460,180 520,183 600,181 C680,179 740,178 800,177" fill="none" stroke="#f87171" stroke-width="1.5" stroke-opacity="0.5"/>
+
+        <!-- X-axis labels -->
+        <text x="0" y="195" class="axis-text" dominant-baseline="hanging" dy="12">Jan</text>
+        <text x="133" y="195" class="axis-text" dominant-baseline="hanging" dy="12" text-anchor="middle">Feb</text>
+        <text x="266" y="195" class="axis-text" dominant-baseline="hanging" dy="12" text-anchor="middle">Mar</text>
+        <text x="400" y="195" class="axis-text" dominant-baseline="hanging" dy="12" text-anchor="middle">Apr</text>
+        <text x="533" y="195" class="axis-text" dominant-baseline="hanging" dy="12" text-anchor="middle">May</text>
+        <text x="666" y="195" class="axis-text" dominant-baseline="hanging" dy="12" text-anchor="middle">Jun</text>
+        <text x="800" y="195" class="axis-text" dominant-baseline="hanging" dy="12" text-anchor="end">Jul</text>
+      </svg>
+
+      <!-- Tooltip example -->
+      <div class="tooltip-mock" style="top: 20px; left: 380px;">
+        <div class="tooltip-date">Apr 14</div>
+        <div class="tooltip-row">
+          <div class="tooltip-dot" style="background:var(--accent-emerald)"></div>
+          <span class="tooltip-label">Matched</span>
+          <span class="tooltip-val">12,847</span>
+        </div>
+        <div class="tooltip-row">
+          <div class="tooltip-dot" style="background:var(--accent-amber)"></div>
+          <span class="tooltip-label">Pending</span>
+          <span class="tooltip-val">342</span>
+        </div>
+        <div class="tooltip-row">
+          <div class="tooltip-dot" style="background:var(--accent-red)"></div>
+          <span class="tooltip-label">Unmatched</span>
+          <span class="tooltip-val">89</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Secondary KPIs -->
+  <div class="grid-4">
+    <div class="kpi-card">
+      <div class="kpi-label">Matched</div>
+      <div class="kpi-value" style="font-size:24px; color:var(--accent-emerald);">12,847</div>
+      <div class="kpi-trend positive">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+        +142 today
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Pending</div>
+      <div class="kpi-value" style="font-size:24px; color:var(--accent-amber);">342</div>
+      <div class="kpi-trend neutral">— same as yesterday</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Unmatched</div>
+      <div class="kpi-value" style="font-size:24px; color:var(--accent-red);">89</div>
+      <div class="kpi-trend negative">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        -12 from yesterday
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Avg Resolution</div>
+      <div class="kpi-value" style="font-size:24px;">2.4<span class="unit">h</span></div>
+      <div class="kpi-trend positive">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+        -0.8h vs last week
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="glass">
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 03: LINE CHART (multi-series) -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">03 — Line Chart (Multi-Series)</div>
+  <div class="section-desc">
+    Multi-source comparison. Each line uses the ordered palette. Dots appear on hover only (showDots: false default). Grid at white 4%.
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-card-header">
+      <div>
+        <div class="chart-card-label">Source Comparison</div>
+        <div class="chart-card-title">Monthly transaction volume by source</div>
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent-emerald)"></div> Bank A</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent-blue)"></div> Bank B</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent-purple)"></div> Stripe</div>
+      </div>
+    </div>
+
+    <svg width="100%" height="200" viewBox="0 0 800 200" preserveAspectRatio="none">
+      <!-- Grid -->
+      <line x1="0" y1="50" x2="800" y2="50" class="grid-line"/>
+      <line x1="0" y1="100" x2="800" y2="100" class="grid-line"/>
+      <line x1="0" y1="150" x2="800" y2="150" class="grid-line"/>
+
+      <!-- Emerald line (Bank A) -->
+      <path d="M0,120 C80,100 160,85 240,70 C320,55 400,60 480,50 C560,40 640,45 720,35 L800,30" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round"/>
+
+      <!-- Blue line (Bank B) -->
+      <path d="M0,140 C80,135 160,125 240,130 C320,120 400,110 480,105 C560,100 640,95 720,90 L800,85" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+
+      <!-- Purple line (Stripe) -->
+      <path d="M0,165 C80,160 160,155 240,150 C320,145 400,140 480,138 C560,135 640,130 720,125 L800,120" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/>
+
+      <!-- Hover dot example -->
+      <circle cx="480" cy="50" r="4" fill="#34d399" stroke="var(--bg)" stroke-width="2"/>
+      <circle cx="480" cy="105" r="4" fill="#3b82f6" stroke="var(--bg)" stroke-width="2"/>
+      <circle cx="480" cy="138" r="4" fill="#8b5cf6" stroke="var(--bg)" stroke-width="2"/>
+      <line x1="480" y1="10" x2="480" y2="190" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="4,4"/>
+
+      <!-- Axis labels -->
+      <text x="0" y="195" class="axis-text" dy="12">Q1</text>
+      <text x="200" y="195" class="axis-text" dy="12" text-anchor="middle">Q2</text>
+      <text x="400" y="195" class="axis-text" dy="12" text-anchor="middle">Q3</text>
+      <text x="600" y="195" class="axis-text" dy="12" text-anchor="middle">Q4</text>
+      <text x="800" y="195" class="axis-text" dy="12" text-anchor="end">Q5</text>
+    </svg>
+  </div>
+</div>
+
+<hr class="glass">
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 04: STACKED BAR CHART -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">04 — Stacked Bar Chart</div>
+  <div class="section-desc">
+    Stacked bars with semantic colors. Top corners rounded on the last segment. Bottom corners rounded on the first. Glass card container. Bars use fill at 80% opacity with 1px stroke at 40%.
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-card-header">
+      <div>
+        <div class="chart-card-label">Reconciliation Breakdown</div>
+        <div class="chart-card-title">Status distribution by month</div>
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent-emerald)"></div> Matched</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent-amber)"></div> Pending</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--accent-red)"></div> Unmatched</div>
+      </div>
+    </div>
+
+    <svg width="100%" height="200" viewBox="0 0 800 200" preserveAspectRatio="none">
+      <!-- Grid -->
+      <line x1="0" y1="50" x2="800" y2="50" class="grid-line"/>
+      <line x1="0" y1="100" x2="800" y2="100" class="grid-line"/>
+      <line x1="0" y1="150" x2="800" y2="150" class="grid-line"/>
+
+      <!-- Month 1 -->
+      <rect x="30" y="30" width="80" height="130" rx="0" fill="#34d399" fill-opacity="0.80" stroke="#34d399" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="30" y="160" width="80" height="20" rx="0" fill="#fbbf24" fill-opacity="0.80" stroke="#fbbf24" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="30" y="180" width="80" height="12" rx="0" fill="#f87171" fill-opacity="0.80" stroke="#f87171" stroke-opacity="0.40" stroke-width="1"/>
+      <!-- Rounded top -->
+      <rect x="30" y="30" width="80" height="16" rx="6" fill="#34d399" fill-opacity="0.80" stroke="#34d399" stroke-opacity="0.40" stroke-width="1"/>
+
+      <!-- Month 2 -->
+      <rect x="140" y="25" width="80" height="138" rx="0" fill="#34d399" fill-opacity="0.80" stroke="#34d399" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="140" y="163" width="80" height="18" rx="0" fill="#fbbf24" fill-opacity="0.80" stroke="#fbbf24" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="140" y="181" width="80" height="11" rx="0" fill="#f87171" fill-opacity="0.80" stroke="#f87171" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="140" y="25" width="80" height="16" rx="6" fill="#34d399" fill-opacity="0.80" stroke="#34d399" stroke-opacity="0.40" stroke-width="1"/>
+
+      <!-- Month 3 -->
+      <rect x="250" y="20" width="80" height="145" rx="0" fill="#34d399" fill-opacity="0.80" stroke="#34d399" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="250" y="165" width="80" height="22" rx="0" fill="#fbbf24" fill-opacity="0.80" stroke="#fbbf24" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="250" y="187" width="80" height="5" rx="0" fill="#f87171" fill-opacity="0.80" stroke="#f87171" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="250" y="20" width="80" height="16" rx="6" fill="#34d399" fill-opacity="0.80" stroke="#34d399" stroke-opacity="0.40" stroke-width="1"/>
+
+      <!-- Month 4 -->
+      <rect x="360" y="18" width="80" height="150" rx="0" fill="#34d399" fill-opacity="0.80" stroke="#34d399" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="360" y="168" width="80" height="16" rx="0" fill="#fbbf24" fill-opacity="0.80" stroke="#fbbf24" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="360" y="184" width="80" height="8" rx="0" fill="#f87171" fill-opacity="0.80" stroke="#f87171" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="360" y="18" width="80" height="16" rx="6" fill="#34d399" fill-opacity="0.80" stroke="#34d399" stroke-opacity="0.40" stroke-width="1"/>
+
+      <!-- Month 5 -->
+      <rect x="470" y="15" width="80" height="155" rx="0" fill="#34d399" fill-opacity="0.80" stroke="#34d399" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="470" y="170" width="80" height="14" rx="0" fill="#fbbf24" fill-opacity="0.80" stroke="#fbbf24" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="470" y="184" width="80" height="8" rx="0" fill="#f87171" fill-opacity="0.80" stroke="#f87171" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="470" y="15" width="80" height="16" rx="6" fill="#34d399" fill-opacity="0.80" stroke="#34d399" stroke-opacity="0.40" stroke-width="1"/>
+
+      <!-- Month 6 -->
+      <rect x="580" y="12" width="80" height="160" rx="0" fill="#34d399" fill-opacity="0.80" stroke="#34d399" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="580" y="172" width="80" height="12" rx="0" fill="#fbbf24" fill-opacity="0.80" stroke="#fbbf24" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="580" y="184" width="80" height="8" rx="0" fill="#f87171" fill-opacity="0.80" stroke="#f87171" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="580" y="12" width="80" height="16" rx="6" fill="#34d399" fill-opacity="0.80" stroke="#34d399" stroke-opacity="0.40" stroke-width="1"/>
+
+      <!-- Month 7 -->
+      <rect x="690" y="10" width="80" height="163" rx="0" fill="#34d399" fill-opacity="0.80" stroke="#34d399" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="690" y="173" width="80" height="11" rx="0" fill="#fbbf24" fill-opacity="0.80" stroke="#fbbf24" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="690" y="184" width="80" height="8" rx="0" fill="#f87171" fill-opacity="0.80" stroke="#f87171" stroke-opacity="0.40" stroke-width="1"/>
+      <rect x="690" y="10" width="80" height="16" rx="6" fill="#34d399" fill-opacity="0.80" stroke="#34d399" stroke-opacity="0.40" stroke-width="1"/>
+
+      <!-- Axis labels -->
+      <text x="70" y="195" class="axis-text" dy="12" text-anchor="middle">Jan</text>
+      <text x="180" y="195" class="axis-text" dy="12" text-anchor="middle">Feb</text>
+      <text x="290" y="195" class="axis-text" dy="12" text-anchor="middle">Mar</text>
+      <text x="400" y="195" class="axis-text" dy="12" text-anchor="middle">Apr</text>
+      <text x="510" y="195" class="axis-text" dy="12" text-anchor="middle">May</text>
+      <text x="620" y="195" class="axis-text" dy="12" text-anchor="middle">Jun</text>
+      <text x="730" y="195" class="axis-text" dy="12" text-anchor="middle">Jul</text>
+    </svg>
+  </div>
+</div>
+
+<hr class="glass">
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 05: DONUT CHART -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">05 — Donut Chart</div>
+  <div class="section-desc">
+    Status distribution donut with center label. Segments use semantic colors at 80% opacity. Stroke between segments: 2px bg color for separation. Center shows total with Figtree 900 + overline label.
+  </div>
+
+  <div class="grid-2">
+    <div class="chart-card" style="display:flex;align-items:center;justify-content:center;padding:32px;">
+      <div style="position:relative;width:180px;height:180px;">
+        <svg width="180" height="180" viewBox="0 0 180 180">
+          <!-- Matched segment (85%) -->
+          <circle cx="90" cy="90" r="70" fill="none" stroke="#34d399" stroke-opacity="0.80" stroke-width="24"
+            stroke-dasharray="374 440" stroke-dashoffset="0" transform="rotate(-90 90 90)"/>
+          <!-- Pending segment (10%) -->
+          <circle cx="90" cy="90" r="70" fill="none" stroke="#fbbf24" stroke-opacity="0.80" stroke-width="24"
+            stroke-dasharray="44 396" stroke-dashoffset="-374" transform="rotate(-90 90 90)"/>
+          <!-- Unmatched segment (5%) -->
+          <circle cx="90" cy="90" r="70" fill="none" stroke="#f87171" stroke-opacity="0.80" stroke-width="24"
+            stroke-dasharray="22 418" stroke-dashoffset="-418" transform="rotate(-90 90 90)"/>
+          <!-- Center gap ring -->
+          <circle cx="90" cy="90" r="58" fill="none" stroke="rgba(26,26,26,0.5)" stroke-width="2"/>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div style="font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);">Total</div>
+          <div style="font-size:28px;font-weight:900;color:var(--text-bright);letter-spacing:-0.04em;font-variant-numeric:tabular-nums;line-height:1.1;">13,278</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;justify-content:center;gap:12px;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:12px;height:12px;border-radius:4px;background:#34d399;opacity:0.8;"></div>
+        <div>
+          <div style="font-size:13px;color:var(--text);font-weight:500;">Matched</div>
+          <div style="font-size:11px;color:var(--text-muted);">11,286 transactions (85%)</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:12px;height:12px;border-radius:4px;background:#fbbf24;opacity:0.8;"></div>
+        <div>
+          <div style="font-size:13px;color:var(--text);font-weight:500;">Pending</div>
+          <div style="font-size:11px;color:var(--text-muted);">1,328 transactions (10%)</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:12px;height:12px;border-radius:4px;background:#f87171;opacity:0.8;"></div>
+        <div>
+          <div style="font-size:13px;color:var(--text);font-weight:500;">Unmatched</div>
+          <div style="font-size:11px;color:var(--text-muted);">664 transactions (5%)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="glass">
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 06: KPI CARD VARIANTS -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">06 — KPI Card Variants</div>
+  <div class="section-desc">
+    KPI cards within the glass system. Hero stat on bg (no card). Secondary stats in glass cards with semantic trend colors. Mini sparkline optional.
+  </div>
+
+  <div class="grid-3" style="margin-bottom: 20px;">
+    <!-- KPI with semantic value color -->
+    <div class="kpi-card">
+      <div class="kpi-label">Revenue This Month</div>
+      <div class="kpi-value" style="font-size:28px;">$1.2<span class="unit">M</span></div>
+      <div class="kpi-trend positive">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+        +18.3% vs last month
+      </div>
+    </div>
+
+    <!-- KPI with badge -->
+    <div class="kpi-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div class="kpi-label">Exceptions</div>
+        <span class="badge badge-amber"><span class="badge-dot"></span>Attention</span>
+      </div>
+      <div class="kpi-value" style="font-size:28px; color:var(--accent-amber);">47</div>
+      <div class="kpi-trend negative" style="color:rgba(251,191,36,0.60);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        +12 from yesterday
+      </div>
+    </div>
+
+    <!-- KPI with mini sparkline -->
+    <div class="kpi-card">
+      <div class="kpi-label">Processing Speed</div>
+      <div style="display:flex;align-items:flex-end;gap:12px;">
+        <div class="kpi-value" style="font-size:28px;">340<span class="unit">/s</span></div>
+        <svg width="80" height="28" viewBox="0 0 80 28" style="margin-bottom:4px;">
+          <defs>
+            <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#34d399" stop-opacity="0.20"/>
+              <stop offset="100%" stop-color="#34d399" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,20 C10,18 20,15 30,12 C40,9 50,10 60,7 C70,5 75,4 80,3 L80,28 L0,28 Z" fill="url(#sparkGrad)"/>
+          <path d="M0,20 C10,18 20,15 30,12 C40,9 50,10 60,7 C70,5 75,4 80,3" fill="none" stroke="#34d399" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="kpi-trend positive">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+        +15% capacity
+      </div>
+    </div>
+  </div>
+
+  <!-- Compact KPI row -->
+  <div class="section-desc" style="margin-top:24px;margin-bottom:12px;font-weight:600;color:var(--text);">Compact KPI row (for dense dashboards)</div>
+  <div class="grid-4">
+    <div class="kpi-card" style="padding:12px 16px;">
+      <div class="kpi-label" style="font-size:8px;">Sources</div>
+      <div style="display:flex;align-items:baseline;gap:6px;margin-top:2px;">
+        <span style="font-size:20px;font-weight:900;color:var(--text-bright);letter-spacing:-0.04em;font-variant-numeric:tabular-nums;">8</span>
+        <span style="font-size:11px;color:rgba(52,211,153,0.6);">all connected</span>
+      </div>
+    </div>
+    <div class="kpi-card" style="padding:12px 16px;">
+      <div class="kpi-label" style="font-size:8px;">Rules</div>
+      <div style="display:flex;align-items:baseline;gap:6px;margin-top:2px;">
+        <span style="font-size:20px;font-weight:900;color:var(--text-bright);letter-spacing:-0.04em;font-variant-numeric:tabular-nums;">24</span>
+        <span style="font-size:11px;color:var(--text-dim);">active</span>
+      </div>
+    </div>
+    <div class="kpi-card" style="padding:12px 16px;">
+      <div class="kpi-label" style="font-size:8px;">Uptime</div>
+      <div style="display:flex;align-items:baseline;gap:6px;margin-top:2px;">
+        <span style="font-size:20px;font-weight:900;color:var(--text-bright);letter-spacing:-0.04em;font-variant-numeric:tabular-nums;">99.9<span style="font-weight:400;font-size:11px;color:var(--text-dim);">%</span></span>
+      </div>
+    </div>
+    <div class="kpi-card" style="padding:12px 16px;">
+      <div class="kpi-label" style="font-size:8px;">Alerts</div>
+      <div style="display:flex;align-items:baseline;gap:6px;margin-top:2px;">
+        <span style="font-size:20px;font-weight:900;color:var(--accent-amber);letter-spacing:-0.04em;font-variant-numeric:tabular-nums;">3</span>
+        <span style="font-size:11px;color:rgba(251,191,36,0.6);">need review</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="glass">
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 07: CHART CONTAINER OPTIONS -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">07 — Chart Container Styles</div>
+  <div class="section-desc">
+    Two options: glass card (default for secondary charts) vs. borderless (for hero/focal charts). Both use glass bg, the difference is border treatment.
+  </div>
+
+  <div class="grid-2">
+    <!-- Glass card container -->
+    <div>
+      <div class="compare-label">A. Glass Card (default)</div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-label">Volume</div>
+            <div class="chart-card-title">Daily transactions</div>
+          </div>
+        </div>
+        <svg width="100%" height="120" viewBox="0 0 400 120" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="miniGrad1" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#34d399" stop-opacity="0.25"/>
+              <stop offset="100%" stop-color="#34d399" stop-opacity="0.02"/>
+            </linearGradient>
+          </defs>
+          <line x1="0" y1="60" x2="400" y2="60" class="grid-line"/>
+          <path d="M0,80 C50,70 100,55 150,45 C200,35 250,40 300,30 C350,25 380,20 400,15 L400,120 L0,120 Z" fill="url(#miniGrad1)"/>
+          <path d="M0,80 C50,70 100,55 150,45 C200,35 250,40 300,30 C350,25 380,20 400,15" fill="none" stroke="#34d399" stroke-width="2"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Borderless container -->
+    <div>
+      <div class="compare-label">B. Borderless (hero context)</div>
+      <div style="padding:20px;">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-label">Volume</div>
+            <div class="chart-card-title">Daily transactions</div>
+          </div>
+        </div>
+        <svg width="100%" height="120" viewBox="0 0 400 120" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="miniGrad2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#34d399" stop-opacity="0.25"/>
+              <stop offset="100%" stop-color="#34d399" stop-opacity="0.02"/>
+            </linearGradient>
+          </defs>
+          <line x1="0" y1="60" x2="400" y2="60" class="grid-line"/>
+          <path d="M0,80 C50,70 100,55 150,45 C200,35 250,40 300,30 C350,25 380,20 400,15 L400,120 L0,120 Z" fill="url(#miniGrad2)"/>
+          <path d="M0,80 C50,70 100,55 150,45 C200,35 250,40 300,30 C350,25 380,20 400,15" fill="none" stroke="#34d399" stroke-width="2"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="glass">
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 08: TOOLTIP & AXIS STYLING -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">08 — Tooltip & Axis Specification</div>
+
+  <div class="grid-2">
+    <!-- Tooltip spec -->
+    <div>
+      <div class="compare-label" style="margin-bottom:16px;">Tooltip (bg-elevated)</div>
+      <div style="position:relative;display:inline-block;">
+        <div class="tooltip-mock" style="position:relative;">
+          <div class="tooltip-date">Mar 14, 2026</div>
+          <div class="tooltip-row">
+            <div class="tooltip-dot" style="background:var(--accent-emerald)"></div>
+            <span class="tooltip-label">Revenue</span>
+            <span class="tooltip-val">$124,500</span>
+          </div>
+          <div class="tooltip-row">
+            <div class="tooltip-dot" style="background:var(--accent-blue)"></div>
+            <span class="tooltip-label">Expenses</span>
+            <span class="tooltip-val">$98,200</span>
+          </div>
+          <div class="tooltip-row">
+            <div class="tooltip-dot" style="background:var(--accent-purple)"></div>
+            <span class="tooltip-label">Transfers</span>
+            <span class="tooltip-val">$45,800</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Axis spec -->
+    <div>
+      <div class="compare-label" style="margin-bottom:16px;">Axis & Grid Rules</div>
+      <div style="font-size:13px;color:var(--text-muted);line-height:1.8;">
+        <div><span style="color:var(--text);font-weight:500;">Grid lines:</span> <code style="font-family:'SF Mono',monospace;font-size:11px;color:var(--accent-blue);background:var(--accent-blue-muted);padding:2px 6px;border-radius:4px;">white 4%</code> — horizontal only, no vertical</div>
+        <div><span style="color:var(--text);font-weight:500;">Axis line:</span> <code style="font-family:'SF Mono',monospace;font-size:11px;color:var(--accent-blue);background:var(--accent-blue-muted);padding:2px 6px;border-radius:4px;">white 6%</code> — bottom only (X axis)</div>
+        <div><span style="color:var(--text);font-weight:500;">Tick text:</span> Figtree 500, 10px, <code style="font-family:'SF Mono',monospace;font-size:11px;color:var(--accent-blue);background:var(--accent-blue-muted);padding:2px 6px;border-radius:4px;">text-dim</code></div>
+        <div><span style="color:var(--text);font-weight:500;">Y-axis:</span> Hidden labels (clean look), or right-aligned when needed</div>
+        <div><span style="color:var(--text);font-weight:500;">Cursor line:</span> Dashed <code style="font-family:'SF Mono',monospace;font-size:11px;color:var(--accent-blue);background:var(--accent-blue-muted);padding:2px 6px;border-radius:4px;">white 8%</code>, 4px dash</div>
+        <div><span style="color:var(--text);font-weight:500;">Hover dots:</span> 4px radius, semantic fill, 2px <code style="font-family:'SF Mono',monospace;font-size:11px;color:var(--accent-blue);background:var(--accent-blue-muted);padding:2px 6px;border-radius:4px;">bg</code> stroke</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="glass">
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 09: IMPLEMENTATION COMPATIBILITY -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">09 — Implementation Notes</div>
+  <div class="section-desc">
+    How the glass design system maps to the existing Recharts + shadcn/ui chart architecture.
+  </div>
+
+  <table class="spec-table">
+    <thead>
+      <tr>
+        <th>Current</th>
+        <th>Change</th>
+        <th>Impact</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>--chart-1</code> to <code>--chart-6</code></td>
+        <td>Replace steel grays with semantic palette in <code>globals.css</code></td>
+        <td>All charts auto-update. Zero component changes.</td>
+      </tr>
+      <tr>
+        <td><code>ChartContainer</code> CSS selectors</td>
+        <td>Update grid/tick/axis colors to glass tokens</td>
+        <td><code>chart.tsx</code> — 3-4 class changes</td>
+      </tr>
+      <tr>
+        <td><code>ChartTooltipContent</code></td>
+        <td>Style with <code>bg-elevated</code>, glass border, deep shadow</td>
+        <td><code>chart.tsx</code> — tooltip classes</td>
+      </tr>
+      <tr>
+        <td><code>AreaChart</code> gradients</td>
+        <td>Already use <code>stop-opacity</code> 80%→10% — adjust to 30%→2%</td>
+        <td><code>AreaChart.tsx</code> — 2 values</td>
+      </tr>
+      <tr>
+        <td><code>KPICard</code></td>
+        <td>Replace <code>bg-card</code>/<code>border-border</code> with glass tokens</td>
+        <td><code>KPICard.tsx</code> — Tailwind classes</td>
+      </tr>
+      <tr>
+        <td><code>CHART_COLORS</code> array</td>
+        <td>Update to reference new <code>--chart-*</code> variables</td>
+        <td><code>chart-config.ts</code> — already uses vars</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="section-desc" style="margin-top:24px;">
+    <strong>Bottom line:</strong> The existing architecture is fully compatible. The changes are purely CSS variable swaps and a few Tailwind class updates. No structural changes to components, no API changes, no data flow changes.
+  </div>
+</div>
+
+<hr class="glass">
+
+<!-- ══════════════════════════════════════════════════ -->
+<!-- SECTION 10: COMPLETE SPEC SUMMARY -->
+<!-- ══════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-title">10 — Complete Chart Specification</div>
+
+  <table class="spec-table">
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Value</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="3" style="font-weight:600;color:var(--text);background:var(--glass-bg-1);border:none;">Color Palette</td></tr>
+      <tr>
+        <td>chart-1 (default)</td>
+        <td><code>#34d399</code> Emerald</td>
+        <td>Primary, positive, single-series default</td>
+      </tr>
+      <tr>
+        <td>chart-2</td>
+        <td><code>#3b82f6</code> Blue</td>
+        <td>Secondary, neutral/brand</td>
+      </tr>
+      <tr>
+        <td>chart-3</td>
+        <td><code>#8b5cf6</code> Purple</td>
+        <td>Integrations, third-party</td>
+      </tr>
+      <tr>
+        <td>chart-4</td>
+        <td><code>#fbbf24</code> Amber</td>
+        <td>Warning, pending</td>
+      </tr>
+      <tr>
+        <td>chart-5</td>
+        <td><code>#fb923c</code> Orange</td>
+        <td>Secondary warning</td>
+      </tr>
+      <tr>
+        <td>chart-6</td>
+        <td><code>#f87171</code> Red</td>
+        <td>Error, unmatched</td>
+      </tr>
+
+      <tr><td colspan="3" style="font-weight:600;color:var(--text);background:var(--glass-bg-1);border:none;">Area Chart</td></tr>
+      <tr>
+        <td>Gradient top</td>
+        <td>Color at 30% opacity</td>
+        <td>V3c-inspired, softer than current 80%</td>
+      </tr>
+      <tr>
+        <td>Gradient bottom</td>
+        <td>Color at 2% opacity</td>
+        <td>Fades to near-transparent</td>
+      </tr>
+      <tr>
+        <td>Stroke</td>
+        <td>2px, solid color</td>
+        <td>Primary series at full opacity</td>
+      </tr>
+      <tr>
+        <td>Secondary strokes</td>
+        <td>1.5px, 60% opacity</td>
+        <td>Visual hierarchy</td>
+      </tr>
+
+      <tr><td colspan="3" style="font-weight:600;color:var(--text);background:var(--glass-bg-1);border:none;">Line Chart</td></tr>
+      <tr>
+        <td>Stroke width</td>
+        <td>2px all series</td>
+        <td>Consistent weight</td>
+      </tr>
+      <tr>
+        <td>Dots</td>
+        <td>4px radius, 2px bg stroke</td>
+        <td>On hover only (showDots: false)</td>
+      </tr>
+      <tr>
+        <td>Curve</td>
+        <td>monotone (default)</td>
+        <td>Smooth curves, not linear</td>
+      </tr>
+
+      <tr><td colspan="3" style="font-weight:600;color:var(--text);background:var(--glass-bg-1);border:none;">Bar Chart</td></tr>
+      <tr>
+        <td>Fill opacity</td>
+        <td>80%</td>
+        <td>Slight transparency for glass effect</td>
+      </tr>
+      <tr>
+        <td>Stroke</td>
+        <td>1px, color at 40%</td>
+        <td>Subtle edge definition</td>
+      </tr>
+      <tr>
+        <td>Corner radius</td>
+        <td>6px (top of last segment)</td>
+        <td>Rounded top corners only</td>
+      </tr>
+
+      <tr><td colspan="3" style="font-weight:600;color:var(--text);background:var(--glass-bg-1);border:none;">Donut Chart</td></tr>
+      <tr>
+        <td>Stroke width</td>
+        <td>24px</td>
+        <td>Thick donut ring</td>
+      </tr>
+      <tr>
+        <td>Inner radius</td>
+        <td>~65% of outer</td>
+        <td>Wide center area for label</td>
+      </tr>
+      <tr>
+        <td>Segment opacity</td>
+        <td>80%</td>
+        <td>Consistent with bars</td>
+      </tr>
+      <tr>
+        <td>Center label</td>
+        <td>Overline + Figtree 900 value</td>
+        <td>Total count with formatting</td>
+      </tr>
+
+      <tr><td colspan="3" style="font-weight:600;color:var(--text);background:var(--glass-bg-1);border:none;">Container & UI</td></tr>
+      <tr>
+        <td>Default container</td>
+        <td>Glass card (gradient + border)</td>
+        <td>Same as Decision #7</td>
+      </tr>
+      <tr>
+        <td>Hero context</td>
+        <td>Borderless, directly on bg</td>
+        <td>P5: no competing containers</td>
+      </tr>
+      <tr>
+        <td>Grid lines</td>
+        <td>Horizontal only, white 4%</td>
+        <td>Minimal, glass-coherent</td>
+      </tr>
+      <tr>
+        <td>Axis text</td>
+        <td>Figtree 500, 10px, text-dim</td>
+        <td>Subordinate to data</td>
+      </tr>
+      <tr>
+        <td>Tooltip</td>
+        <td>bg-elevated, glass-border, 10px radius</td>
+        <td>Consistent with overlays (D12)</td>
+      </tr>
+      <tr>
+        <td>Legend</td>
+        <td>6px dots + 11px text-muted labels</td>
+        <td>Inline, right-aligned in header</td>
+      </tr>
+      <tr>
+        <td>Cursor line</td>
+        <td>Dashed white 8%, 4px dash</td>
+        <td>Hover indicator</td>
+      </tr>
+
+      <tr><td colspan="3" style="font-weight:600;color:var(--text);background:var(--glass-bg-1);border:none;">KPI Cards</td></tr>
+      <tr>
+        <td>Standard</td>
+        <td>Glass card, overline label + value + trend</td>
+        <td>Decision #7 surface</td>
+      </tr>
+      <tr>
+        <td>Hero</td>
+        <td>No container, on bg directly</td>
+        <td>P5: focal point</td>
+      </tr>
+      <tr>
+        <td>Value font</td>
+        <td>Figtree 900, tabular-nums</td>
+        <td>Scaled by context (72px hero, 28px card, 20px compact)</td>
+      </tr>
+      <tr>
+        <td>Unit suffix</td>
+        <td>Figtree 400, text-dim</td>
+        <td>%, h, /s, M — lighter weight than value</td>
+      </tr>
+      <tr>
+        <td>Trend</td>
+        <td>Semantic color at 60% opacity</td>
+        <td>P4: emerald positive, red negative</td>
+      </tr>
+      <tr>
+        <td>Sparkline</td>
+        <td>80×28px, same gradient as area chart</td>
+        <td>Optional, inline with value</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  lucide.createIcons();
+</script>
+<!-- ═══ Footer Nav ═══ -->
+<div style="display:flex;justify-content:space-between;align-items:center;padding:24px 32px;border-top:1px solid rgba(255,255,255,0.04);font-family:'Figtree',sans-serif;margin-top:40px;">
+  <a href="10-interactive-states.html" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);text-decoration:none;">← Interactive States</a>
+  <a href="12-chat-ui.html" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);text-decoration:none;">Chat UI →</a>
+</div>
+</body>
+</html>

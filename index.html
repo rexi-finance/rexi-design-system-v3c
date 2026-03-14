@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rexi Design System — V3c Hybrid Glass</title>
+<link rel="stylesheet" href="assets/v3c.css">
+<style>
+  body { min-height: 100vh; }
+
+  /* Hero */
+  .hero {
+    padding: 120px 32px 80px;
+    text-align: center;
+  }
+  .hero-version {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent-blue);
+    padding: 4px 12px;
+    border: 1px solid rgba(59,130,246,0.25);
+    border-radius: var(--radius-full);
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-family: 'Figtree', sans-serif;
+    font-weight: 900;
+    font-size: 56px;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    color: var(--text-bright);
+    margin-bottom: 20px;
+  }
+  .hero h1 span {
+    display: block;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-subtitle {
+    font-family: 'Merriweather', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    line-height: 1.6;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .hero-actions .btn { padding: 12px 28px; font-size: 14px; }
+
+  /* Principles */
+  .principles {
+    padding: 64px 32px;
+  }
+  .principles-label {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+  }
+  .principles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .principle-card {
+    background: linear-gradient(135deg, var(--glass-bg-2), var(--glass-bg-1));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    transition: all var(--transition-normal);
+  }
+  .principle-card:hover {
+    border-color: var(--glass-border-hover);
+  }
+  .principle-num {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent-blue);
+    margin-bottom: 6px;
+  }
+  .principle-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+  }
+  .principle-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* Token Preview */
+  .tokens {
+    padding: 64px 32px;
+    border-top: 1px solid var(--glass-border-subtle);
+  }
+  .tokens-label {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+  }
+  .token-section {
+    max-width: 900px;
+    margin: 0 auto 32px;
+  }
+  .token-section-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .swatch-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .swatch-color {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--glass-border);
+  }
+  .swatch-name {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: center;
+    max-width: 56px;
+  }
+  .type-preview {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px;
+    background: linear-gradient(135deg, var(--glass-bg-2), var(--glass-bg-1));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+  }
+  .type-preview-hero {
+    font-family: 'Figtree', sans-serif;
+    font-weight: 900;
+    font-size: 42px;
+    letter-spacing: -0.04em;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+  }
+  .type-preview-accent {
+    font-family: 'Merriweather', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .type-preview-body {
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    padding: 48px 32px;
+    border-top: 1px solid var(--glass-border-subtle);
+  }
+  .stat { text-align: center; }
+  .stat-value {
+    font-family: 'Figtree', sans-serif;
+    font-weight: 900;
+    font-size: 32px;
+    color: var(--text-bright);
+    letter-spacing: -0.03em;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* Footer */
+  .site-footer {
+    padding: 48px 32px;
+  }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 36px; }
+    .hero { padding: 80px 16px 48px; }
+    .principles-grid { grid-template-columns: 1fr; }
+    .stats-row { flex-direction: column; gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ Site Nav ═══ -->
+<nav class="site-nav">
+  <div class="site-nav-brand">
+    <a href="index.html" class="site-nav-logo">Rx</a>
+    <span class="site-nav-title">Rexi Design System</span>
+  </div>
+  <div class="site-nav-links">
+    <a href="reference.html">Reference</a>
+    <a href="process.html">Process</a>
+    <a href="https://github.com/rexi-finance/rexi-design-system-v3c" target="_blank">GitHub</a>
+  </div>
+</nav>
+
+<!-- ═══ Hero ═══ -->
+<section class="hero">
+  <div class="hero-version">V3c Hybrid Glass</div>
+  <h1>
+    Design System
+    <span>for Rexi</span>
+  </h1>
+  <p class="hero-subtitle">"Precise finance meets human intelligence"</p>
+  <div class="hero-actions">
+    <a href="reference.html" class="btn btn-primary">Explore Reference</a>
+    <a href="process.html" class="btn btn-secondary">View Process</a>
+  </div>
+</section>
+
+<!-- ═══ Design Principles ═══ -->
+<section class="principles">
+  <div class="principles-label">6 Design Principles</div>
+  <div class="principles-grid">
+    <div class="principle-card">
+      <div class="principle-num">P1</div>
+      <div class="principle-name">Narrate, don't list</div>
+      <div class="principle-desc">Every number answers a question. Match Rate is the answer to "how is my reconciliation going?"</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">P2</div>
+      <div class="principle-name">Space is the design</div>
+      <div class="principle-desc">48px content padding. 40px between sections. The interface breathes so the user can think.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">P3</div>
+      <div class="principle-name">Subtract, don't add</div>
+      <div class="principle-desc">No card wrappers on focal metrics. Every border, shadow, and container must justify its existence.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">P4</div>
+      <div class="principle-name">Color is information</div>
+      <div class="principle-desc">Never decorative. Emerald = healthy. Amber = attention. Red = error. Blue = brand. Purple = integration.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">P5</div>
+      <div class="principle-name">One focal point</div>
+      <div class="principle-desc">Each screen has ONE dominant element. Everything else is visually subordinate.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">P6</div>
+      <div class="principle-name">Typography carries personality</div>
+      <div class="principle-desc">Figtree 900 for hero numbers. Merriweather 300 italic for accent moments.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Token Preview ═══ -->
+<section class="tokens">
+  <div class="tokens-label">Design Tokens</div>
+
+  <div class="token-section">
+    <div class="token-section-title">Glass Layers</div>
+    <div class="swatch-row">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#1a1a1a;"></div>
+        <div class="swatch-name">bg</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#1e1e1e;"></div>
+        <div class="swatch-name">elevated</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgba(255,255,255,0.03);"></div>
+        <div class="swatch-name">glass-1</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgba(255,255,255,0.04);"></div>
+        <div class="swatch-name">glass-2</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgba(255,255,255,0.06);"></div>
+        <div class="swatch-name">glass-3</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgba(255,255,255,0.10);"></div>
+        <div class="swatch-name">glass-4</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="token-section">
+    <div class="token-section-title">Semantic Accents</div>
+    <div class="swatch-row">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#34d399;"></div>
+        <div class="swatch-name">emerald</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#3b82f6;"></div>
+        <div class="swatch-name">blue</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#8b5cf6;"></div>
+        <div class="swatch-name">purple</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#fbbf24;"></div>
+        <div class="swatch-name">amber</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#fb923c;"></div>
+        <div class="swatch-name">orange</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#f87171;"></div>
+        <div class="swatch-name">red</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="token-section">
+    <div class="token-section-title">Typography</div>
+    <div class="type-preview">
+      <div class="type-preview-hero">96.8%</div>
+      <div class="type-preview-accent">"Precise finance meets human intelligence"</div>
+      <div class="type-preview-body">Figtree 900 for hero stats &middot; Merriweather 300i for accent &middot; Figtree 400 for body text</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ Stats ═══ -->
+<div class="stats-row">
+  <div class="stat">
+    <div class="stat-value">16</div>
+    <div class="stat-label">Design Decisions</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">12</div>
+    <div class="stat-label">Explorations</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">6</div>
+    <div class="stat-label">Principles</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">30+</div>
+    <div class="stat-label">Tokens</div>
+  </div>
+</div>
+
+<!-- ═══ Footer ═══ -->
+<footer class="site-footer">
+  <p class="site-footer-text">
+    Built with V3c Hybrid Glass &middot; <a href="https://github.com/rexi-finance/rexi-design-system-v3c">github.com/rexi-finance/rexi-design-system-v3c</a>
+  </p>
+</footer>
+
+</body>
+</html>

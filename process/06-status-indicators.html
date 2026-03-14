@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Status Indicators — Rexi Design Process</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg: #1a1a1a;
+    --bg-elevated: #1e1e1e;
+    --glass-bg-1: rgba(255,255,255,0.03);
+    --glass-bg-2: rgba(255,255,255,0.04);
+    --glass-bg-3: rgba(255,255,255,0.06);
+    --glass-bg-4: rgba(255,255,255,0.10);
+    --glass-border-subtle: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-border-hover: rgba(255,255,255,0.14);
+    --glass-inset-bright: rgba(255,255,255,0.08);
+    --text-bright: rgba(255,255,255,0.95);
+    --text: #e5e5e5;
+    --text-muted: rgba(255,255,255,0.45);
+    --text-dim: rgba(255,255,255,0.25);
+    --text-faint: rgba(255,255,255,0.16);
+    --accent-emerald: #34d399;
+    --accent-emerald-muted: rgba(52,211,153,0.14);
+    --accent-red: #f87171;
+    --accent-red-muted: rgba(248,113,113,0.14);
+    --accent-amber: #fbbf24;
+    --accent-amber-muted: rgba(251,191,36,0.14);
+    --accent-blue: #3b82f6;
+    --accent-blue-muted: rgba(59,130,246,0.14);
+    --accent-purple: #8b5cf6;
+    --accent-purple-muted: rgba(139,92,246,0.14);
+    --accent-orange: #fb923c;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Figtree',sans-serif; }
+  body { background:var(--bg); color:var(--text); min-height:100vh; padding:48px; }
+
+  h2 { font-size:32px; font-weight:800; letter-spacing:-0.7px; }
+  .subtitle { font-size:14px; color:var(--text-muted); margin-top:8px; line-height:1.6; margin-bottom:40px; }
+  .section-title {
+    font-size:9px; font-weight:600; letter-spacing:3px; text-transform:uppercase;
+    color:var(--text-dim); margin-bottom:16px;
+  }
+  .divider { height:1px; background:rgba(255,255,255,0.06); margin:48px 0; }
+
+  .note-box {
+    background:rgba(59,130,246,0.04); border:1px solid rgba(59,130,246,0.12);
+    border-radius:10px; padding:16px 20px; margin-top:24px;
+  }
+  .note-box p { font-size:12px; color:var(--text-muted); line-height:1.6; }
+  .note-box strong { color:var(--text); }
+
+  .specs-block {
+    margin-top:16px; font-size:10px; color:var(--text-dim); line-height:1.8;
+    font-family:'SF Mono',monospace; background:rgba(255,255,255,0.02);
+    padding:12px 16px; border-radius:8px;
+  }
+
+  .compare-header {
+    font-size:11px; font-weight:600; color:var(--text-muted);
+    padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.06);
+    margin-bottom:16px;
+  }
+  .compare-header span {
+    font-weight:400; color:var(--text-dim); font-family:'SF Mono',monospace; font-size:10px;
+  }
+
+  /* Table */
+  .table-head {
+    display:flex; align-items:center; padding:9px 16px;
+    border-radius:6px; background:var(--glass-bg-3); margin-bottom:2px;
+  }
+  .table-head span {
+    font-size:10px; font-weight:600; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-dim);
+  }
+  .table-row {
+    display:flex; align-items:center; padding:11px 16px;
+    border-bottom:1px solid var(--glass-bg-1);
+  }
+  .table-row:last-child { border-bottom:none; }
+
+  .col-source { flex:1; display:flex; align-items:center; }
+  .col-amount { width:110px; font-size:13px; font-weight:500; color:var(--text); font-variant-numeric:tabular-nums; }
+  .col-status { width:120px; }
+  .col-action { width:50px; text-align:right; }
+
+  .source-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-right:10px; }
+  .row-source { font-size:13px; font-weight:500; color:var(--text); }
+  .row-action { font-size:11px; font-weight:500; color:var(--text-muted); cursor:pointer; }
+
+  /* Status: dot */
+  .status-dot-indicator {
+    display:flex; align-items:center; gap:6px;
+  }
+  .status-dot {
+    width:5px; height:5px; border-radius:50%; flex-shrink:0;
+  }
+  .status-dot-text {
+    font-size:11px; font-weight:500;
+  }
+
+  /* Status: badge */
+  .status-badge {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:3px 10px; border-radius:100px; font-size:11px; font-weight:500;
+  }
+  .status-badge .badge-dot {
+    width:5px; height:5px; border-radius:50%;
+  }
+
+  /* Glass card (final spec) */
+  .glass-card {
+    border-radius:12px; padding:16px;
+    background:linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01), rgba(255,255,255,0.03));
+    border:1px solid var(--glass-border-subtle);
+    box-shadow:0 1px 3px rgba(0,0,0,0.125);
+    display:flex; flex-direction:column; gap:6px;
+  }
+
+  /* Buttons */
+  .btn {
+    font-family:'Figtree',sans-serif; font-size:13px; padding:10px 22px;
+    border-radius:12px; cursor:pointer; display:inline-flex; align-items:center;
+    gap:6px; border:1px solid transparent;
+  }
+  .btn-primary {
+    background:var(--glass-bg-4); border-color:rgba(255,255,255,0.16);
+    box-shadow:0 1px 0 var(--glass-inset-bright); color:#FFF; font-weight:600;
+  }
+  .btn-secondary {
+    background:var(--glass-bg-2); border-color:rgba(255,255,255,0.12);
+    color:var(--text); font-weight:500;
+  }
+</style>
+</head>
+<body>
+<!-- ═══ Site Nav ═══ -->
+<nav style="position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;background:rgba(26,26,26,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);font-family:'Figtree',sans-serif;">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="../index.html" style="font-weight:900;font-size:18px;color:#3b82f6;letter-spacing:-0.03em;text-decoration:none;">Rx</a>
+    <span style="font-size:13px;color:rgba(255,255,255,0.45);">
+      <a href="../process.html" style="color:rgba(255,255,255,0.45);text-decoration:none;">Process</a>
+      <span style="margin:0 8px;color:rgba(255,255,255,0.25);">→</span>
+      <span style="color:rgba(255,255,255,0.95);font-weight:600;">Status Indicators</span>
+    </span>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <a href="../reference.html" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.45);padding:6px 14px;border-radius:6px;text-decoration:none;">Reference</a>
+    <a href="../process.html" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.95);background:rgba(255,255,255,0.06);padding:6px 14px;border-radius:6px;text-decoration:none;">Process</a>
+  </div>
+</nav>
+<!-- ═══ Decision Summary ═══ -->
+<div style="margin:24px 32px;padding:16px 20px;background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:8px;font-family:'Figtree',sans-serif;">
+  <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#3b82f6;margin-bottom:4px;">Decision #8</div>
+  <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:-0.01em;margin-bottom:4px;">Status Indicators</div>
+  <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;">Context-dependent: badges for tables, dots for cards. Semantic color coding.</div>
+</div>
+<div style="margin:16px 24px;padding:12px 16px;background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:8px;font-family:'Figtree',sans-serif;">
+  <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#3b82f6;margin-bottom:3px;">Decision #8</div>
+  <div style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:-0.01em;margin-bottom:3px;">Status Indicators</div>
+  <div style="font-size:12px;color:rgba(255,255,255,0.45);line-height:1.5;">Context-dependent: badges for tables, dots for cards</div>
+</div>
+
+<h2>Status Indicators — Dots vs Badges</h2>
+<p class="subtitle">
+  P3 dice "subtract, don't add" — dots por defecto. Pero ¿cuándo tiene sentido un badge? Veamos cada contexto.
+</p>
+
+<!-- ============================== -->
+<!-- CATALOG: ALL STATUS FORMATS     -->
+<!-- ============================== -->
+
+<div class="section-title">CATÁLOGO — FORMATOS DISPONIBLES</div>
+<div style="display:flex; gap:48px; margin-bottom:40px;">
+
+  <!-- Dot + text -->
+  <div>
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:12px;">DOT + TEXT</div>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <div class="status-dot-indicator">
+        <span class="status-dot" style="background:var(--accent-emerald);"></span>
+        <span class="status-dot-text" style="color:var(--accent-emerald);">Matched</span>
+      </div>
+      <div class="status-dot-indicator">
+        <span class="status-dot" style="background:var(--accent-red);"></span>
+        <span class="status-dot-text" style="color:var(--accent-red);">Unmatched</span>
+      </div>
+      <div class="status-dot-indicator">
+        <span class="status-dot" style="background:var(--accent-amber);"></span>
+        <span class="status-dot-text" style="color:var(--accent-amber);">Pending</span>
+      </div>
+      <div class="status-dot-indicator">
+        <span class="status-dot" style="background:var(--accent-blue);"></span>
+        <span class="status-dot-text" style="color:var(--accent-blue);">Processing</span>
+      </div>
+      <div class="status-dot-indicator">
+        <span class="status-dot" style="background:var(--accent-purple);"></span>
+        <span class="status-dot-text" style="color:var(--accent-purple);">External</span>
+      </div>
+    </div>
+    <div class="specs-block" style="margin-top:12px;">
+      dot: 5px · semantic color<br>
+      text: 11px, 500, semantic color<br>
+      gap: 6px<br>
+      Peso visual: ●○○○○
+    </div>
+  </div>
+
+  <!-- Dot only (no text) -->
+  <div>
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:12px;">DOT ONLY</div>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span class="status-dot" style="background:var(--accent-emerald);"></span>
+        <span style="font-size:11px; color:var(--text-dim);">(hover tooltip)</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span class="status-dot" style="background:var(--accent-red);"></span>
+        <span style="font-size:11px; color:var(--text-dim);">(hover tooltip)</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span class="status-dot" style="background:var(--accent-amber);"></span>
+        <span style="font-size:11px; color:var(--text-dim);">(hover tooltip)</span>
+      </div>
+    </div>
+    <div class="specs-block" style="margin-top:12px;">
+      dot: 5px · semantic color<br>
+      text: none (tooltip on hover)<br>
+      Peso visual: ●○○○○<br>
+      Use: ultra-compact, space-limited
+    </div>
+  </div>
+
+  <!-- Badge (dot + text + bg) -->
+  <div>
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:12px;">BADGE (DOT + TEXT + BG)</div>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <div class="status-badge" style="background:var(--accent-emerald-muted); color:var(--accent-emerald);">
+        <span class="badge-dot" style="background:var(--accent-emerald);"></span>
+        Matched
+      </div>
+      <div class="status-badge" style="background:var(--accent-red-muted); color:var(--accent-red);">
+        <span class="badge-dot" style="background:var(--accent-red);"></span>
+        Unmatched
+      </div>
+      <div class="status-badge" style="background:var(--accent-amber-muted); color:var(--accent-amber);">
+        <span class="badge-dot" style="background:var(--accent-amber);"></span>
+        Pending
+      </div>
+      <div class="status-badge" style="background:var(--accent-blue-muted); color:var(--accent-blue);">
+        <span class="badge-dot" style="background:var(--accent-blue);"></span>
+        Processing
+      </div>
+      <div class="status-badge" style="background:var(--accent-purple-muted); color:var(--accent-purple);">
+        <span class="badge-dot" style="background:var(--accent-purple);"></span>
+        External
+      </div>
+    </div>
+    <div class="specs-block" style="margin-top:12px;">
+      bg: semantic-muted (14%)<br>
+      dot: 5px · text: 11px, 500<br>
+      padding: 3px 10px · radius: pill<br>
+      Peso visual: ●●●○○
+    </div>
+  </div>
+
+  <!-- Badge text-only (no dot) -->
+  <div>
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:12px;">BADGE TEXT-ONLY</div>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <div style="display:inline-flex; padding:3px 10px; border-radius:100px; background:var(--accent-emerald-muted); font-size:11px; font-weight:500; color:var(--accent-emerald);">
+        Matched
+      </div>
+      <div style="display:inline-flex; padding:3px 10px; border-radius:100px; background:var(--accent-red-muted); font-size:11px; font-weight:500; color:var(--accent-red);">
+        Unmatched
+      </div>
+      <div style="display:inline-flex; padding:3px 10px; border-radius:100px; background:var(--accent-amber-muted); font-size:11px; font-weight:500; color:var(--accent-amber);">
+        Pending
+      </div>
+    </div>
+    <div class="specs-block" style="margin-top:12px;">
+      bg: semantic-muted (14%)<br>
+      text: 11px, 500, semantic color<br>
+      padding: 3px 10px · radius: pill<br>
+      Peso visual: ●●○○○
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============================== -->
+<!-- CONTEXT 1: TABLE ROWS           -->
+<!-- ============================== -->
+
+<div class="section-title">CONTEXTO 1 — TABLA (ROWS DENSOS)</div>
+<p style="font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:24px;">
+  Datos densos. Muchas filas, scanning rápido. ¿Qué funciona mejor?
+</p>
+
+<div style="display:flex; gap:24px; margin-bottom:32px;">
+  <!-- Dots in table -->
+  <div style="flex:1;">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">Dot + text</div>
+    <div>
+      <div class="table-head">
+        <span class="col-source">Source</span>
+        <span class="col-amount">Amount</span>
+        <span class="col-status">Status</span>
+        <span class="col-action"></span>
+      </div>
+      <div class="table-row">
+        <span class="col-source"><span class="source-dot" style="background:var(--accent-purple);"></span><span class="row-source">Stripe #4821</span></span>
+        <span class="col-amount">$124,891</span>
+        <span class="col-status"><span class="status-dot-indicator"><span class="status-dot" style="background:var(--accent-emerald);"></span><span class="status-dot-text" style="color:var(--accent-emerald);">Matched</span></span></span>
+        <span class="col-action"><span class="row-action">View</span></span>
+      </div>
+      <div class="table-row">
+        <span class="col-source"><span class="source-dot" style="background:var(--accent-blue);"></span><span class="row-source">Bank #7733</span></span>
+        <span class="col-amount">$8,450</span>
+        <span class="col-status"><span class="status-dot-indicator"><span class="status-dot" style="background:var(--accent-red);"></span><span class="status-dot-text" style="color:var(--accent-red);">Unmatched</span></span></span>
+        <span class="col-action"><span class="row-action">View</span></span>
+      </div>
+      <div class="table-row">
+        <span class="col-source"><span class="source-dot" style="background:var(--accent-purple);"></span><span class="row-source">PayPal #339</span></span>
+        <span class="col-amount">$32,100</span>
+        <span class="col-status"><span class="status-dot-indicator"><span class="status-dot" style="background:var(--accent-amber);"></span><span class="status-dot-text" style="color:var(--accent-amber);">Pending</span></span></span>
+        <span class="col-action"><span class="row-action">View</span></span>
+      </div>
+      <div class="table-row">
+        <span class="col-source"><span class="source-dot" style="background:var(--accent-emerald);"></span><span class="row-source">Mercury #2048</span></span>
+        <span class="col-amount">$67,230</span>
+        <span class="col-status"><span class="status-dot-indicator"><span class="status-dot" style="background:var(--accent-emerald);"></span><span class="status-dot-text" style="color:var(--accent-emerald);">Matched</span></span></span>
+        <span class="col-action"><span class="row-action">View</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Badges in table -->
+  <div style="flex:1;">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">Badge (dot + text + bg)</div>
+    <div>
+      <div class="table-head">
+        <span class="col-source">Source</span>
+        <span class="col-amount">Amount</span>
+        <span class="col-status">Status</span>
+        <span class="col-action"></span>
+      </div>
+      <div class="table-row">
+        <span class="col-source"><span class="source-dot" style="background:var(--accent-purple);"></span><span class="row-source">Stripe #4821</span></span>
+        <span class="col-amount">$124,891</span>
+        <span class="col-status"><span class="status-badge" style="background:var(--accent-emerald-muted); color:var(--accent-emerald);"><span class="badge-dot" style="background:var(--accent-emerald);"></span>Matched</span></span>
+        <span class="col-action"><span class="row-action">View</span></span>
+      </div>
+      <div class="table-row">
+        <span class="col-source"><span class="source-dot" style="background:var(--accent-blue);"></span><span class="row-source">Bank #7733</span></span>
+        <span class="col-amount">$8,450</span>
+        <span class="col-status"><span class="status-badge" style="background:var(--accent-red-muted); color:var(--accent-red);"><span class="badge-dot" style="background:var(--accent-red);"></span>Unmatched</span></span>
+        <span class="col-action"><span class="row-action">View</span></span>
+      </div>
+      <div class="table-row">
+        <span class="col-source"><span class="source-dot" style="background:var(--accent-purple);"></span><span class="row-source">PayPal #339</span></span>
+        <span class="col-amount">$32,100</span>
+        <span class="col-status"><span class="status-badge" style="background:var(--accent-amber-muted); color:var(--accent-amber);"><span class="badge-dot" style="background:var(--accent-amber);"></span>Pending</span></span>
+        <span class="col-action"><span class="row-action">View</span></span>
+      </div>
+      <div class="table-row">
+        <span class="col-source"><span class="source-dot" style="background:var(--accent-emerald);"></span><span class="row-source">Mercury #2048</span></span>
+        <span class="col-amount">$67,230</span>
+        <span class="col-status"><span class="status-badge" style="background:var(--accent-emerald-muted); color:var(--accent-emerald);"><span class="badge-dot" style="background:var(--accent-emerald);"></span>Matched</span></span>
+        <span class="col-action"><span class="row-action">View</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============================== -->
+<!-- CONTEXT 2: DETAIL VIEW          -->
+<!-- ============================== -->
+
+<div class="section-title">CONTEXTO 2 — VISTA DE DETALLE (TRANSACTION HEADER)</div>
+<p style="font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:24px;">
+  Vista individual de una transacción. El status es más prominente — es la respuesta a "¿qué pasa con esta transacción?"
+</p>
+
+<div style="display:flex; gap:24px; margin-bottom:32px;">
+  <!-- Detail with dot -->
+  <div style="flex:1;">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">Dot + text</div>
+    <div style="padding:28px 32px; border-radius:12px; border:1px solid var(--glass-border-subtle); background:var(--bg);">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <div style="font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); margin-bottom:6px;">STRIPE SETTLEMENT</div>
+          <div style="font-size:28px; font-weight:800; color:var(--text); letter-spacing:-0.5px;">$124,891.00</div>
+          <div style="display:flex; align-items:center; gap:12px; margin-top:8px;">
+            <span style="font-size:12px; color:var(--text-muted);">Mar 14, 2026</span>
+            <span style="color:var(--glass-border); font-size:10px;">|</span>
+            <span class="status-dot-indicator">
+              <span class="status-dot" style="background:var(--accent-red);"></span>
+              <span class="status-dot-text" style="color:var(--accent-red);">Unmatched</span>
+            </span>
+          </div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <div class="btn btn-secondary" style="padding:8px 16px; font-size:12px;">Dismiss</div>
+          <div class="btn btn-primary" style="padding:8px 16px; font-size:12px;">Match</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail with badge -->
+  <div style="flex:1;">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">Badge</div>
+    <div style="padding:28px 32px; border-radius:12px; border:1px solid var(--glass-border-subtle); background:var(--bg);">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <div style="font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); margin-bottom:6px;">STRIPE SETTLEMENT</div>
+          <div style="font-size:28px; font-weight:800; color:var(--text); letter-spacing:-0.5px;">$124,891.00</div>
+          <div style="display:flex; align-items:center; gap:12px; margin-top:8px;">
+            <span style="font-size:12px; color:var(--text-muted);">Mar 14, 2026</span>
+            <span style="color:var(--glass-border); font-size:10px;">|</span>
+            <span class="status-badge" style="background:var(--accent-red-muted); color:var(--accent-red);">
+              <span class="badge-dot" style="background:var(--accent-red);"></span>
+              Unmatched
+            </span>
+          </div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <div class="btn btn-secondary" style="padding:8px 16px; font-size:12px;">Dismiss</div>
+          <div class="btn btn-primary" style="padding:8px 16px; font-size:12px;">Match</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============================== -->
+<!-- CONTEXT 3: CARDS                -->
+<!-- ============================== -->
+
+<div class="section-title">CONTEXTO 3 — CARDS CON STATUS</div>
+<p style="font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:24px;">
+  Status dentro de una glass card. ¿Dot inline con el trend o badge separado?
+</p>
+
+<div style="display:flex; gap:24px; margin-bottom:32px;">
+  <!-- Cards with dot-in-trend -->
+  <div style="flex:1;">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">Dot integrado en trend</div>
+    <div style="display:flex; gap:12px;">
+      <div class="glass-card" style="flex:1;">
+        <div style="font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim);">STRIPE</div>
+        <div style="font-size:24px; font-weight:700; color:var(--text); letter-spacing:-0.5px; line-height:1;">$124,891</div>
+        <div style="display:flex; align-items:center; gap:5px; margin-top:2px;">
+          <span class="status-dot" style="background:var(--accent-emerald);"></span>
+          <span style="font-size:11px; color:rgba(52,211,153,0.6);">Matched</span>
+        </div>
+      </div>
+      <div class="glass-card" style="flex:1;">
+        <div style="font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim);">BANK TRANSFER</div>
+        <div style="font-size:24px; font-weight:700; color:var(--text); letter-spacing:-0.5px; line-height:1;">$8,450</div>
+        <div style="display:flex; align-items:center; gap:5px; margin-top:2px;">
+          <span class="status-dot" style="background:var(--accent-red);"></span>
+          <span style="font-size:11px; color:rgba(248,113,113,0.6);">Unmatched</span>
+        </div>
+      </div>
+      <div class="glass-card" style="flex:1;">
+        <div style="font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim);">PAYPAL</div>
+        <div style="font-size:24px; font-weight:700; color:var(--text); letter-spacing:-0.5px; line-height:1;">$32,100</div>
+        <div style="display:flex; align-items:center; gap:5px; margin-top:2px;">
+          <span class="status-dot" style="background:var(--accent-amber);"></span>
+          <span style="font-size:11px; color:rgba(251,191,36,0.6);">Pending</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards with badge -->
+  <div style="flex:1;">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">Badge separado</div>
+    <div style="display:flex; gap:12px;">
+      <div class="glass-card" style="flex:1;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim);">STRIPE</div>
+          <span class="status-badge" style="background:var(--accent-emerald-muted); color:var(--accent-emerald); font-size:10px; padding:2px 8px;">
+            <span class="badge-dot" style="background:var(--accent-emerald); width:4px; height:4px;"></span>
+            Matched
+          </span>
+        </div>
+        <div style="font-size:24px; font-weight:700; color:var(--text); letter-spacing:-0.5px; line-height:1;">$124,891</div>
+      </div>
+      <div class="glass-card" style="flex:1;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim);">BANK TRANSFER</div>
+          <span class="status-badge" style="background:var(--accent-red-muted); color:var(--accent-red); font-size:10px; padding:2px 8px;">
+            <span class="badge-dot" style="background:var(--accent-red); width:4px; height:4px;"></span>
+            Unmatched
+          </span>
+        </div>
+        <div style="font-size:24px; font-weight:700; color:var(--text); letter-spacing:-0.5px; line-height:1;">$8,450</div>
+      </div>
+      <div class="glass-card" style="flex:1;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim);">PAYPAL</div>
+          <span class="status-badge" style="background:var(--accent-amber-muted); color:var(--accent-amber); font-size:10px; padding:2px 8px;">
+            <span class="badge-dot" style="background:var(--accent-amber); width:4px; height:4px;"></span>
+            Pending
+          </span>
+        </div>
+        <div style="font-size:24px; font-weight:700; color:var(--text); letter-spacing:-0.5px; line-height:1;">$32,100</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============================== -->
+<!-- CONTEXT 4: SIDEBAR / COMPACT    -->
+<!-- ============================== -->
+
+<div class="section-title">CONTEXTO 4 — LISTA COMPACTA / NAV SIDEBAR</div>
+<p style="font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:24px;">
+  Espacio limitado. Lista de sources/connections.
+</p>
+
+<div style="display:flex; gap:24px; margin-bottom:32px;">
+  <div style="flex:1;">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">Dot only (ultra-compact)</div>
+    <div style="max-width:280px; display:flex; flex-direction:column; gap:2px;">
+      <div style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:8px;">
+        <span class="status-dot" style="background:var(--accent-emerald);"></span>
+        <span style="font-size:13px; font-weight:500; color:var(--text); flex:1;">Stripe</span>
+        <span style="font-size:11px; color:var(--text-dim);">Connected</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:8px;">
+        <span class="status-dot" style="background:var(--accent-emerald);"></span>
+        <span style="font-size:13px; font-weight:500; color:var(--text); flex:1;">QuickBooks</span>
+        <span style="font-size:11px; color:var(--text-dim);">Connected</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:8px;">
+        <span class="status-dot" style="background:var(--accent-red);"></span>
+        <span style="font-size:13px; font-weight:500; color:var(--text); flex:1;">Mercury</span>
+        <span style="font-size:11px; color:var(--text-dim);">Disconnected</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:8px;">
+        <span class="status-dot" style="background:var(--accent-amber);"></span>
+        <span style="font-size:13px; font-weight:500; color:var(--text); flex:1;">PayPal</span>
+        <span style="font-size:11px; color:var(--text-dim);">Syncing...</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="flex:1;">
+    <div style="font-size:10px; color:var(--text-dim); margin-bottom:8px;">Badge text-only</div>
+    <div style="max-width:320px; display:flex; flex-direction:column; gap:2px;">
+      <div style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:8px;">
+        <span style="font-size:13px; font-weight:500; color:var(--text); flex:1;">Stripe</span>
+        <span style="display:inline-flex; padding:2px 8px; border-radius:100px; background:var(--accent-emerald-muted); font-size:10px; font-weight:500; color:var(--accent-emerald);">Connected</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:8px;">
+        <span style="font-size:13px; font-weight:500; color:var(--text); flex:1;">QuickBooks</span>
+        <span style="display:inline-flex; padding:2px 8px; border-radius:100px; background:var(--accent-emerald-muted); font-size:10px; font-weight:500; color:var(--accent-emerald);">Connected</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:8px;">
+        <span style="font-size:13px; font-weight:500; color:var(--text); flex:1;">Mercury</span>
+        <span style="display:inline-flex; padding:2px 8px; border-radius:100px; background:var(--accent-red-muted); font-size:10px; font-weight:500; color:var(--accent-red);">Disconnected</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:8px;">
+        <span style="font-size:13px; font-weight:500; color:var(--text); flex:1;">PayPal</span>
+        <span style="display:inline-flex; padding:2px 8px; border-radius:100px; background:var(--accent-amber-muted); font-size:10px; font-weight:500; color:var(--accent-amber);">Syncing</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ============================== -->
+<!-- PROPOSED RULE                   -->
+<!-- ============================== -->
+
+<div class="note-box">
+  <p><strong>Regla propuesta — Contextual:</strong></p>
+  <p style="margin-top:8px;">
+    <strong>Tabla (datos densos):</strong> Dot + text siempre. Liviano, scannable, no agrega peso visual a cada row. P3: subtract.<br><br>
+    <strong>Vista de detalle (header):</strong> Badge. El status es protagonista — responde "¿qué pasa con esto?". Necesita más peso visual. El bg-tint (14% opacity) da prominencia sin ser heavy.<br><br>
+    <strong>Cards:</strong> Dot integrado en trend (no badge separado). Las cards ya tienen suficiente estructura visual — un badge compite con el valor numérico. El dot se integra naturalmente con el trend text.<br><br>
+    <strong>Listas compactas:</strong> Dot only (o dot + text si hay espacio). En sidebars/nav el espacio es limitado, el dot basta.<br><br>
+    <strong>Settings/connections:</strong> Badge text-only. Sin dot. El bg-tint grouping ayuda a escanear rápido el estado de múltiples items en una lista de config.<br><br>
+    <strong>Principio general:</strong> Dot es el default. Badge sólo cuando el status es la información principal de ese contexto, no metadata secundaria.
+  </p>
+</div>
+<!-- ═══ Footer Nav ═══ -->
+<div style="display:flex;justify-content:space-between;align-items:center;padding:24px 32px;border-top:1px solid rgba(255,255,255,0.04);font-family:'Figtree',sans-serif;margin-top:40px;">
+  <a href="05-inputs-forms.html" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);text-decoration:none;">← Inputs & Forms</a>
+  <a href="07-iconography.html" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);text-decoration:none;">Iconography →</a>
+</div>
+</body>
+</html>

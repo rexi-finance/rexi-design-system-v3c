@@ -1,0 +1,2105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rexi Design System — V3c Hybrid Glass</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root {
+    --bg: #1a1a1a;
+    --bg-elevated: #1e1e1e;
+    --glass-bg-1: rgba(255,255,255,0.03);
+    --glass-bg-2: rgba(255,255,255,0.04);
+    --glass-bg-3: rgba(255,255,255,0.06);
+    --glass-bg-4: rgba(255,255,255,0.10);
+    --glass-border-subtle: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-border-hover: rgba(255,255,255,0.14);
+    --glass-inset: rgba(255,255,255,0.04);
+    --glass-inset-bright: rgba(255,255,255,0.08);
+    --text-bright: rgba(255,255,255,0.95);
+    --text: #e5e5e5;
+    --text-muted: rgba(255,255,255,0.45);
+    --text-dim: rgba(255,255,255,0.25);
+    --text-faint: rgba(255,255,255,0.16);
+    --accent-emerald: #34d399;
+    --accent-emerald-muted: rgba(52,211,153,0.08);
+    --accent-amber: #fbbf24;
+    --accent-amber-muted: rgba(251,191,36,0.08);
+    --accent-red: #f87171;
+    --accent-red-muted: rgba(248,113,113,0.08);
+    --accent-blue: #3b82f6;
+    --accent-blue-muted: rgba(59,130,246,0.08);
+    --accent-purple: #8b5cf6;
+    --accent-purple-muted: rgba(139,92,246,0.08);
+    --accent-orange: #fb923c;
+    --transition-fast: 120ms ease;
+    --transition-normal: 180ms ease;
+    --transition-slow: 280ms ease;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Figtree', sans-serif;
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .ds-wrapper {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ── Sidebar Nav ── */
+  .ds-nav {
+    width: 220px;
+    border-right: 1px solid var(--glass-border);
+    padding: 24px 0;
+    overflow-y: auto;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .ds-nav-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text-bright);
+    letter-spacing: -0.02em;
+    padding: 0 20px;
+    margin-bottom: 4px;
+  }
+  .ds-nav-subtitle {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 0 20px;
+    margin-bottom: 20px;
+  }
+  .ds-nav-group {
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 16px 20px 6px;
+  }
+  .ds-nav a {
+    display: block;
+    padding: 6px 20px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+    border-left: 2px solid transparent;
+  }
+  .ds-nav a:hover {
+    color: var(--text);
+    background: var(--glass-bg-2);
+  }
+  .ds-nav a.active {
+    color: var(--text-bright);
+    border-left-color: var(--accent-blue);
+    background: var(--glass-bg-2);
+  }
+
+  /* ── Main Content ── */
+  .ds-main {
+    flex: 1;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+  }
+  .ds-section {
+    padding: 48px;
+    border-bottom: 1px solid var(--glass-border-subtle);
+  }
+  .ds-section:last-child { border-bottom: none; }
+
+  .section-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-bright);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .section-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 32px;
+    max-width: 600px;
+  }
+  .subsection {
+    margin-bottom: 32px;
+  }
+  .subsection:last-child { margin-bottom: 0; }
+  .subsection-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 14px;
+  }
+
+  /* ── Color Swatches ── */
+  .swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+  }
+  .swatch {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--glass-border);
+  }
+  .swatch-color {
+    height: 48px;
+    position: relative;
+  }
+  .swatch-color.checkerboard {
+    background-image: linear-gradient(45deg, #333 25%, transparent 25%),
+      linear-gradient(-45deg, #333 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #333 75%),
+      linear-gradient(-45deg, transparent 75%, #333 75%);
+    background-size: 8px 8px;
+    background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+  }
+  .swatch-color.checkerboard::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .swatch-info {
+    padding: 8px 10px;
+    background: var(--glass-bg-1);
+  }
+  .swatch-name {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 1px;
+  }
+  .swatch-value {
+    font-size: 9px;
+    color: var(--text-dim);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  /* ── Typography Samples ── */
+  .type-sample {
+    margin-bottom: 20px;
+    padding: 16px 20px;
+    border-radius: 10px;
+    background: var(--glass-bg-1);
+    border: 1px solid var(--glass-border-subtle);
+  }
+  .type-sample-meta {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+
+  /* ── Spacing Scale ── */
+  .space-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+  .space-label {
+    width: 70px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .space-bar {
+    height: 20px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, rgba(59,130,246,0.20), rgba(139,92,246,0.20));
+    border: 1px solid rgba(59,130,246,0.15);
+    transition: all var(--transition-fast);
+  }
+  .space-bar:hover { border-color: rgba(59,130,246,0.40); }
+  .space-val {
+    font-size: 10px;
+    color: var(--text-dim);
+    font-family: 'SF Mono', monospace;
+    flex-shrink: 0;
+  }
+
+  /* ── Radius Scale ── */
+  .radius-grid {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: end;
+  }
+  .radius-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .radius-box {
+    width: 60px;
+    height: 60px;
+    background: var(--glass-bg-3);
+    border: 1px solid var(--glass-border-hover);
+  }
+  .radius-name {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: center;
+  }
+  .radius-val {
+    font-size: 9px;
+    color: var(--text-dim);
+    font-family: 'SF Mono', monospace;
+  }
+
+  /* ── Glass Card Demo ── */
+  .glass-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 50%, rgba(255,255,255,0.03) 100%);
+    border: 1px solid var(--glass-border-subtle);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.125);
+  }
+  .glass-card-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .glass-card-value {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--text-bright);
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    margin-top: 4px;
+  }
+  .glass-card-trend {
+    font-size: 11px;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  /* ── Layers Demo ── */
+  .layers-demo {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .layer-box {
+    width: 160px;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+  }
+  .layer-label {
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .layer-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* ── Buttons ── */
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .btn {
+    padding: 10px 22px;
+    border-radius: 12px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: 1px solid;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn svg { width: 16px; height: 16px; }
+  .btn-primary {
+    background: var(--glass-bg-4);
+    border-color: rgba(255,255,255,0.16);
+    color: #fff;
+    font-weight: 600;
+    box-shadow: inset 0 1px 0 var(--glass-inset-bright);
+  }
+  .btn-primary:hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.20); }
+  .btn-secondary {
+    background: var(--glass-bg-2);
+    border-color: rgba(255,255,255,0.12);
+    color: var(--text);
+    font-weight: 500;
+  }
+  .btn-secondary:hover { background: var(--glass-bg-3); border-color: rgba(255,255,255,0.16); }
+  .btn-ghost {
+    background: transparent;
+    border-color: transparent;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .btn-ghost:hover { color: var(--text); background: var(--glass-bg-2); }
+  .btn-destructive {
+    background: rgba(248,113,113,0.06);
+    border-color: rgba(248,113,113,0.14);
+    color: var(--accent-red);
+    font-weight: 500;
+  }
+  .btn-destructive:hover { background: rgba(248,113,113,0.10); border-color: rgba(248,113,113,0.20); }
+  .btn-disabled {
+    background: var(--glass-bg-1);
+    border-color: var(--glass-border-subtle);
+    color: var(--text-faint);
+    font-weight: 600;
+    cursor: not-allowed;
+  }
+
+  /* ── Inputs ── */
+  .input-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .input-demo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 200px;
+  }
+  .input-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .input-field {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg-1);
+    color: var(--text);
+    font-size: 13px;
+    font-family: 'Figtree', sans-serif;
+    outline: none;
+    transition: all var(--transition-normal);
+  }
+  .input-field::placeholder { color: var(--text-faint); }
+  .input-field:focus {
+    border-color: var(--glass-border-hover);
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.20);
+  }
+  .input-field.error {
+    border-color: rgba(248,113,113,0.30);
+  }
+  .input-field.disabled {
+    background: rgba(255,255,255,0.02);
+    border-color: var(--glass-border-subtle);
+    color: var(--text-faint);
+    cursor: not-allowed;
+  }
+  .input-error-msg {
+    font-size: 11px;
+    color: var(--accent-red);
+  }
+
+  /* ── Status Indicators ── */
+  .status-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .status-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  /* ── Icon Grid ── */
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+  }
+  .icon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 8px;
+    border-radius: 10px;
+    border: 1px solid var(--glass-border-subtle);
+    background: var(--glass-bg-1);
+    transition: all var(--transition-fast);
+  }
+  .icon-item:hover {
+    border-color: var(--glass-border-hover);
+    background: var(--glass-bg-3);
+  }
+  .icon-item svg { width: 20px; height: 20px; color: var(--text-muted); }
+  .icon-item:hover svg { color: var(--text); }
+  .icon-item span {
+    font-size: 8px;
+    font-weight: 600;
+    color: var(--text-dim);
+    letter-spacing: 0.3px;
+    text-align: center;
+  }
+
+  /* ── Feedback demos ── */
+  .toast-demo {
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.30);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    max-width: 340px;
+    position: relative;
+    overflow: hidden;
+  }
+  .toast-demo::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 60%;
+    border-radius: 0 2px 0 0;
+  }
+  .toast-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .toast-content {
+    flex: 1;
+  }
+  .toast-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .toast-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .skeleton {
+    border-radius: 4px;
+    background: var(--glass-bg-3);
+    position: relative;
+    overflow: hidden;
+  }
+  .skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+    animation: shimmer 2s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  .empty-state {
+    border: 1px dashed var(--glass-border);
+    border-radius: 12px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 320px;
+  }
+  .empty-state svg {
+    width: 24px;
+    height: 24px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+  .empty-state-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .empty-state-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    max-width: 280px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  /* ── Charts ── */
+  .chart-palette {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .chart-swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .chart-swatch-color {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .chart-swatch-name {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .chart-swatch-hex {
+    font-size: 8px;
+    color: var(--text-dim);
+    font-family: 'SF Mono', monospace;
+  }
+
+  /* ── KPI Cards ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  /* ── Mini sidebar ── */
+  .sidebar-demo {
+    width: 64px;
+    height: 400px;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    justify-content: space-between;
+    background: var(--bg);
+  }
+  .sidebar-demo-logo {
+    font-family: 'Merriweather', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 18px;
+    color: rgba(255,255,255,0.60);
+  }
+  .sidebar-demo-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  .sidebar-demo-icon {
+    width: 22px;
+    height: 22px;
+    color: rgba(255,255,255,0.30);
+  }
+  .sidebar-demo-active {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.063), rgba(255,255,255,0.024));
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .sidebar-demo-active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 18px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.62);
+  }
+  .sidebar-demo-active svg {
+    width: 20px;
+    height: 20px;
+    color: rgba(255,255,255,0.82);
+  }
+  .sidebar-demo-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 100px;
+    background: var(--glass-bg-3);
+    border: 1px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  /* ── Transitions Demo ── */
+  .transition-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .transition-card {
+    padding: 16px;
+    border-radius: 12px;
+    background: var(--glass-bg-1);
+    border: 1px solid var(--glass-border-subtle);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+  .transition-card:hover {
+    border-color: var(--glass-border-hover);
+    background: var(--glass-bg-3);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  }
+  .transition-card:active {
+    transform: scale(0.98);
+    box-shadow: none;
+  }
+  .transition-card-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .transition-card-val {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* ── Flex helpers ── */
+  .flex-row { display: flex; gap: 24px; flex-wrap: wrap; }
+  .flex-col { display: flex; flex-direction: column; }
+
+  /* ── Principle cards ── */
+  .principle-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .principle-card {
+    padding: 16px;
+    border-radius: 12px;
+    background: var(--glass-bg-1);
+    border: 1px solid var(--glass-border-subtle);
+  }
+  .principle-id {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent-blue);
+    margin-bottom: 6px;
+  }
+  .principle-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+  }
+  .principle-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ── Modals ── */
+  .modal-demos { display:flex; gap:24px; flex-wrap:wrap; }
+  .modal-demo { flex:1; min-width:320px; max-width:480px; }
+  .modal-demo-label { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); margin-bottom:12px; }
+  .modal-backdrop-demo { background:rgba(0,0,0,0.50); border-radius:var(--radius-lg); padding:32px 20px; display:flex; justify-content:center; align-items:flex-start; min-height:300px; }
+  .modal { background:var(--bg-elevated); border:1px solid var(--glass-border); border-radius:14px; box-shadow:0 16px 48px rgba(0,0,0,0.40); width:100%; max-width:420px; overflow:hidden; }
+  .modal-header { padding:20px 24px 0; display:flex; justify-content:space-between; align-items:flex-start; }
+  .modal-title { font-size:16px; font-weight:700; color:var(--text-bright); letter-spacing:-0.02em; }
+  .modal-close { color:var(--text-dim); cursor:pointer; }
+  .modal-close svg { width:16px; height:16px; }
+  .modal-body { padding:12px 24px 24px; }
+  .modal-body p { font-size:13px; color:var(--text-muted); line-height:1.6; }
+  .modal-input { width:100%; background:var(--glass-bg-1); border:1px solid var(--glass-border); border-radius:8px; padding:10px 14px; font-family:'Figtree',sans-serif; font-size:13px; color:var(--text); outline:none; margin-top:16px; }
+  .modal-input::placeholder { color:var(--text-muted); }
+  .modal-input:focus { border-color:var(--glass-border-hover); box-shadow:0 0 0 2px rgba(59,130,246,0.20); }
+  .modal-footer { padding:0 24px 20px; display:flex; justify-content:flex-end; gap:8px; }
+  .modal-icon-wrap { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-bottom:12px; }
+  .modal-icon-wrap.danger { background:var(--accent-red-muted); color:var(--accent-red); }
+  .modal-icon-wrap svg { width:20px; height:20px; }
+
+  /* ── Command Palette ── */
+  .cmd-backdrop { background:rgba(0,0,0,0.50); border-radius:var(--radius-lg); padding:32px 24px; display:flex; justify-content:center; align-items:flex-start; }
+  .cmd-palette { background:var(--bg-elevated); border:1px solid var(--glass-border); border-radius:14px; box-shadow:0 16px 48px rgba(0,0,0,0.40); width:100%; max-width:560px; overflow:hidden; }
+  .cmd-search { display:flex; align-items:center; gap:12px; padding:14px 18px; border-bottom:1px solid var(--glass-border-subtle); }
+  .cmd-search svg { color:var(--text-dim); width:18px; height:18px; flex-shrink:0; }
+  .cmd-search input { background:transparent; border:none; outline:none; font-family:'Figtree',sans-serif; font-size:14px; color:var(--text); flex:1; }
+  .cmd-search input::placeholder { color:var(--text-dim); }
+  .cmd-kbd { font-size:10px; color:var(--text-dim); background:var(--glass-bg-3); border:1px solid var(--glass-border-subtle); border-radius:4px; padding:2px 6px; font-family:'SF Mono','Fira Code',monospace; }
+  .cmd-group-label { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); padding:12px 18px 6px; }
+  .cmd-item { display:flex; align-items:center; gap:12px; padding:10px 18px; cursor:pointer; transition:background 0.1s; }
+  .cmd-item:hover, .cmd-item.active { background:var(--glass-bg-4); }
+  .cmd-item svg { color:var(--text-muted); width:16px; height:16px; flex-shrink:0; }
+  .cmd-item.active svg { color:var(--text); }
+  .cmd-item span { font-size:13px; color:var(--text-muted); flex:1; }
+  .cmd-item.active span { color:var(--text); }
+  .cmd-shortcut { font-size:10px; color:var(--text-dim); font-family:'SF Mono','Fira Code',monospace; }
+  .cmd-footer { padding:10px 18px; border-top:1px solid var(--glass-border-subtle); display:flex; gap:16px; justify-content:flex-end; }
+  .cmd-footer-hint { font-size:10px; color:var(--text-dim); display:flex; align-items:center; gap:4px; }
+  .cmd-footer-hint kbd { font-size:9px; background:var(--glass-bg-3); border:1px solid var(--glass-border-subtle); border-radius:3px; padding:1px 5px; font-family:'SF Mono','Fira Code',monospace; }
+
+  /* ── Dropdowns ── */
+  .dropdown-demos { display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start; }
+  .dropdown-demo-label { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); margin-bottom:12px; }
+  .dropdown { background:var(--bg-elevated); border:1px solid var(--glass-border); border-radius:10px; box-shadow:0 8px 24px rgba(0,0,0,0.30); padding:4px; min-width:200px; }
+  .dropdown-item { display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:6px; cursor:pointer; font-size:13px; color:var(--text-muted); transition:background 0.1s; }
+  .dropdown-item:hover, .dropdown-item.active { background:var(--glass-bg-4); color:var(--text); }
+  .dropdown-item svg { width:16px; height:16px; flex-shrink:0; }
+  .dropdown-item .shortcut { margin-left:auto; font-size:10px; color:var(--text-dim); font-family:'SF Mono','Fira Code',monospace; }
+  .dropdown-sep { height:1px; background:var(--glass-border-subtle); margin:4px 0; }
+  .dropdown-item.danger { color:var(--accent-red); }
+  .dropdown-item.danger:hover { background:var(--accent-red-muted); }
+  .source-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+
+  /* ── Sheet ── */
+  .sheet-container { background:rgba(0,0,0,0.25); border-radius:var(--radius-lg); display:flex; min-height:400px; overflow:hidden; position:relative; }
+  .sheet-bg-content { flex:1; padding:24px; opacity:0.3; }
+  .sheet-panel { width:380px; background:var(--bg-elevated); border-left:1px solid var(--glass-border); box-shadow:-8px 0 24px rgba(0,0,0,0.20); display:flex; flex-direction:column; }
+  .sheet-header { padding:20px 24px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--glass-border-subtle); }
+  .sheet-title { font-size:15px; font-weight:700; color:var(--text-bright); }
+  .sheet-close { color:var(--text-dim); cursor:pointer; }
+  .sheet-close svg { width:16px; height:16px; }
+  .sheet-body { padding:24px; flex:1; overflow-y:auto; }
+  .sheet-label { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); margin-bottom:6px; }
+  .sheet-value { font-size:13px; color:var(--text); }
+  .sheet-value.stat { font-size:28px; font-weight:900; color:var(--text-bright); letter-spacing:-0.03em; }
+  .sheet-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--glass-bg-1); }
+  .sheet-row-label { font-size:12px; color:var(--text-muted); }
+  .sheet-row-value { font-size:13px; font-weight:500; color:var(--text); }
+  .sheet-footer { padding:16px 24px; border-top:1px solid var(--glass-border-subtle); display:flex; gap:8px; justify-content:flex-end; }
+  .sk-pulse { border-radius:4px; background:var(--glass-bg-3); animation:pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+  .sk-row-item { display:flex; align-items:center; gap:12px; padding:14px 16px; border-bottom:1px solid var(--glass-bg-1); }
+  .sk-avatar { width:32px; height:32px; border-radius:50%; flex-shrink:0; }
+  .sk-row-lines { flex:1; display:flex; flex-direction:column; gap:6px; }
+
+  /* ── Chat Expanded ── */
+  .chat-demo-panel { width:420px; border:1px solid var(--glass-border); border-radius:12px; overflow:hidden; background:var(--bg); }
+  .chat-header-bar { padding:16px 20px; border-bottom:1px solid var(--glass-border-subtle); display:flex; align-items:center; justify-content:space-between; }
+  .chat-header-left { display:flex; align-items:center; gap:8px; }
+  .chat-header-icon { width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg,rgba(139,92,246,0.15),rgba(59,130,246,0.15)); display:flex; align-items:center; justify-content:center; }
+  .chat-header-icon svg { width:14px; height:14px; color:var(--accent-purple); }
+  .chat-header-name { font-size:13px; font-weight:600; color:var(--text); }
+  .chat-header-badge { font-size:9px; padding:2px 8px; border-radius:100px; background:var(--accent-emerald-muted); color:var(--accent-emerald); font-weight:600; }
+  .chat-messages-area { padding:20px; display:flex; flex-direction:column; gap:20px; max-height:500px; overflow-y:auto; }
+  .chat-msg { display:flex; gap:10px; max-width:92%; }
+  .chat-msg.ai { align-self:flex-start; }
+  .chat-msg.user { align-self:flex-end; flex-direction:row-reverse; }
+  .chat-msg-avatar { width:24px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+  .chat-msg-avatar.ai { background:linear-gradient(135deg,rgba(139,92,246,0.20),rgba(59,130,246,0.20)); }
+  .chat-msg-avatar.ai svg { width:12px; height:12px; color:var(--accent-purple); }
+  .chat-msg-avatar.user { background:var(--glass-bg-4); font-size:10px; font-weight:700; color:var(--text-muted); }
+  .chat-msg-bubble { padding:14px 18px; border-radius:12px; font-size:13px; line-height:1.7; }
+  .chat-msg.ai .chat-msg-bubble { border-top-left-radius:4px; background:var(--glass-bg-2); border:1px solid var(--glass-border-subtle); color:var(--text-muted); }
+  .chat-msg.user .chat-msg-bubble { border-top-right-radius:4px; background:var(--glass-bg-4); border:1px solid rgba(255,255,255,0.12); color:var(--text-bright); }
+  .chat-input-bar { padding:12px 16px 16px; border-top:1px solid var(--glass-border-subtle); }
+  .chat-input-wrap { display:flex; align-items:flex-end; gap:8px; padding:8px 12px; border-radius:10px; border:1px solid var(--glass-border); background:var(--glass-bg-1); }
+  .chat-input-text { flex:1; font-size:13px; color:var(--text-faint); line-height:1.5; padding:2px 0; }
+  .chat-send-btn { width:28px; height:28px; border-radius:6px; background:var(--glass-bg-4); border:1px solid rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; flex-shrink:0; cursor:pointer; transition:all var(--transition-fast); }
+  .chat-send-btn:hover { background:rgba(255,255,255,0.14); border-color:rgba(255,255,255,0.20); }
+  .chat-send-btn svg { width:14px; height:14px; color:var(--text); }
+
+  /* Chat decision buttons */
+  .chat-decision-label { font-size:12px; font-weight:600; color:var(--text); margin-top:14px; margin-bottom:6px; }
+  .chat-decision-group { display:flex; flex-direction:column; gap:6px; }
+  .chat-decision-btn { display:flex; align-items:center; gap:8px; padding:10px 14px; border-radius:8px; border:1px solid var(--glass-border); background:var(--glass-bg-1); color:var(--text); font-size:12px; font-weight:500; cursor:pointer; transition:all var(--transition-fast); }
+  .chat-decision-btn:hover { background:var(--glass-bg-2); border-color:var(--glass-border-hover); }
+  .chat-decision-btn.primary { border-color:rgba(59,130,246,0.30); background:var(--accent-blue-muted); }
+  .chat-decision-btn.destructive { border-color:rgba(248,113,113,0.20); color:var(--accent-red); }
+  .chat-decision-btn svg { width:14px; height:14px; }
+  .chat-decision-btn.primary svg { color:var(--accent-blue); }
+
+  /* Chat inline KPI */
+  .chat-inline-kpi { margin-top:14px; padding:16px 18px; border-radius:10px; background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01)); border:1px solid var(--glass-border-subtle); }
+  .chat-inline-kpi-title { font-size:13px; font-weight:600; color:var(--text); margin-bottom:2px; }
+  .chat-inline-kpi-label { font-size:8px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); }
+  .chat-inline-kpi-value { font-size:26px; font-weight:900; color:var(--text-bright); letter-spacing:-0.04em; font-variant-numeric:tabular-nums; }
+
+  /* Chat inline table */
+  .chat-inline-table { margin-top:14px; border:1px solid var(--glass-border-subtle); border-radius:8px; overflow:hidden; }
+  .chat-inline-table table { width:100%; border-collapse:collapse; font-size:12px; }
+  .chat-inline-table th { text-align:left; padding:8px 12px; background:var(--glass-bg-3); color:var(--text-dim); font-weight:600; font-size:10px; letter-spacing:0.5px; text-transform:uppercase; }
+  .chat-inline-table td { padding:8px 12px; border-top:1px solid var(--glass-bg-1); color:var(--text-muted); }
+  .chat-inline-table .expand-hint { padding:8px 12px; font-size:11px; color:var(--accent-blue); cursor:pointer; display:flex; align-items:center; gap:4px; }
+  .chat-inline-table .expand-hint svg { width:12px; height:12px; }
+
+  /* Chat progress steps */
+  .chat-progress-label { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); margin-top:14px; margin-bottom:8px; }
+  .chat-progress-steps { display:flex; flex-direction:column; gap:0; }
+  .chat-progress-step { display:flex; align-items:center; gap:10px; padding:8px 0; font-size:12px; color:var(--text-muted); }
+  .chat-progress-step .step-icon { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .chat-progress-step .step-icon svg { width:12px; height:12px; }
+  .chat-progress-step.done .step-icon { background:rgba(52,211,153,0.15); color:var(--accent-emerald); }
+  .chat-progress-step.done { color:var(--text-dim); }
+  .chat-progress-step.active .step-icon { background:rgba(59,130,246,0.15); color:var(--accent-blue); }
+  .chat-progress-step.active { color:var(--text); background:var(--glass-bg-2); border-radius:8px; padding:8px 10px; margin:0 -10px; }
+  .chat-progress-step.pending .step-icon { background:var(--glass-bg-3); color:var(--text-dim); }
+
+  /* Chat rich text / markdown */
+  .md-h2 { font-size:15px; font-weight:700; color:var(--text-bright); letter-spacing:-0.01em; margin-bottom:8px; }
+  .md-h3 { font-size:13px; font-weight:600; color:var(--text); margin-top:16px; margin-bottom:6px; }
+  .md-p { font-size:13px; color:var(--text-muted); line-height:1.75; margin-bottom:8px; }
+  .md-p strong { color:var(--text); font-weight:600; }
+  .md-ul { list-style:none; margin:8px 0; }
+  .md-li { font-size:12px; color:var(--text-muted); line-height:1.7; padding-left:14px; position:relative; }
+  .md-li::before { content:'•'; position:absolute; left:0; color:var(--text-dim); }
+  .md-code { font-family:'SF Mono','Fira Code',monospace; font-size:11px; color:var(--accent-emerald); background:var(--glass-bg-4); padding:2px 6px; border-radius:4px; }
+  .md-badge { font-size:10px; font-weight:600; padding:2px 8px; border-radius:100px; }
+  .md-badge-high { background:var(--accent-red-muted); color:var(--accent-red); }
+  .md-badge-medium { background:var(--accent-amber-muted); color:var(--accent-amber); }
+  .md-badge-low { background:rgba(52,211,153,0.08); color:var(--accent-emerald); }
+  .md-blockquote { font-size:12px; font-style:italic; color:var(--text-muted); border-left:2px solid var(--accent-blue); background:var(--glass-bg-1); padding:10px 14px; border-radius:0 8px 8px 0; margin:12px 0; line-height:1.7; }
+  .md-divider { border:none; border-top:1px solid var(--glass-border-subtle); margin:14px 0; }
+  .md-stat-row { display:flex; gap:16px; margin:12px 0; }
+  .md-stat { flex:1; }
+  .md-stat-label { font-size:8px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); }
+  .md-stat-value { font-size:20px; font-weight:800; margin-top:2px; }
+
+  /* Chat inline form */
+  .chat-inline-form { margin-top:14px; padding:16px 18px; border-radius:10px; background:var(--glass-bg-1); border:1px solid var(--glass-border-subtle); }
+  .chat-inline-form-title { font-size:12px; font-weight:600; color:var(--text); margin-bottom:12px; }
+  .chat-inline-form-field { margin-bottom:12px; }
+  .chat-inline-form-label { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); margin-bottom:4px; }
+  .chat-inline-form-input { width:100%; background:var(--glass-bg-1); border:1px solid var(--glass-border); border-radius:8px; padding:8px 12px; font-family:'Figtree',sans-serif; font-size:13px; color:var(--text); outline:none; }
+  .chat-inline-form-input::placeholder { color:var(--text-faint); }
+  .chat-inline-form-actions { display:flex; gap:8px; margin-top:14px; }
+</style>
+</head>
+<body>
+
+<!-- ═══ Site Navigation ═══ -->
+<nav class="site-nav" style="position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:44px;background:rgba(26,26,26,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <a href="index.html" style="font-family:'Figtree',sans-serif;font-weight:900;font-size:16px;color:#3b82f6;text-decoration:none;letter-spacing:-0.03em;">Rx</a>
+    <a href="index.html" style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.95);text-decoration:none;">Rexi Design System</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;">
+    <a href="index.html" style="font-size:11px;font-weight:500;color:rgba(255,255,255,0.45);text-decoration:none;padding:5px 12px;border-radius:6px;transition:all 120ms ease;">Home</a>
+    <a href="reference.html" style="font-size:11px;font-weight:500;color:rgba(255,255,255,0.95);text-decoration:none;padding:5px 12px;border-radius:6px;background:rgba(255,255,255,0.06);">Reference</a>
+    <a href="process.html" style="font-size:11px;font-weight:500;color:rgba(255,255,255,0.45);text-decoration:none;padding:5px 12px;border-radius:6px;transition:all 120ms ease;">Process</a>
+    <a href="https://github.com/rexi-finance/rexi-design-system-v3c" target="_blank" style="font-size:11px;font-weight:500;color:rgba(255,255,255,0.45);text-decoration:none;padding:5px 12px;border-radius:6px;transition:all 120ms ease;">GitHub</a>
+  </div>
+</nav>
+<div style="height:44px;flex-shrink:0;"></div>
+<div class="ds-wrapper">
+
+<!-- ═══ Sidebar Navigation ═══ -->
+<nav class="ds-nav">
+  <div class="ds-nav-title">Rexi DS</div>
+  <div class="ds-nav-subtitle">V3c Hybrid Glass</div>
+
+  <div class="ds-nav-group">Foundations</div>
+  <a href="#principles" class="active">Principles</a>
+  <a href="#colors">Colors</a>
+  <a href="#typography">Typography</a>
+  <a href="#spacing">Spacing & Radius</a>
+
+  <div class="ds-nav-group">Surfaces</div>
+  <a href="#layers">Glass Layers</a>
+  <a href="#cards">Cards</a>
+
+  <div class="ds-nav-group">Components</div>
+  <a href="#buttons">Buttons</a>
+  <a href="#inputs">Inputs & Forms</a>
+  <a href="#status">Status Indicators</a>
+  <a href="#icons">Iconography</a>
+
+  <div class="ds-nav-group">Patterns</div>
+  <a href="#feedback">Feedback & Overlays</a>
+  <a href="#sidebar">Sidebar Navigation</a>
+  <a href="#transitions">Interactive States</a>
+
+  <div class="ds-nav-group">Data</div>
+  <a href="#charts">Charts & KPIs</a>
+
+  <div class="ds-nav-group">AI</div>
+  <a href="#chat">Chat UI</a>
+</nav>
+
+<!-- ═══ Main Content ═══ -->
+<main class="ds-main" id="main">
+
+<!-- ── Principles ── -->
+<section class="ds-section" id="principles">
+  <div class="section-title">Design Principles</div>
+  <div class="section-desc">Six principles from the V3c brandbook guide every decision. Referenced as P1–P6.</div>
+  <div class="principle-grid">
+    <div class="principle-card">
+      <div class="principle-id">P1</div>
+      <div class="principle-name">Narrate, don't list</div>
+      <div class="principle-desc">Every number answers a question. Match Rate is the answer to "how is my reconciliation going?"</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-id">P2</div>
+      <div class="principle-name">Space is the design</div>
+      <div class="principle-desc">48px content padding. 40px between sections. The interface breathes so the user can think.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-id">P3</div>
+      <div class="principle-name">Subtract, don't add</div>
+      <div class="principle-desc">No card wrappers on focal metrics. Every border, shadow, and container must justify its existence.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-id">P4</div>
+      <div class="principle-name">Color is information</div>
+      <div class="principle-desc">Never decorative. Emerald = healthy. Amber = attention. Red = error. Blue = brand. Purple = integration.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-id">P5</div>
+      <div class="principle-name">One focal point</div>
+      <div class="principle-desc">Each screen has ONE dominant element. Everything else is visually subordinate.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-id">P6</div>
+      <div class="principle-name">Typography carries personality</div>
+      <div class="principle-desc">Figtree 900 for hero numbers. Merriweather 300 italic for accent moments.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Colors ── -->
+<section class="ds-section" id="colors">
+  <div class="section-title">Color Palette</div>
+  <div class="section-desc">Dark-only. All glass surfaces depend on a dark canvas. No light mode.</div>
+
+  <div class="subsection">
+    <div class="subsection-title">Backgrounds & Surfaces</div>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#1a1a1a;"></div>
+        <div class="swatch-info"><div class="swatch-name">bg</div><div class="swatch-value">#1a1a1a</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#1e1e1e;"></div>
+        <div class="swatch-info"><div class="swatch-name">bg-elevated</div><div class="swatch-value">#1e1e1e</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Glass Layers</div>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color checkerboard"><div style="position:absolute;inset:0;background:rgba(255,255,255,0.03);"></div></div>
+        <div class="swatch-info"><div class="swatch-name">glass-bg-1</div><div class="swatch-value">white 3%</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color checkerboard"><div style="position:absolute;inset:0;background:rgba(255,255,255,0.04);"></div></div>
+        <div class="swatch-info"><div class="swatch-name">glass-bg-2</div><div class="swatch-value">white 4%</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color checkerboard"><div style="position:absolute;inset:0;background:rgba(255,255,255,0.06);"></div></div>
+        <div class="swatch-info"><div class="swatch-name">glass-bg-3</div><div class="swatch-value">white 6%</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color checkerboard"><div style="position:absolute;inset:0;background:rgba(255,255,255,0.10);"></div></div>
+        <div class="swatch-info"><div class="swatch-name">glass-bg-4</div><div class="swatch-value">white 10%</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Glass Borders</div>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--bg);border-bottom:3px solid rgba(255,255,255,0.04);"></div>
+        <div class="swatch-info"><div class="swatch-name">glass-border-subtle</div><div class="swatch-value">white 4%</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--bg);border-bottom:3px solid rgba(255,255,255,0.06);"></div>
+        <div class="swatch-info"><div class="swatch-name">glass-border</div><div class="swatch-value">white 6%</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--bg);border-bottom:3px solid rgba(255,255,255,0.14);"></div>
+        <div class="swatch-info"><div class="swatch-name">glass-border-hover</div><div class="swatch-value">white 14%</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Text Hierarchy</div>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgba(255,255,255,0.95);"></div>
+        <div class="swatch-info"><div class="swatch-name">text-bright</div><div class="swatch-value">white 95%</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#e5e5e5;"></div>
+        <div class="swatch-info"><div class="swatch-name">text</div><div class="swatch-value">#e5e5e5</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgba(255,255,255,0.45);"></div>
+        <div class="swatch-info"><div class="swatch-name">text-muted</div><div class="swatch-value">white 45%</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgba(255,255,255,0.25);"></div>
+        <div class="swatch-info"><div class="swatch-name">text-dim</div><div class="swatch-value">white 25%</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:rgba(255,255,255,0.16);"></div>
+        <div class="swatch-info"><div class="swatch-name">text-faint</div><div class="swatch-value">white 16%</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Semantic Colors (P4)</div>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#34d399;"></div>
+        <div class="swatch-info"><div class="swatch-name">accent-emerald</div><div class="swatch-value">#34d399</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#3b82f6;"></div>
+        <div class="swatch-info"><div class="swatch-name">accent-blue</div><div class="swatch-value">#3b82f6</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#8b5cf6;"></div>
+        <div class="swatch-info"><div class="swatch-name">accent-purple</div><div class="swatch-value">#8b5cf6</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#fbbf24;"></div>
+        <div class="swatch-info"><div class="swatch-name">accent-amber</div><div class="swatch-value">#fbbf24</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#fb923c;"></div>
+        <div class="swatch-info"><div class="swatch-name">accent-orange</div><div class="swatch-value">#fb923c</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#f87171;"></div>
+        <div class="swatch-info"><div class="swatch-name">accent-red</div><div class="swatch-value">#f87171</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Semantic Muted (Badge Backgrounds)</div>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color checkerboard"><div style="position:absolute;inset:0;background:rgba(52,211,153,0.08);"></div></div>
+        <div class="swatch-info"><div class="swatch-name">emerald-muted</div><div class="swatch-value">8% opacity</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color checkerboard"><div style="position:absolute;inset:0;background:rgba(59,130,246,0.08);"></div></div>
+        <div class="swatch-info"><div class="swatch-name">blue-muted</div><div class="swatch-value">8% opacity</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color checkerboard"><div style="position:absolute;inset:0;background:rgba(139,92,246,0.08);"></div></div>
+        <div class="swatch-info"><div class="swatch-name">purple-muted</div><div class="swatch-value">8% opacity</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color checkerboard"><div style="position:absolute;inset:0;background:rgba(251,191,36,0.08);"></div></div>
+        <div class="swatch-info"><div class="swatch-name">amber-muted</div><div class="swatch-value">8% opacity</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color checkerboard"><div style="position:absolute;inset:0;background:rgba(248,113,113,0.08);"></div></div>
+        <div class="swatch-info"><div class="swatch-name">red-muted</div><div class="swatch-value">8% opacity</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Typography ── -->
+<section class="ds-section" id="typography">
+  <div class="section-title">Typography</div>
+  <div class="section-desc">Figtree (primary sans) + Merriweather (accent serif). Replaces Inter. Personality through weight contrast.</div>
+
+  <div class="subsection">
+    <div class="subsection-title">Type Scale</div>
+    <div class="type-sample">
+      <div class="type-sample-meta">Hero Stat — Figtree 900, 48px, -0.04em tracking (SaaS dashboard)</div>
+      <div style="font-size:48px;font-weight:900;color:var(--text-bright);letter-spacing:-0.04em;line-height:0.92;font-variant-numeric:tabular-nums;">96.8<span style="font-weight:400;color:var(--text-dim);font-size:24px;">%</span></div>
+    </div>
+    <div class="type-sample">
+      <div class="type-sample-meta">Section H2 — Figtree 800, 28px, -0.03em</div>
+      <div style="font-size:28px;font-weight:800;color:var(--text-bright);letter-spacing:-0.03em;line-height:1.0;">Reconciliation Overview</div>
+    </div>
+    <div class="type-sample">
+      <div class="type-sample-meta">Card H3 — Figtree 800, 22px, -0.02em</div>
+      <div style="font-size:22px;font-weight:800;color:rgba(255,255,255,0.90);letter-spacing:-0.02em;line-height:1.1;">Fee Pattern Analysis</div>
+    </div>
+    <div class="type-sample">
+      <div class="type-sample-meta">Sub-heading — Figtree 700, 18px</div>
+      <div style="font-size:18px;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:-0.02em;">Active Clusters</div>
+    </div>
+    <div class="type-sample">
+      <div class="type-sample-meta">Body — Figtree 400, 15px, leading 1.75</div>
+      <div style="font-size:15px;font-weight:400;color:var(--text-muted);line-height:1.75;max-width:500px;">The reconciliation engine identified 3 new clusters requiring attention. Match rate improved to 96.8% after applying automated rules yesterday.</div>
+    </div>
+    <div class="type-sample">
+      <div class="type-sample-meta">Overline / Label — Figtree 600, 10px, tracking 4px, UPPERCASE</div>
+      <div style="font-size:10px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--text-dim);">MATCH RATE</div>
+    </div>
+    <div class="type-sample">
+      <div class="type-sample-meta">Table Data — Figtree 500, 13px</div>
+      <div style="font-size:13px;font-weight:500;color:var(--text);font-variant-numeric:tabular-nums;">INV-2024-00847 — $12,450.00 — Matched</div>
+    </div>
+    <div class="type-sample">
+      <div class="type-sample-meta">Testimonial / Accent — Merriweather 300 italic, 22px</div>
+      <div style="font-family:'Merriweather',serif;font-size:22px;font-weight:300;font-style:italic;color:rgba(255,255,255,0.35);line-height:1.7;">"Precise finance meets human intelligence"</div>
+    </div>
+    <div class="type-sample">
+      <div class="type-sample-meta">Mono — SF Mono, 12px</div>
+      <div style="font-family:'SF Mono','Fira Code',monospace;font-size:12px;color:var(--accent-emerald);">TXN_FEE_PATTERN_0847</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Spacing & Radius ── -->
+<section class="ds-section" id="spacing">
+  <div class="section-title">Spacing & Radius</div>
+  <div class="section-desc">Generous spacing that breathes (P2). Every token serves a clear purpose.</div>
+
+  <div class="subsection">
+    <div class="subsection-title">Spacing Scale</div>
+    <div class="space-row"><div class="space-label">space-1</div><div class="space-bar" style="width:4px;"></div><div class="space-val">4px</div></div>
+    <div class="space-row"><div class="space-label">space-2</div><div class="space-bar" style="width:8px;"></div><div class="space-val">8px</div></div>
+    <div class="space-row"><div class="space-label">space-3</div><div class="space-bar" style="width:12px;"></div><div class="space-val">12px</div></div>
+    <div class="space-row"><div class="space-label">space-4</div><div class="space-bar" style="width:16px;"></div><div class="space-val">16px</div></div>
+    <div class="space-row"><div class="space-label">space-5</div><div class="space-bar" style="width:20px;"></div><div class="space-val">20px</div></div>
+    <div class="space-row"><div class="space-label">space-6</div><div class="space-bar" style="width:24px;"></div><div class="space-val">24px</div></div>
+    <div class="space-row"><div class="space-label">space-8</div><div class="space-bar" style="width:32px;"></div><div class="space-val">32px</div></div>
+    <div class="space-row"><div class="space-label">space-10</div><div class="space-bar" style="width:40px;"></div><div class="space-val">40px</div></div>
+    <div class="space-row"><div class="space-label">space-12</div><div class="space-bar" style="width:48px;"></div><div class="space-val">48px</div></div>
+    <div class="space-row"><div class="space-label">space-16</div><div class="space-bar" style="width:64px;"></div><div class="space-val">64px</div></div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Border Radius</div>
+    <div class="radius-grid">
+      <div class="radius-item"><div class="radius-box" style="border-radius:4px;"></div><div class="radius-name">radius-xs</div><div class="radius-val">4px</div></div>
+      <div class="radius-item"><div class="radius-box" style="border-radius:6px;"></div><div class="radius-name">radius-sm</div><div class="radius-val">6px</div></div>
+      <div class="radius-item"><div class="radius-box" style="border-radius:8px;"></div><div class="radius-name">radius-md</div><div class="radius-val">8px</div></div>
+      <div class="radius-item"><div class="radius-box" style="border-radius:12px;"></div><div class="radius-name">radius-lg</div><div class="radius-val">12px</div></div>
+      <div class="radius-item"><div class="radius-box" style="border-radius:14px;"></div><div class="radius-name">radius-xl</div><div class="radius-val">14px</div></div>
+      <div class="radius-item"><div class="radius-box" style="border-radius:20px;"></div><div class="radius-name">radius-2xl</div><div class="radius-val">20px</div></div>
+      <div class="radius-item"><div class="radius-box" style="width:80px;height:36px;border-radius:100px;"></div><div class="radius-name">radius-pill</div><div class="radius-val">100px</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Glass Layers ── -->
+<section class="ds-section" id="layers">
+  <div class="section-title">Glass Layers</div>
+  <div class="section-desc">5-layer hierarchy. Everything starts on bg. Elevation only for overlays.</div>
+
+  <div class="layers-demo">
+    <div class="layer-box" style="background:var(--bg);border-style:dashed;">
+      <div class="layer-label">Layer 0</div>
+      <div class="layer-name">bg</div>
+      <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Content, sidebar, focal stats</div>
+    </div>
+    <div class="layer-box" style="background:var(--bg-elevated);">
+      <div class="layer-label">Layer 1</div>
+      <div class="layer-name">bg-elevated</div>
+      <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Modals, palette, dropdowns</div>
+    </div>
+    <div class="layer-box" style="background:linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 50%, rgba(255,255,255,0.03) 100%);">
+      <div class="layer-label">Layer 2</div>
+      <div class="layer-name">glass gradient</div>
+      <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Metric cards, forms</div>
+    </div>
+    <div class="layer-box" style="background:var(--glass-bg-3);">
+      <div class="layer-label">Layer 3</div>
+      <div class="layer-name">glass-mid</div>
+      <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Table headers, hover</div>
+    </div>
+    <div class="layer-box" style="background:var(--glass-bg-4);">
+      <div class="layer-label">Layer 4</div>
+      <div class="layer-name">glass-bright</div>
+      <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Active sidebar, selected</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Cards ── -->
+<section class="ds-section" id="cards">
+  <div class="section-title">Cards</div>
+  <div class="section-desc">Glass card with gradient fill. Focal stats live directly on bg with no container (P5).</div>
+
+  <div class="flex-row">
+    <div>
+      <div class="subsection-title">Standard Glass Card</div>
+      <div class="glass-card" style="width:200px;">
+        <div class="glass-card-label">MATCH RATE</div>
+        <div class="glass-card-value">96.8<span style="font-weight:400;color:var(--text-dim);font-size:14px;">%</span></div>
+        <div class="glass-card-trend" style="color:rgba(52,211,153,0.60);">+2.4% from yesterday</div>
+      </div>
+    </div>
+    <div>
+      <div class="subsection-title">Hero Stat (No Container — P5)</div>
+      <div style="padding:16px 0;">
+        <div style="font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);">MATCH RATE</div>
+        <div style="font-size:48px;font-weight:900;color:var(--text-bright);letter-spacing:-0.04em;line-height:0.92;font-variant-numeric:tabular-nums;margin-top:4px;">96.8<span style="font-weight:400;color:var(--text-dim);font-size:24px;">%</span></div>
+        <div style="font-size:11px;color:rgba(52,211,153,0.60);font-weight:500;margin-top:6px;">+2.4% from yesterday</div>
+      </div>
+    </div>
+    <div>
+      <div class="subsection-title">Compact Card</div>
+      <div class="glass-card" style="width:140px;">
+        <div class="glass-card-label">PENDING</div>
+        <div style="font-size:20px;font-weight:900;color:var(--text-bright);letter-spacing:-0.04em;font-variant-numeric:tabular-nums;margin-top:2px;">45</div>
+        <div style="font-size:11px;color:rgba(251,191,36,0.60);font-weight:500;margin-top:2px;">3 new today</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Buttons ── -->
+<section class="ds-section" id="buttons">
+  <div class="section-title">Buttons</div>
+  <div class="section-desc">Glass border-signal system. Border brightness = interactivity signal. No solid white primary.</div>
+
+  <div class="subsection">
+    <div class="subsection-title">Variants</div>
+    <div class="btn-row">
+      <button class="btn btn-primary"><i data-lucide="plus" style="width:16px;height:16px;"></i> Primary</button>
+      <button class="btn btn-secondary"><i data-lucide="settings" style="width:16px;height:16px;"></i> Secondary</button>
+      <button class="btn btn-ghost"><i data-lucide="eye" style="width:16px;height:16px;"></i> Ghost</button>
+      <button class="btn btn-destructive"><i data-lucide="trash-2" style="width:16px;height:16px;"></i> Destructive</button>
+      <button class="btn btn-disabled" disabled><i data-lucide="lock" style="width:16px;height:16px;"></i> Disabled</button>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Border Hierarchy</div>
+    <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;">
+      <div style="text-align:center;">
+        <div style="width:80px;height:40px;border-radius:12px;border:1px solid rgba(255,255,255,0.16);background:var(--glass-bg-4);margin-bottom:6px;"></div>
+        <div style="font-size:9px;font-weight:600;color:var(--text-muted);">16% primary</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="width:80px;height:40px;border-radius:12px;border:1px solid rgba(255,255,255,0.12);background:var(--glass-bg-2);margin-bottom:6px;"></div>
+        <div style="font-size:9px;font-weight:600;color:var(--text-muted);">12% secondary</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="width:80px;height:40px;border-radius:12px;border:1px solid transparent;margin-bottom:6px;"></div>
+        <div style="font-size:9px;font-weight:600;color:var(--text-muted);">0% ghost</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="width:80px;height:40px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:var(--glass-bg-1);margin-bottom:6px;"></div>
+        <div style="font-size:9px;font-weight:600;color:var(--text-muted);">4% disabled</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Inputs ── -->
+<section class="ds-section" id="inputs">
+  <div class="section-title">Inputs & Forms</div>
+  <div class="section-desc">Glass base with border-ring focus. Blue ring at 20% for accessibility.</div>
+
+  <div class="subsection">
+    <div class="subsection-title">Input States</div>
+    <div class="input-row">
+      <div class="input-demo">
+        <div class="input-label">RESTING</div>
+        <input type="text" class="input-field" placeholder="Search transactions..." />
+      </div>
+      <div class="input-demo">
+        <div class="input-label">FILLED</div>
+        <input type="text" class="input-field" value="INV-2024-00847" />
+      </div>
+      <div class="input-demo">
+        <div class="input-label">ERROR</div>
+        <input type="text" class="input-field error" value="invalid-id" />
+        <div class="input-error-msg">Invalid transaction ID format</div>
+      </div>
+      <div class="input-demo">
+        <div class="input-label">DISABLED</div>
+        <input type="text" class="input-field disabled" value="Read only" disabled />
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Controls</div>
+    <div style="display:flex;gap:24px;align-items:center;">
+      <!-- Toggle inactive -->
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:36px;height:20px;border-radius:100px;background:var(--glass-bg-1);border:1px solid var(--glass-border);position:relative;">
+          <div style="width:14px;height:14px;border-radius:50%;background:var(--text-dim);position:absolute;left:2px;top:2px;"></div>
+        </div>
+        <span style="font-size:11px;color:var(--text-muted);">Inactive</span>
+      </div>
+      <!-- Toggle active -->
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:36px;height:20px;border-radius:100px;background:rgba(59,130,246,0.25);border:1px solid rgba(59,130,246,0.40);position:relative;">
+          <div style="width:14px;height:14px;border-radius:50%;background:var(--accent-blue);position:absolute;right:2px;top:2px;"></div>
+        </div>
+        <span style="font-size:11px;color:var(--text);">Active</span>
+      </div>
+      <!-- Checkbox -->
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:16px;height:16px;border-radius:4px;background:rgba(59,130,246,0.25);border:1px solid rgba(59,130,246,0.40);display:flex;align-items:center;justify-content:center;">
+          <i data-lucide="check" style="width:10px;height:10px;color:var(--accent-blue);"></i>
+        </div>
+        <span style="font-size:11px;color:var(--text);">Checkbox</span>
+      </div>
+      <!-- Radio -->
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div style="width:16px;height:16px;border-radius:50%;background:rgba(59,130,246,0.25);border:1px solid rgba(59,130,246,0.40);display:flex;align-items:center;justify-content:center;">
+          <div style="width:6px;height:6px;border-radius:50%;background:var(--accent-blue);"></div>
+        </div>
+        <span style="font-size:11px;color:var(--text);">Radio</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Status ── -->
+<section class="ds-section" id="status">
+  <div class="section-title">Status Indicators</div>
+  <div class="section-desc">Contextual — badges for tables/headers, dots for compact contexts. Color IS information (P4).</div>
+
+  <div class="subsection">
+    <div class="subsection-title">Badges (Tables, Detail Headers)</div>
+    <div class="status-row">
+      <span class="status-badge" style="background:var(--accent-emerald-muted);color:var(--accent-emerald);"><span class="status-dot" style="background:var(--accent-emerald);"></span> Matched</span>
+      <span class="status-badge" style="background:var(--accent-amber-muted);color:var(--accent-amber);"><span class="status-dot" style="background:var(--accent-amber);"></span> Pending</span>
+      <span class="status-badge" style="background:var(--accent-red-muted);color:var(--accent-red);"><span class="status-dot" style="background:var(--accent-red);"></span> Unmatched</span>
+      <span class="status-badge" style="background:var(--accent-blue-muted);color:var(--accent-blue);"><span class="status-dot" style="background:var(--accent-blue);"></span> Processing</span>
+      <span class="status-badge" style="background:var(--accent-purple-muted);color:var(--accent-purple);"><span class="status-dot" style="background:var(--accent-purple);"></span> Integration</span>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Dot + Text (Cards, Nav, Settings)</div>
+    <div class="status-row">
+      <span class="status-text" style="color:var(--accent-emerald);"><span class="status-dot" style="background:var(--accent-emerald);"></span> Connected</span>
+      <span class="status-text" style="color:var(--accent-red);"><span class="status-dot" style="background:var(--accent-red);"></span> Disconnected</span>
+      <span class="status-text" style="color:var(--accent-amber);"><span class="status-dot" style="background:var(--accent-amber);"></span> Syncing</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── Icons ── -->
+<section class="ds-section" id="icons">
+  <div class="section-title">Iconography</div>
+  <div class="section-desc">Lucide 1.5px stroke. Native shadcn integration. Color follows P4 — never decorative.</div>
+
+  <div class="subsection">
+    <div class="subsection-title">Common Icons</div>
+    <div class="icon-grid">
+      <div class="icon-item"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></div>
+      <div class="icon-item"><i data-lucide="git-compare-arrows"></i><span>Reconcile</span></div>
+      <div class="icon-item"><i data-lucide="sparkles"></i><span>AI / Solver</span></div>
+      <div class="icon-item"><i data-lucide="file-text"></i><span>Transactions</span></div>
+      <div class="icon-item"><i data-lucide="settings"></i><span>Settings</span></div>
+      <div class="icon-item"><i data-lucide="plug"></i><span>Integrations</span></div>
+      <div class="icon-item"><i data-lucide="users"></i><span>Users</span></div>
+      <div class="icon-item"><i data-lucide="bell"></i><span>Alerts</span></div>
+      <div class="icon-item"><i data-lucide="search"></i><span>Search</span></div>
+      <div class="icon-item"><i data-lucide="plus"></i><span>Add</span></div>
+      <div class="icon-item"><i data-lucide="download"></i><span>Export</span></div>
+      <div class="icon-item"><i data-lucide="filter"></i><span>Filter</span></div>
+      <div class="icon-item"><i data-lucide="check-circle-2"></i><span>Success</span></div>
+      <div class="icon-item"><i data-lucide="alert-triangle"></i><span>Warning</span></div>
+      <div class="icon-item"><i data-lucide="x-circle"></i><span>Error</span></div>
+      <div class="icon-item"><i data-lucide="info"></i><span>Info</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Feedback ── -->
+<section class="ds-section" id="feedback">
+  <div class="section-title">Feedback & Overlays</div>
+  <div class="section-desc">All overlays use bg-elevated. Sonner for toasts. Glass system carries through.</div>
+
+  <div class="subsection">
+    <div class="subsection-title">Toasts</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;">
+      <div class="toast-demo" style="border-left:none;">
+        <i data-lucide="check-circle-2" class="toast-icon" style="color:var(--accent-emerald);"></i>
+        <div class="toast-content"><div class="toast-title">Rule Applied</div><div class="toast-desc">34 transactions matched automatically.</div></div>
+        <div style="position:absolute;bottom:0;left:0;height:2px;width:60%;background:rgba(52,211,153,0.40);border-radius:0 2px 0 0;"></div>
+      </div>
+      <div class="toast-demo" style="border-left:none;">
+        <i data-lucide="x-circle" class="toast-icon" style="color:var(--accent-red);"></i>
+        <div class="toast-content"><div class="toast-title">Import Failed</div><div class="toast-desc">File format not supported.</div></div>
+        <div style="position:absolute;bottom:0;left:0;height:2px;width:40%;background:rgba(248,113,113,0.40);border-radius:0 2px 0 0;"></div>
+      </div>
+      <div class="toast-demo" style="border-left:none;">
+        <i data-lucide="alert-triangle" class="toast-icon" style="color:var(--accent-amber);"></i>
+        <div class="toast-content"><div class="toast-title">Sync Delayed</div><div class="toast-desc">QuickBooks data is 2 hours behind.</div></div>
+        <div style="position:absolute;bottom:0;left:0;height:2px;width:75%;background:rgba(251,191,36,0.40);border-radius:0 2px 0 0;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Loading Skeletons</div>
+    <div style="display:flex;gap:12px;">
+      <div class="glass-card" style="width:160px;">
+        <div class="skeleton" style="width:60px;height:8px;margin-bottom:8px;"></div>
+        <div class="skeleton" style="width:80px;height:24px;margin-bottom:4px;"></div>
+        <div class="skeleton" style="width:100px;height:8px;"></div>
+      </div>
+      <div class="glass-card" style="width:160px;">
+        <div class="skeleton" style="width:50px;height:8px;margin-bottom:8px;"></div>
+        <div class="skeleton" style="width:70px;height:24px;margin-bottom:4px;"></div>
+        <div class="skeleton" style="width:90px;height:8px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Empty State</div>
+    <div class="empty-state">
+      <i data-lucide="plug"></i>
+      <div class="empty-state-title">Connect your first source</div>
+      <div class="empty-state-desc">Import transactions from your ERP, bank, or accounting system to start reconciling.</div>
+      <button class="btn btn-primary"><i data-lucide="plus" style="width:16px;height:16px;"></i> Add Source</button>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Modals</div>
+    <div class="modal-demos">
+      <div class="modal-demo">
+        <div class="modal-demo-label">Standard (form)</div>
+        <div class="modal-backdrop-demo">
+          <div class="modal">
+            <div class="modal-header">
+              <div class="modal-title">Create dashboard</div>
+              <div class="modal-close"><i data-lucide="x"></i></div>
+            </div>
+            <div class="modal-body">
+              <p>Give your dashboard a name. You can change it later.</p>
+              <input class="modal-input" type="text" placeholder="e.g. Monthly Reconciliation">
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-ghost">Cancel</button>
+              <button class="btn btn-primary">Create</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-demo">
+        <div class="modal-demo-label">Destructive confirmation</div>
+        <div class="modal-backdrop-demo">
+          <div class="modal">
+            <div class="modal-body" style="padding-top:24px;text-align:center;">
+              <div style="display:flex;justify-content:center;">
+                <div class="modal-icon-wrap danger"><i data-lucide="trash-2"></i></div>
+              </div>
+              <div class="modal-title" style="margin-top:4px;">Delete dashboard?</div>
+              <p style="margin-top:8px;">This will permanently delete <strong style="color:var(--text);">"Q1 Reconciliation"</strong> and all its widgets. This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer" style="justify-content:center;padding-bottom:24px;">
+              <button class="btn btn-ghost">Cancel</button>
+              <button class="btn btn-destructive">Delete dashboard</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Command Palette</div>
+    <div class="cmd-backdrop">
+      <div class="cmd-palette">
+        <div class="cmd-search">
+          <i data-lucide="search"></i>
+          <input type="text" placeholder="Type a command or search..." value="recon">
+          <span class="cmd-kbd">ESC</span>
+        </div>
+        <div class="cmd-group-label">Actions</div>
+        <div class="cmd-item active">
+          <i data-lucide="play-circle"></i>
+          <span>Run reconciliation</span>
+          <span class="cmd-shortcut">Cmd+R</span>
+        </div>
+        <div class="cmd-item">
+          <i data-lucide="file-text"></i>
+          <span>View reconciliation report</span>
+        </div>
+        <div class="cmd-group-label">Dashboards</div>
+        <div class="cmd-item">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Reconciliation Overview</span>
+        </div>
+        <div class="cmd-item">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Monthly Reconciliation Q1</span>
+        </div>
+        <div class="cmd-group-label">Pages</div>
+        <div class="cmd-item">
+          <i data-lucide="settings"></i>
+          <span>Reconciliation Settings</span>
+        </div>
+        <div class="cmd-footer">
+          <span class="cmd-footer-hint"><kbd>&uarr;</kbd><kbd>&darr;</kbd> Navigate</span>
+          <span class="cmd-footer-hint"><kbd>&crarr;</kbd> Select</span>
+          <span class="cmd-footer-hint"><kbd>ESC</kbd> Close</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Dropdowns</div>
+    <div class="dropdown-demos">
+      <div>
+        <div class="dropdown-demo-label">Actions Menu</div>
+        <div class="dropdown">
+          <div class="dropdown-item active"><i data-lucide="pencil"></i> <span>Rename</span> <span class="shortcut">Cmd+E</span></div>
+          <div class="dropdown-item"><i data-lucide="copy"></i> <span>Duplicate</span> <span class="shortcut">Cmd+D</span></div>
+          <div class="dropdown-item"><i data-lucide="share"></i> <span>Share</span></div>
+          <div class="dropdown-sep"></div>
+          <div class="dropdown-item danger"><i data-lucide="trash-2"></i> <span>Delete</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="dropdown-demo-label">Source Filter</div>
+        <div class="dropdown">
+          <div class="dropdown-item active"><span>All sources</span></div>
+          <div class="dropdown-sep"></div>
+          <div class="dropdown-item"><span class="source-dot" style="background:var(--accent-emerald);"></span> <span>QuickBooks</span></div>
+          <div class="dropdown-item"><span class="source-dot" style="background:var(--accent-blue);"></span> <span>Stripe</span></div>
+          <div class="dropdown-item"><span class="source-dot" style="background:var(--accent-purple);"></span> <span>SAP</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="dropdown-demo-label">User Menu</div>
+        <div class="dropdown" style="min-width:220px;">
+          <div style="padding:10px 12px 8px;border-bottom:1px solid var(--glass-border-subtle);margin-bottom:4px;">
+            <div style="font-size:13px;font-weight:600;color:var(--text);">Alex Teper</div>
+            <div style="font-size:11px;color:var(--text-dim);">alex@rexi.ai</div>
+          </div>
+          <div class="dropdown-item"><i data-lucide="settings"></i> <span>Settings</span></div>
+          <div class="dropdown-item"><i data-lucide="users"></i> <span>Team</span></div>
+          <div class="dropdown-sep"></div>
+          <div class="dropdown-item"><i data-lucide="log-out"></i> <span>Sign out</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Sheet (Side Panel)</div>
+    <div class="sheet-container">
+      <div class="sheet-bg-content">
+        <div style="display:flex;flex-direction:column;gap:1px;">
+          <div class="sk-row-item"><div class="sk-pulse sk-avatar"></div><div class="sk-row-lines"><div class="sk-pulse" style="width:140px;height:12px"></div><div class="sk-pulse" style="width:90px;height:10px"></div></div></div>
+          <div class="sk-row-item"><div class="sk-pulse sk-avatar"></div><div class="sk-row-lines"><div class="sk-pulse" style="width:120px;height:12px"></div><div class="sk-pulse" style="width:100px;height:10px"></div></div></div>
+          <div class="sk-row-item"><div class="sk-pulse sk-avatar"></div><div class="sk-row-lines"><div class="sk-pulse" style="width:160px;height:12px"></div><div class="sk-pulse" style="width:80px;height:10px"></div></div></div>
+          <div class="sk-row-item"><div class="sk-pulse sk-avatar"></div><div class="sk-row-lines"><div class="sk-pulse" style="width:130px;height:12px"></div><div class="sk-pulse" style="width:95px;height:10px"></div></div></div>
+          <div class="sk-row-item"><div class="sk-pulse sk-avatar"></div><div class="sk-row-lines"><div class="sk-pulse" style="width:150px;height:12px"></div><div class="sk-pulse" style="width:85px;height:10px"></div></div></div>
+        </div>
+      </div>
+      <div class="sheet-panel">
+        <div class="sheet-header">
+          <div class="sheet-title">Transaction #4821</div>
+          <div class="sheet-close"><i data-lucide="x"></i></div>
+        </div>
+        <div class="sheet-body">
+          <div style="margin-bottom:20px;">
+            <div class="sheet-label">Amount</div>
+            <div class="sheet-value stat">$12,450<span style="font-size:16px;font-weight:400;color:var(--text-muted);font-family:'Merriweather',serif;font-style:italic;">.00</span></div>
+          </div>
+          <div style="margin-bottom:20px;">
+            <div class="sheet-label">Status</div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="width:5px;height:5px;border-radius:50%;background:var(--accent-emerald);"></span>
+              <span style="font-size:11px;font-weight:500;color:var(--accent-emerald);">Matched</span>
+            </div>
+          </div>
+          <div>
+            <div class="sheet-row"><span class="sheet-row-label">Date</span><span class="sheet-row-value">Mar 12, 2026</span></div>
+            <div class="sheet-row"><span class="sheet-row-label">Source</span><span class="sheet-row-value" style="display:flex;align-items:center;gap:6px;"><span class="source-dot" style="background:var(--accent-blue);"></span> Stripe</span></div>
+            <div class="sheet-row"><span class="sheet-row-label">Reference</span><span class="sheet-row-value" style="font-family:'SF Mono','Fira Code',monospace;font-size:11px;">pi_3Nk8sF2eZv</span></div>
+            <div class="sheet-row"><span class="sheet-row-label">Category</span><span class="sheet-row-value">Revenue</span></div>
+            <div class="sheet-row" style="border:none;"><span class="sheet-row-label">Matched with</span><span class="sheet-row-value" style="font-family:'SF Mono','Fira Code',monospace;font-size:11px;">INV-2026-0312</span></div>
+          </div>
+        </div>
+        <div class="sheet-footer">
+          <button class="btn btn-ghost" style="font-size:12px;">Unmatch</button>
+          <button class="btn btn-primary" style="font-size:12px;">View in ledger</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Sidebar ── -->
+<section class="ds-section" id="sidebar">
+  <div class="section-title">Sidebar Navigation</div>
+  <div class="section-desc">V3c collapsed-only, 64px. Transparent bg — icons float on bg. No expanded state (P3).</div>
+
+  <div class="flex-row" style="align-items:start;">
+    <div class="sidebar-demo">
+      <div class="sidebar-demo-logo">Rx</div>
+      <div class="sidebar-demo-nav">
+        <i data-lucide="layout-dashboard" class="sidebar-demo-icon"></i>
+        <div class="sidebar-demo-active"><i data-lucide="git-compare-arrows"></i></div>
+        <i data-lucide="sparkles" class="sidebar-demo-icon"></i>
+        <i data-lucide="file-text" class="sidebar-demo-icon"></i>
+        <i data-lucide="settings" class="sidebar-demo-icon"></i>
+      </div>
+      <div class="sidebar-demo-avatar">AT</div>
+    </div>
+    <div style="max-width:300px;">
+      <div class="subsection-title" style="margin-top:0;">Spec</div>
+      <div style="font-size:11px;color:var(--text-muted);line-height:1.7;">
+        <strong style="color:var(--text);">Logo:</strong> "Rx" Merriweather 700 italic, white 60%<br>
+        <strong style="color:var(--text);">Icons:</strong> 22px, white 30%, 20px gap<br>
+        <strong style="color:var(--text);">Active:</strong> 44px glass card, gradient fill, blur(8px), 3px accent bar<br>
+        <strong style="color:var(--text);">Avatar:</strong> 36px circle, glass-bg-3, initials<br>
+        <strong style="color:var(--text);">Tooltip:</strong> bg-elevated, radius-sm, shadow
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Transitions ── -->
+<section class="ds-section" id="transitions">
+  <div class="section-title">Interactive States</div>
+  <div class="section-desc">Three transition speeds. scale() press feedback. Double-ring focus for a11y.</div>
+
+  <div class="subsection">
+    <div class="subsection-title">Transition Tokens (Hover these cards)</div>
+    <div class="transition-grid">
+      <div class="transition-card" style="transition-duration:120ms;">
+        <div class="transition-card-label">FAST</div>
+        <div class="transition-card-val">120ms</div>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Hover, press, color</div>
+      </div>
+      <div class="transition-card" style="transition-duration:180ms;">
+        <div class="transition-card-label">NORMAL</div>
+        <div class="transition-card-val">180ms</div>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Focus rings, borders</div>
+      </div>
+      <div class="transition-card" style="transition-duration:280ms;">
+        <div class="transition-card-label">SLOW</div>
+        <div class="transition-card-val">280ms</div>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:4px;">Modals, sidebar, sheet</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Focus Ring (Tab to see)</div>
+    <div style="display:flex;gap:12px;">
+      <button class="btn btn-primary" style="outline:none;">Focus me (Tab)</button>
+      <button class="btn btn-destructive" style="outline:none;">Destructive focus</button>
+    </div>
+    <div style="font-size:10px;color:var(--text-dim);margin-top:8px;">Double ring: 2px bg gap + 2px color — <code style="font-family:'SF Mono',monospace;font-size:9px;color:var(--accent-emerald);background:var(--glass-bg-4);padding:1px 5px;border-radius:3px;">box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px blue/50%</code></div>
+  </div>
+</section>
+
+<!-- ── Charts ── -->
+<section class="ds-section" id="charts">
+  <div class="section-title">Charts & KPIs</div>
+  <div class="section-desc">Semantic accent palette. Emerald-first ordering. Glass card containers.</div>
+
+  <div class="subsection">
+    <div class="subsection-title">Chart Color Palette</div>
+    <div class="chart-palette">
+      <div class="chart-swatch"><div class="chart-swatch-color" style="background:#34d399;"></div><div class="chart-swatch-name">chart-1</div><div class="chart-swatch-hex">#34d399</div></div>
+      <div class="chart-swatch"><div class="chart-swatch-color" style="background:#3b82f6;"></div><div class="chart-swatch-name">chart-2</div><div class="chart-swatch-hex">#3b82f6</div></div>
+      <div class="chart-swatch"><div class="chart-swatch-color" style="background:#8b5cf6;"></div><div class="chart-swatch-name">chart-3</div><div class="chart-swatch-hex">#8b5cf6</div></div>
+      <div class="chart-swatch"><div class="chart-swatch-color" style="background:#fbbf24;"></div><div class="chart-swatch-name">chart-4</div><div class="chart-swatch-hex">#fbbf24</div></div>
+      <div class="chart-swatch"><div class="chart-swatch-color" style="background:#fb923c;"></div><div class="chart-swatch-name">chart-5</div><div class="chart-swatch-hex">#fb923c</div></div>
+      <div class="chart-swatch"><div class="chart-swatch-color" style="background:#f87171;"></div><div class="chart-swatch-name">chart-6</div><div class="chart-swatch-hex">#f87171</div></div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Area Chart</div>
+    <div class="glass-card" style="max-width:500px;">
+      <div style="font-size:8px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;">MATCH RATE — LAST 7 DAYS</div>
+      <svg width="100%" height="120" viewBox="0 0 460 120">
+        <defs>
+          <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#34d399" stop-opacity="0.30"/>
+            <stop offset="100%" stop-color="#34d399" stop-opacity="0.02"/>
+          </linearGradient>
+        </defs>
+        <!-- Grid -->
+        <line x1="0" y1="30" x2="460" y2="30" stroke="rgba(255,255,255,0.04)" />
+        <line x1="0" y1="60" x2="460" y2="60" stroke="rgba(255,255,255,0.04)" />
+        <line x1="0" y1="90" x2="460" y2="90" stroke="rgba(255,255,255,0.04)" />
+        <!-- Area fill -->
+        <path d="M0,80 C40,75 80,60 130,55 C180,50 220,40 270,30 C320,20 360,22 410,15 C440,12 460,10 460,10 L460,120 L0,120 Z" fill="url(#areaGrad)" />
+        <!-- Line stroke -->
+        <path d="M0,80 C40,75 80,60 130,55 C180,50 220,40 270,30 C320,20 360,22 410,15 C440,12 460,10 460,10" fill="none" stroke="#34d399" stroke-width="2" />
+        <!-- Axis labels -->
+        <text x="0" y="115" fill="rgba(255,255,255,0.25)" font-size="10" font-family="Figtree" font-weight="500">Mon</text>
+        <text x="76" y="115" fill="rgba(255,255,255,0.25)" font-size="10" font-family="Figtree" font-weight="500">Tue</text>
+        <text x="152" y="115" fill="rgba(255,255,255,0.25)" font-size="10" font-family="Figtree" font-weight="500">Wed</text>
+        <text x="228" y="115" fill="rgba(255,255,255,0.25)" font-size="10" font-family="Figtree" font-weight="500">Thu</text>
+        <text x="304" y="115" fill="rgba(255,255,255,0.25)" font-size="10" font-family="Figtree" font-weight="500">Fri</text>
+        <text x="380" y="115" fill="rgba(255,255,255,0.25)" font-size="10" font-family="Figtree" font-weight="500">Sat</text>
+        <text x="440" y="115" fill="rgba(255,255,255,0.25)" font-size="10" font-family="Figtree" font-weight="500">Sun</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">KPI Card Grid</div>
+    <div class="kpi-grid" style="max-width:500px;">
+      <div class="glass-card">
+        <div class="glass-card-label">MATCH RATE</div>
+        <div style="font-size:28px;font-weight:900;color:var(--text-bright);letter-spacing:-0.04em;font-variant-numeric:tabular-nums;margin-top:4px;">96.8<span style="font-weight:400;color:var(--text-dim);font-size:14px;">%</span></div>
+        <div style="font-size:11px;color:rgba(52,211,153,0.60);font-weight:500;margin-top:2px;">+2.4%</div>
+      </div>
+      <div class="glass-card">
+        <div class="glass-card-label">PENDING</div>
+        <div style="font-size:28px;font-weight:900;color:var(--text-bright);letter-spacing:-0.04em;font-variant-numeric:tabular-nums;margin-top:4px;">45</div>
+        <div style="font-size:11px;color:rgba(251,191,36,0.60);font-weight:500;margin-top:2px;">3 new</div>
+      </div>
+      <div class="glass-card">
+        <div class="glass-card-label">HIGH RISK</div>
+        <div style="font-size:28px;font-weight:900;color:var(--text-bright);letter-spacing:-0.04em;font-variant-numeric:tabular-nums;margin-top:4px;">8</div>
+        <div style="font-size:11px;color:rgba(248,113,113,0.60);font-weight:500;margin-top:2px;">-2 resolved</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Chat UI ── -->
+<section class="ds-section" id="chat">
+  <div class="section-title">Chat UI</div>
+  <div class="section-desc">AI chat in a resizable side panel (420px). 6 rich content types rendered inline. Two spacing tiers (compact 14px, generous 20px).</div>
+
+  <!-- 1. Decision Buttons -->
+  <div class="subsection">
+    <div class="subsection-title">Decision Buttons</div>
+    <div class="chat-demo-panel">
+      <div class="chat-header-bar">
+        <div class="chat-header-left">
+          <div class="chat-header-icon"><i data-lucide="sparkles"></i></div>
+          <span class="chat-header-name">Problem Solver</span>
+          <span class="chat-header-badge">ACTIVE</span>
+        </div>
+        <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);cursor:pointer;"><i data-lucide="x" style="width:16px;height:16px;"></i></div>
+      </div>
+      <div class="chat-messages-area">
+        <div class="chat-msg ai">
+          <div class="chat-msg-avatar ai"><i data-lucide="sparkles"></i></div>
+          <div class="chat-msg-bubble">
+            <span>I found <strong style="color:var(--text);">3 clusters</strong> requiring attention. The largest is a <strong style="color:var(--text);">fee pattern</strong> affecting 24 transactions.</span>
+            <div class="chat-inline-kpi">
+              <div class="chat-inline-kpi-title">Fee Pattern Impact</div>
+              <div class="chat-inline-kpi-label">TOTAL VARIANCE</div>
+              <div style="display:flex;align-items:baseline;gap:10px;margin-top:6px;">
+                <span class="chat-inline-kpi-value">$2,500</span>
+                <span style="font-size:11px;color:rgba(248,113,113,0.60);font-weight:500;">+$840</span>
+              </div>
+            </div>
+            <div class="chat-decision-label">What would you like to do?</div>
+            <div class="chat-decision-group">
+              <div class="chat-decision-btn primary"><i data-lucide="zap" style="color:var(--accent-blue);"></i> Auto-resolve matches</div>
+              <div class="chat-decision-btn"><i data-lucide="eye" style="color:var(--text-muted);"></i> Review details</div>
+              <div class="chat-decision-btn destructive"><i data-lucide="x" style="color:var(--accent-red);"></i> Dismiss</div>
+            </div>
+          </div>
+        </div>
+        <div class="chat-msg user">
+          <div class="chat-msg-avatar user">AT</div>
+          <div class="chat-msg-bubble">Auto-resolve the fee patterns</div>
+        </div>
+      </div>
+      <div class="chat-input-bar">
+        <div class="chat-input-wrap"><span class="chat-input-text">Ask a question...</span><div class="chat-send-btn"><i data-lucide="arrow-up"></i></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Inline KPI + Table -->
+  <div class="subsection">
+    <div class="subsection-title">Inline KPI & Data Table</div>
+    <div class="chat-demo-panel">
+      <div class="chat-header-bar">
+        <div class="chat-header-left">
+          <div class="chat-header-icon"><i data-lucide="sparkles"></i></div>
+          <span class="chat-header-name">Rexi AI</span>
+          <span class="chat-header-badge">ONLINE</span>
+        </div>
+        <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);cursor:pointer;"><i data-lucide="panel-right-close" style="width:16px;height:16px;"></i></div>
+      </div>
+      <div class="chat-messages-area">
+        <div class="chat-msg user">
+          <div class="chat-msg-avatar user">AT</div>
+          <div class="chat-msg-bubble">Show me the match rate trend</div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="chat-msg-avatar ai"><i data-lucide="sparkles"></i></div>
+          <div class="chat-msg-bubble">
+            <span>Your match rate has been <strong style="color:var(--text);">improving steadily</strong> over the past 4 weeks:</span>
+            <div class="chat-inline-kpi">
+              <div class="chat-inline-kpi-title">Match Rate — 4 Week Trend</div>
+              <div class="chat-inline-kpi-label">CURRENT PERIOD</div>
+              <div style="display:flex;align-items:baseline;gap:10px;margin-top:6px;">
+                <span class="chat-inline-kpi-value" style="color:var(--accent-emerald);">99.2<span style="font-weight:400;font-size:12px;color:var(--text-dim);">%</span></span>
+                <span style="font-size:11px;color:rgba(52,211,153,0.60);font-weight:500;">+0.3% from last week</span>
+              </div>
+              <div style="margin-top:10px;">
+                <svg width="100%" height="28" viewBox="0 0 320 28"><defs><linearGradient id="chatsg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#34d399" stop-opacity="0.20"/><stop offset="100%" stop-color="#34d399" stop-opacity="0"/></linearGradient></defs><path d="M0,22 C40,20 80,18 120,15 C160,12 200,14 240,10 C280,7 300,5 320,3 L320,28 L0,28 Z" fill="url(#chatsg)"/><path d="M0,22 C40,20 80,18 120,15 C160,12 200,14 240,10 C280,7 300,5 320,3" fill="none" stroke="#34d399" stroke-width="1.5"/></svg>
+              </div>
+            </div>
+            <span>The improvement is driven by <strong style="color:var(--text);">3 new matching rules</strong> added last Tuesday.</span>
+          </div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="chat-msg-avatar ai"><i data-lucide="sparkles"></i></div>
+          <div class="chat-msg-bubble">
+            <span>Here are the <strong style="color:var(--text);">top unmatched</strong> transactions:</span>
+            <div class="chat-inline-table">
+              <table><thead><tr><th>Date</th><th>Reference</th><th>Amount</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Mar 12</td><td>TXN-4821</td><td style="font-weight:600">$12,450</td><td><span style="color:var(--accent-red);">Unmatched</span></td></tr>
+                <tr><td>Mar 11</td><td>TXN-4819</td><td style="font-weight:600">$8,200</td><td><span style="color:var(--accent-amber);">Pending</span></td></tr>
+                <tr><td>Mar 10</td><td>TXN-4815</td><td style="font-weight:600">$3,100</td><td><span style="color:var(--accent-red);">Unmatched</span></td></tr>
+              </tbody></table>
+              <div class="expand-hint"><i data-lucide="maximize-2"></i> View full table (23 rows)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-bar">
+        <div class="chat-input-wrap"><span class="chat-input-text">Ask anything about this reconciliation...</span><div class="chat-send-btn"><i data-lucide="arrow-up"></i></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Progress Steps -->
+  <div class="subsection">
+    <div class="subsection-title">Progress Steps</div>
+    <div class="chat-demo-panel">
+      <div class="chat-header-bar">
+        <div class="chat-header-left">
+          <div class="chat-header-icon"><i data-lucide="sparkles"></i></div>
+          <span class="chat-header-name">Rexi AI</span>
+          <span class="chat-header-badge">ONLINE</span>
+        </div>
+        <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);cursor:pointer;"><i data-lucide="panel-right-close" style="width:16px;height:16px;"></i></div>
+      </div>
+      <div class="chat-messages-area">
+        <div class="chat-msg user">
+          <div class="chat-msg-avatar user">AT</div>
+          <div class="chat-msg-bubble">Run the full reconciliation for March data</div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="chat-msg-avatar ai"><i data-lucide="sparkles"></i></div>
+          <div class="chat-msg-bubble">
+            <span>Running reconciliation for <strong style="color:var(--text);">March 2026</strong>. I'll update you as each step completes:</span>
+            <div class="chat-progress-label">Reconciliation Pipeline</div>
+            <div class="chat-progress-steps">
+              <div class="chat-progress-step done"><div class="step-icon"><i data-lucide="check"></i></div><span>Fetching data from 3 sources</span></div>
+              <div class="chat-progress-step done"><div class="step-icon"><i data-lucide="check"></i></div><span>Validating schema compatibility</span></div>
+              <div class="chat-progress-step active"><div class="step-icon"><i data-lucide="loader-2"></i></div><span>Applying 24 matching rules...</span></div>
+              <div class="chat-progress-step pending"><div class="step-icon"><i data-lucide="circle"></i></div><span>Generating exception report</span></div>
+              <div class="chat-progress-step pending"><div class="step-icon"><i data-lucide="circle"></i></div><span>Updating dashboard widgets</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-bar">
+        <div class="chat-input-wrap"><span class="chat-input-text">Ask about the results...</span><div class="chat-send-btn"><i data-lucide="arrow-up"></i></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Inline Form -->
+  <div class="subsection">
+    <div class="subsection-title">Inline Forms</div>
+    <div class="chat-demo-panel">
+      <div class="chat-header-bar">
+        <div class="chat-header-left">
+          <div class="chat-header-icon"><i data-lucide="sparkles"></i></div>
+          <span class="chat-header-name">Rexi AI</span>
+          <span class="chat-header-badge">ONLINE</span>
+        </div>
+        <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);cursor:pointer;"><i data-lucide="panel-right-close" style="width:16px;height:16px;"></i></div>
+      </div>
+      <div class="chat-messages-area">
+        <div class="chat-msg user">
+          <div class="chat-msg-avatar user">AT</div>
+          <div class="chat-msg-bubble">Create a new reconciliation rule for Stripe vs our bank</div>
+        </div>
+        <div class="chat-msg ai">
+          <div class="chat-msg-avatar ai"><i data-lucide="sparkles"></i></div>
+          <div class="chat-msg-bubble">
+            <span>I'll help you set up that rule. I've <strong style="color:var(--text);">pre-filled</strong> what I could from your connected sources:</span>
+            <div class="chat-inline-form">
+              <div class="chat-inline-form-title">New Matching Rule</div>
+              <div class="chat-inline-form-field"><div class="chat-inline-form-label">Rule Name</div><input class="chat-inline-form-input" value="Stripe vs Chase Bank" placeholder="e.g., Stripe ↔ Chase Daily"></div>
+              <div class="chat-inline-form-field"><div class="chat-inline-form-label">Match Key</div><input class="chat-inline-form-input" value="Amount + Date (recommended)" readonly style="cursor:pointer;"></div>
+              <div class="chat-inline-form-field"><div class="chat-inline-form-label">Tolerance</div><input class="chat-inline-form-input" value="$0.01" placeholder="Amount tolerance"></div>
+              <div class="chat-inline-form-actions">
+                <button class="btn btn-primary" style="font-size:12px;padding:6px 14px;">Create Rule</button>
+                <button class="btn btn-ghost" style="font-size:12px;padding:6px 14px;">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-bar">
+        <div class="chat-input-wrap"><span class="chat-input-text">Or describe what you need...</span><div class="chat-send-btn"><i data-lucide="arrow-up"></i></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Rich Text / Markdown -->
+  <div class="subsection">
+    <div class="subsection-title">Rich Text (Markdown)</div>
+    <div class="chat-demo-panel" style="width:460px;">
+      <div class="chat-header-bar">
+        <div class="chat-header-left">
+          <div class="chat-header-icon"><i data-lucide="sparkles"></i></div>
+          <span class="chat-header-name">Rexi AI</span>
+          <span class="chat-header-badge">ONLINE</span>
+        </div>
+        <div style="width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--text-dim);cursor:pointer;"><i data-lucide="panel-right-close" style="width:16px;height:16px;"></i></div>
+      </div>
+      <div class="chat-messages-area" style="max-height:600px;">
+        <div class="chat-msg ai" style="max-width:100%;">
+          <div class="chat-msg-avatar ai"><i data-lucide="sparkles"></i></div>
+          <div class="chat-msg-bubble" style="padding:20px 22px;">
+            <div class="md-h2">Reconciliation Health Briefing</div>
+            <p class="md-p">Your reconciliation portfolio has <strong>45 pending clusters</strong> across 3 reconciliations. Overall health is <span class="md-badge md-badge-medium">MODERATE</span> — down from High last week.</p>
+            <div class="md-stat-row">
+              <div class="md-stat"><div class="md-stat-label">Match Rate</div><div class="md-stat-value" style="color:var(--accent-emerald)">96.8%</div></div>
+              <div class="md-stat"><div class="md-stat-label">Pending</div><div class="md-stat-value" style="color:var(--accent-amber)">45</div></div>
+              <div class="md-stat"><div class="md-stat-label">High Risk</div><div class="md-stat-value" style="color:var(--accent-red)">8</div></div>
+            </div>
+            <div class="md-h3">Critical Issues</div>
+            <p class="md-p">The <strong>Stripe → Bank A</strong> reconciliation has the most urgent items — <strong>8 clusters</strong> remain unresolved with <strong>$47,200</strong> total exposure.</p>
+            <ul class="md-ul">
+              <li class="md-li"><strong><span class="md-code">Fee Pattern</span></strong> — 60 txns, $2,500, <span class="md-badge md-badge-high">HIGH</span></li>
+              <li class="md-li"><strong><span class="md-code">Late Posting</span></strong> — 15 txns, $1,200, <span class="md-badge md-badge-medium">MEDIUM</span></li>
+              <li class="md-li"><strong><span class="md-code">Rounding Diff</span></strong> — 5 txns, $23, <span class="md-badge md-badge-low">LOW</span></li>
+            </ul>
+            <hr class="md-divider">
+            <div class="md-h3">Root Cause Example</div>
+            <div class="md-blockquote">Stripe records $100.00 → Bank receives $96.80 (net of $2.90 + $0.30 fee). The $3.20 difference triggers an unmatched exception every time.</div>
+            <div class="chat-decision-label">Want me to investigate?</div>
+            <div class="chat-decision-group">
+              <div class="chat-decision-btn primary"><i data-lucide="search" style="color:var(--accent-blue);"></i> Analyze Fee Pattern cluster</div>
+              <div class="chat-decision-btn"><i data-lucide="list" style="color:var(--text-muted);"></i> Show me all 8 clusters first</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-bar">
+        <div class="chat-input-wrap"><span class="chat-input-text">Ask about this cluster...</span><div class="chat-send-btn"><i data-lucide="arrow-up"></i></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+</div><!-- /.ds-wrapper -->
+
+<script>
+  lucide.createIcons();
+
+  // Nav active state on scroll
+  const main = document.getElementById('main');
+  const links = document.querySelectorAll('.ds-nav a');
+  const sections = document.querySelectorAll('.ds-section');
+
+  main.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (s.offsetTop - main.scrollTop < 120) current = s.id;
+    });
+    links.forEach(l => {
+      l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+    });
+  });
+
+  // Focus ring demo
+  document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('focus', function() {
+      if (!this.matches(':focus-visible')) return;
+      const isDestructive = this.classList.contains('btn-destructive');
+      this.style.boxShadow = isDestructive
+        ? '0 0 0 2px var(--bg), 0 0 0 4px rgba(248,113,113,0.40)'
+        : '0 0 0 2px var(--bg), 0 0 0 4px rgba(59,130,246,0.50)';
+    });
+    btn.addEventListener('blur', function() {
+      this.style.boxShadow = this.classList.contains('btn-primary') ? 'inset 0 1px 0 var(--glass-inset-bright)' : '';
+    });
+  });
+</script>
+</body>
+</html>

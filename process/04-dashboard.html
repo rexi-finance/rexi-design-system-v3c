@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Full Dashboard — Rexi Design Process</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@1,300&display=swap');
+
+  :root {
+    /* Backgrounds & Surfaces */
+    --bg: #1a1a1a;
+    --bg-elevated: #1e1e1e;
+
+    /* Glass Layers */
+    --glass-bg-1: rgba(255,255,255,0.03);
+    --glass-bg-2: rgba(255,255,255,0.04);
+    --glass-bg-3: rgba(255,255,255,0.06);
+    --glass-bg-4: rgba(255,255,255,0.10);
+
+    /* Glass Borders */
+    --glass-border-subtle: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-border-hover: rgba(255,255,255,0.14);
+
+    /* Glass Insets */
+    --glass-inset: rgba(255,255,255,0.04);
+    --glass-inset-bright: rgba(255,255,255,0.08);
+
+    /* Text Hierarchy */
+    --text-bright: rgba(255,255,255,0.95);
+    --text: #e5e5e5;
+    --text-muted: rgba(255,255,255,0.45);
+    --text-dim: rgba(255,255,255,0.25);
+    --text-faint: rgba(255,255,255,0.16);
+
+    /* Semantic — Color is Information (P4) */
+    --accent-emerald: #34d399;
+    --accent-emerald-muted: rgba(52,211,153,0.14);
+    --accent-amber: #fbbf24;
+    --accent-amber-muted: rgba(251,191,36,0.14);
+    --accent-red: #f87171;
+    --accent-red-muted: rgba(248,113,113,0.14);
+    --accent-blue: #3b82f6;
+    --accent-purple: #8b5cf6;
+
+    /* Spacing — Space is the Design (P2) */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+    --space-16: 64px;
+
+    /* Radius */
+    --radius-xs: 4px;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 14px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Figtree',sans-serif; }
+  body { background:#111; color:var(--text); min-height:100vh; display:flex; align-items:center; justify-content:center; }
+
+  /* ======================== */
+  /* DASHBOARD FRAME          */
+  /* ======================== */
+  .dashboard {
+    width: 1200px;
+    height: 780px;
+    background: var(--bg);
+    display: flex;
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 0 80px rgba(0,0,0,0.5);
+  }
+
+  /* ======================== */
+  /* FLOATING SIDEBAR (P3)    */
+  /* Icons float on bg        */
+  /* No panel, no bg-elevated */
+  /* ======================== */
+  .sidebar {
+    width: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .sidebar-logo {
+    width: 20px; height: 20px; border-radius: 5px;
+    background: rgba(59,130,246,0.7);
+    margin-bottom: 16px;
+  }
+  .sidebar-item {
+    width: 36px; height: 36px; border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .sidebar-item:hover { background: var(--glass-bg-2); }
+  .sidebar-item.active { background: var(--glass-bg-4); }
+  .sidebar-icon {
+    width: 18px; height: 18px; border-radius: 4px;
+    background: var(--glass-bg-3);
+  }
+  .sidebar-item.active .sidebar-icon {
+    background: rgba(255,255,255,0.20);
+  }
+  .sidebar-spacer { flex:1; }
+  .sidebar-bottom {
+    margin-bottom: 20px;
+  }
+
+  /* ======================== */
+  /* MAIN CONTENT             */
+  /* P2: 48px padding         */
+  /* P2: 40px between major   */
+  /* ======================== */
+  .main {
+    flex: 1;
+    padding: var(--space-12);
+    padding-right: var(--space-12);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ======================== */
+  /* HEADER                   */
+  /* ======================== */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-10); /* 40px */
+  }
+  .header-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  .header-subtitle {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: var(--space-1);
+  }
+  .header-actions {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+  }
+
+  /* ======================== */
+  /* BUTTONS — Border Signal  */
+  /* ======================== */
+  .btn {
+    font-family: 'Figtree', sans-serif;
+    font-size: 13px;
+    padding: 10px 22px;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+  }
+  .btn-primary {
+    background: var(--glass-bg-4);
+    border-color: rgba(255,255,255,0.16);
+    box-shadow: 0 1px 0 var(--glass-inset-bright);
+    color: #FFFFFF;
+    font-weight: 600;
+  }
+  .btn-primary:hover {
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.20);
+  }
+  .btn-secondary {
+    background: var(--glass-bg-2);
+    border-color: rgba(255,255,255,0.12);
+    color: var(--text);
+    font-weight: 500;
+  }
+  .btn-secondary:hover {
+    background: var(--glass-bg-3);
+    border-color: var(--glass-border-hover);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+  .btn-ghost:hover {
+    background: var(--glass-bg-1);
+    color: var(--text);
+  }
+
+  /* ======================== */
+  /* FOCAL STAT (P5, P3)      */
+  /* ONE dominant element      */
+  /* No card wrapper           */
+  /* Directly on bg            */
+  /* ======================== */
+  .focal-stat {
+    margin-bottom: var(--space-10); /* 40px between major sections */
+  }
+  .focal-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    /* P6: Labels 10-11px, 600, tracking */
+  }
+  .focal-number {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-top: 8px;
+  }
+  .focal-number .integer {
+    font-size: 64px;
+    font-weight: 900;
+    color: var(--text-bright);
+    letter-spacing: -3px;
+    line-height: 0.92;
+    /* P6: Hero stat Figtree 900, 56-72px */
+  }
+  .focal-number .unit {
+    font-family: 'Merriweather', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 36px;
+    color: var(--text-dim);
+    /* P6: Accent moments — Merriweather 300 italic */
+  }
+  .focal-trend {
+    font-size: 11px;
+    color: rgba(52,211,153,0.6);
+    margin-top: 8px;
+  }
+
+  /* ======================== */
+  /* SECONDARY STATS (cards)  */
+  /* Glass cards — final spec */
+  /* ======================== */
+  .stats-row {
+    display: flex;
+    gap: var(--space-3); /* 12px between cards */
+    margin-bottom: var(--space-8); /* 32px to next section */
+  }
+  .stat-card {
+    flex: 1;
+    border-radius: var(--radius-lg); /* 12px */
+    padding: var(--space-4); /* 16px */
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01), rgba(255,255,255,0.03));
+    border: 1px solid var(--glass-border-subtle); /* white 4% — BRANDBOOK */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.125); /* brandbook shadow */
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .stat-card .stat-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .stat-card .stat-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+  .stat-card .stat-trend {
+    font-size: 11px;
+  }
+
+  /* ======================== */
+  /* TABS                     */
+  /* ======================== */
+  .tabs {
+    display: flex;
+    gap: var(--space-5); /* 20px */
+    margin-bottom: var(--space-4);
+    border-bottom: 1px solid var(--glass-border-subtle);
+    padding-bottom: 0;
+  }
+  .tab {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    padding-bottom: 10px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active {
+    color: var(--text);
+    font-weight: 600;
+    border-bottom-color: var(--text);
+  }
+
+  /* ======================== */
+  /* TABLE                    */
+  /* P3: Rows on bg, ultra-   */
+  /* thin separators (3%)     */
+  /* Headers get glass-bg-3   */
+  /* ======================== */
+  .table-wrapper { flex:1; }
+  .table-head {
+    display: flex;
+    align-items: center;
+    padding: 9px var(--space-4);
+    border-radius: var(--radius-sm); /* 6px */
+    background: var(--glass-bg-3); /* white 6% */
+    margin-bottom: 2px;
+  }
+  .table-head span {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .table-row {
+    display: flex;
+    align-items: center;
+    padding: 11px var(--space-4);
+    border-bottom: 1px solid var(--glass-bg-1); /* white 3% — ultra-thin */
+    transition: background 0.1s;
+  }
+  .table-row:hover {
+    background: var(--glass-bg-2); /* white 4% — subtle hover */
+  }
+  .table-row:last-child { border-bottom: none; }
+
+  .col-source { flex:1; }
+  .col-amount { width:110px; }
+  .col-date { width:100px; }
+  .col-status { width:100px; }
+  .col-action { width:50px; text-align:right; }
+
+  .row-source {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .row-detail {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .row-date {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* Status dot + text (P3: subtract, P4: color=info) */
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .status-text {
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .row-action {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .row-action:hover { color: var(--text); }
+
+  /* Source dots (P4) */
+  .source-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-right: 10px;
+    display: inline-block;
+  }
+
+  /* ======================== */
+  /* ANNOTATIONS              */
+  /* ======================== */
+  .annotation-layer {
+    position: relative;
+    margin-top: var(--space-12);
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--glass-border);
+  }
+  .annotation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6) var(--space-10);
+  }
+  .annotation {
+    display: flex;
+    gap: var(--space-3);
+  }
+  .annotation-marker {
+    width: 20px; height: 20px; flex-shrink:0;
+    border-radius: 50%;
+    background: rgba(59,130,246,0.12);
+    border: 1px solid rgba(59,130,246,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: var(--accent-blue);
+  }
+  .annotation-body {}
+  .annotation-title {
+    font-size: 11px; font-weight: 600; color: var(--text);
+    margin-bottom: 2px;
+  }
+  .annotation-desc {
+    font-size: 11px; color: var(--text-muted); line-height: 1.5;
+  }
+  .annotation-rule {
+    font-size: 10px; color: var(--accent-blue); font-weight: 500;
+    margin-top: 2px;
+  }
+</style>
+</head>
+<body>
+<!-- ═══ Site Nav ═══ -->
+<nav style="position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;background:rgba(26,26,26,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);font-family:'Figtree',sans-serif;">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="../index.html" style="font-weight:900;font-size:18px;color:#3b82f6;letter-spacing:-0.03em;text-decoration:none;">Rx</a>
+    <span style="font-size:13px;color:rgba(255,255,255,0.45);">
+      <a href="../process.html" style="color:rgba(255,255,255,0.45);text-decoration:none;">Process</a>
+      <span style="margin:0 8px;color:rgba(255,255,255,0.25);">→</span>
+      <span style="color:rgba(255,255,255,0.95);font-weight:600;">Full Dashboard</span>
+    </span>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <a href="../reference.html" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.45);padding:6px 14px;border-radius:6px;text-decoration:none;">Reference</a>
+    <a href="../process.html" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.95);background:rgba(255,255,255,0.06);padding:6px 14px;border-radius:6px;text-decoration:none;">Process</a>
+  </div>
+</nav>
+<!-- ═══ Decision Summary ═══ -->
+<div style="margin:24px 32px;padding:16px 20px;background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:8px;font-family:'Figtree',sans-serif;">
+  <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#3b82f6;margin-bottom:4px;">Decision #6</div>
+  <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:-0.01em;margin-bottom:4px;">Full Dashboard</div>
+  <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;">Complete dashboard composition demonstrating all patterns together.</div>
+</div>
+<div style="margin:16px 24px;padding:12px 16px;background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:8px;font-family:'Figtree',sans-serif;">
+  <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#3b82f6;margin-bottom:3px;">Decision #6</div>
+  <div style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:-0.01em;margin-bottom:3px;">Full Dashboard</div>
+  <div style="font-size:12px;color:rgba(255,255,255,0.45);line-height:1.5;">Complete dashboard with all design system decisions applied</div>
+</div>
+
+<div style="display:flex; flex-direction:column; gap:32px; padding:48px;">
+
+  <!-- Title -->
+  <div>
+    <div style="font-size:9px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:var(--text-dim); margin-bottom:8px;">DESIGN SYSTEM — FULL DASHBOARD</div>
+    <h2 style="font-size:28px; font-weight:800; letter-spacing:-0.7px; color:var(--text);">Glass Border-Signal + Brandbook Principles</h2>
+    <p style="font-size:13px; color:var(--text-muted); margin-top:6px; line-height:1.6;">Cada decisión del design system aplicada. Card final (12px, border 4%, shadow). Botones glass border-signal. Los 6 principios.</p>
+  </div>
+
+  <!-- ======================== -->
+  <!-- THE DASHBOARD            -->
+  <!-- ======================== -->
+  <div class="dashboard">
+
+    <!-- Floating Sidebar — P3: Subtract -->
+    <div class="sidebar">
+      <div class="sidebar-logo"></div>
+      <div class="sidebar-item active"><div class="sidebar-icon"></div></div>
+      <div class="sidebar-item"><div class="sidebar-icon"></div></div>
+      <div class="sidebar-item"><div class="sidebar-icon"></div></div>
+      <div class="sidebar-item"><div class="sidebar-icon"></div></div>
+      <div class="sidebar-item"><div class="sidebar-icon"></div></div>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-item sidebar-bottom"><div class="sidebar-icon"></div></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+
+      <!-- Header -->
+      <div class="header">
+        <div>
+          <div class="header-title">Reconciliation</div>
+          <div class="header-subtitle">Processing 2,847 transactions across 6 sources</div>
+        </div>
+        <div class="header-actions">
+          <div class="btn btn-ghost">Filters</div>
+          <div class="btn btn-secondary">Export</div>
+          <div class="btn btn-primary">New Rule <span style="font-size:15px; font-weight:400;">+</span></div>
+        </div>
+      </div>
+
+      <!-- Focal Stat — P5: ONE dominant element, P3: no card wrapper -->
+      <div class="focal-stat">
+        <div class="focal-label">MATCH RATE</div>
+        <div class="focal-number">
+          <span class="integer">99.2</span>
+          <span class="unit">%</span>
+        </div>
+        <div class="focal-trend">+0.3% from last week</div>
+      </div>
+
+      <!-- Secondary Stats — Glass cards, visually subordinate to focal -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">TRANSACTIONS</div>
+          <div class="stat-value">2,847</div>
+          <div class="stat-trend" style="color:rgba(52,211,153,0.6);">+142 today</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">UNMATCHED</div>
+          <div class="stat-value">98</div>
+          <div class="stat-trend" style="color:rgba(248,113,113,0.6);">-12 yesterday</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">SOURCES</div>
+          <div class="stat-value">6</div>
+          <div class="stat-trend" style="color:var(--text-dim);">All connected</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">AUTO-MATCHED</div>
+          <div class="stat-value">89<span style="font-family:'Merriweather',serif; font-style:italic; font-weight:300; font-size:16px; color:var(--text-dim); margin-left:2px;">%</span></div>
+          <div class="stat-trend" style="color:rgba(52,211,153,0.6);">+2.1% this month</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tab active">All</div>
+        <div class="tab">Matched</div>
+        <div class="tab">Unmatched</div>
+        <div class="tab">Pending</div>
+      </div>
+
+      <!-- Table — P3: rows on bg, ultra-thin separators -->
+      <div class="table-wrapper">
+        <div class="table-head">
+          <span class="col-source">Source</span>
+          <span class="col-amount">Amount</span>
+          <span class="col-date">Date</span>
+          <span class="col-status">Status</span>
+          <span class="col-action"></span>
+        </div>
+
+        <div class="table-row">
+          <span class="col-source" style="display:flex; align-items:center;">
+            <span class="source-dot" style="background:var(--accent-purple);"></span>
+            <span class="row-source">Stripe Settlement #4821</span>
+          </span>
+          <span class="col-amount row-detail">$124,891.00</span>
+          <span class="col-date row-date">Mar 14, 2026</span>
+          <span class="col-status">
+            <span class="status">
+              <span class="status-dot" style="background:var(--accent-emerald);"></span>
+              <span class="status-text" style="color:var(--accent-emerald);">Matched</span>
+            </span>
+          </span>
+          <span class="col-action"><span class="row-action">View</span></span>
+        </div>
+
+        <div class="table-row">
+          <span class="col-source" style="display:flex; align-items:center;">
+            <span class="source-dot" style="background:var(--accent-blue);"></span>
+            <span class="row-source">QuickBooks Invoice #1092</span>
+          </span>
+          <span class="col-amount row-detail">$124,891.00</span>
+          <span class="col-date row-date">Mar 14, 2026</span>
+          <span class="col-status">
+            <span class="status">
+              <span class="status-dot" style="background:var(--accent-emerald);"></span>
+              <span class="status-text" style="color:var(--accent-emerald);">Matched</span>
+            </span>
+          </span>
+          <span class="col-action"><span class="row-action">View</span></span>
+        </div>
+
+        <div class="table-row">
+          <span class="col-source" style="display:flex; align-items:center;">
+            <span class="source-dot" style="background:var(--accent-blue);"></span>
+            <span class="row-source">Bank Transfer #7733</span>
+          </span>
+          <span class="col-amount row-detail">$8,450.00</span>
+          <span class="col-date row-date">Mar 13, 2026</span>
+          <span class="col-status">
+            <span class="status">
+              <span class="status-dot" style="background:var(--accent-red);"></span>
+              <span class="status-text" style="color:var(--accent-red);">Unmatched</span>
+            </span>
+          </span>
+          <span class="col-action"><span class="row-action">View</span></span>
+        </div>
+
+        <div class="table-row">
+          <span class="col-source" style="display:flex; align-items:center;">
+            <span class="source-dot" style="background:var(--accent-purple);"></span>
+            <span class="row-source">PayPal Payout #339</span>
+          </span>
+          <span class="col-amount row-detail">$32,100.00</span>
+          <span class="col-date row-date">Mar 13, 2026</span>
+          <span class="col-status">
+            <span class="status">
+              <span class="status-dot" style="background:var(--accent-amber);"></span>
+              <span class="status-text" style="color:var(--accent-amber);">Pending</span>
+            </span>
+          </span>
+          <span class="col-action"><span class="row-action">View</span></span>
+        </div>
+
+        <div class="table-row">
+          <span class="col-source" style="display:flex; align-items:center;">
+            <span class="source-dot" style="background:var(--accent-emerald);"></span>
+            <span class="row-source">Mercury ACH #2048</span>
+          </span>
+          <span class="col-amount row-detail">$67,230.00</span>
+          <span class="col-date row-date">Mar 12, 2026</span>
+          <span class="col-status">
+            <span class="status">
+              <span class="status-dot" style="background:var(--accent-emerald);"></span>
+              <span class="status-text" style="color:var(--accent-emerald);">Matched</span>
+            </span>
+          </span>
+          <span class="col-action"><span class="row-action">View</span></span>
+        </div>
+
+        <div class="table-row">
+          <span class="col-source" style="display:flex; align-items:center;">
+            <span class="source-dot" style="background:var(--accent-purple);"></span>
+            <span class="row-source">Stripe Refund #4822</span>
+          </span>
+          <span class="col-amount row-detail">−$1,250.00</span>
+          <span class="col-date row-date">Mar 12, 2026</span>
+          <span class="col-status">
+            <span class="status">
+              <span class="status-dot" style="background:var(--accent-red);"></span>
+              <span class="status-text" style="color:var(--accent-red);">Unmatched</span>
+            </span>
+          </span>
+          <span class="col-action"><span class="row-action">View</span></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ======================== -->
+  <!-- PRINCIPLE ANNOTATIONS    -->
+  <!-- ======================== -->
+  <div class="annotation-layer">
+    <div style="font-size:9px; font-weight:600; letter-spacing:3px; text-transform:uppercase; color:var(--text-dim); margin-bottom:20px;">PRINCIPIOS APLICADOS</div>
+    <div class="annotation-grid">
+
+      <div class="annotation">
+        <div class="annotation-marker">1</div>
+        <div class="annotation-body">
+          <div class="annotation-title">Narrate, don't list</div>
+          <div class="annotation-desc">99.2% responde "¿cómo va mi reconciliación?" — no es un stat en una card, es la respuesta.</div>
+          <div class="annotation-rule">P1 → Focal stat sin wrapper</div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-marker">2</div>
+        <div class="annotation-body">
+          <div class="annotation-title">Space is the design</div>
+          <div class="annotation-desc">48px padding principal. 40px entre focal stat y cards. 32px entre cards y tabla. El interface respira.</div>
+          <div class="annotation-rule">P2 → Spacing scale generosa</div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-marker">3</div>
+        <div class="annotation-body">
+          <div class="annotation-title">Subtract, don't add</div>
+          <div class="annotation-desc">Sidebar flotante sin panel. Focal stat sin card. Status con dots no badges. Separadores ultra-thin (3%).</div>
+          <div class="annotation-rule">P3 → Mínimo chrome visual</div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-marker">4</div>
+        <div class="annotation-body">
+          <div class="annotation-title">Color is information</div>
+          <div class="annotation-desc">Emerald=matched, Red=unmatched, Amber=pending, Purple=Stripe/integration, Blue=QuickBooks/internal. Nunca decorativo.</div>
+          <div class="annotation-rule">P4 → Source dots + status dots semánticos</div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-marker">5</div>
+        <div class="annotation-body">
+          <div class="annotation-title">One focal point per view</div>
+          <div class="annotation-desc">99.2% domina visualmente (64px, Figtree 900). Cards, tabla, botones son subordinados. Glass primary no compite.</div>
+          <div class="annotation-rule">P5 → Hero stat > todo lo demás</div>
+        </div>
+      </div>
+
+      <div class="annotation">
+        <div class="annotation-marker">6</div>
+        <div class="annotation-body">
+          <div class="annotation-title">Typography carries personality</div>
+          <div class="annotation-desc">Figtree 900 para el hero. Merriweather italic en el "%" como accent moment. Labels uppercase 600 con tracking.</div>
+          <div class="annotation-rule">P6 → Font pairing con propósito</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+<!-- ═══ Footer Nav ═══ -->
+<div style="display:flex;justify-content:space-between;align-items:center;padding:24px 32px;border-top:1px solid rgba(255,255,255,0.04);font-family:'Figtree',sans-serif;margin-top:40px;">
+  <a href="03-button-system.html" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);text-decoration:none;">← Button System</a>
+  <a href="05-inputs-forms.html" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);text-decoration:none;">Inputs & Forms →</a>
+</div>
+</body>
+</html>

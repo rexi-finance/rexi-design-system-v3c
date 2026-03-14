@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iconography — Rexi Design Process</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&display=swap">
+<!-- Phosphor Icons CDN -->
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<!-- Tabler Icons CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+<style>
+  :root {
+    --bg: #1a1a1a;
+    --bg-elevated: #1e1e1e;
+    --glass-bg-1: rgba(255,255,255,0.03);
+    --glass-bg-3: rgba(255,255,255,0.06);
+    --glass-bg-4: rgba(255,255,255,0.10);
+    --glass-border-subtle: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-border-hover: rgba(255,255,255,0.14);
+    --glass-inset-bright: rgba(255,255,255,0.08);
+    --text-bright: rgba(255,255,255,0.95);
+    --text: #e5e5e5;
+    --text-muted: rgba(255,255,255,0.45);
+    --text-dim: rgba(255,255,255,0.25);
+    --text-faint: rgba(255,255,255,0.16);
+    --accent-emerald: #34d399;
+    --accent-emerald-muted: rgba(52,211,153,0.14);
+    --accent-red: #f87171;
+    --accent-red-muted: rgba(248,113,113,0.14);
+    --accent-amber: #fbbf24;
+    --accent-amber-muted: rgba(251,191,36,0.14);
+    --accent-blue: #3b82f6;
+    --accent-blue-muted: rgba(59,130,246,0.14);
+    --accent-purple: #8b5cf6;
+    --accent-orange: #fb923c;
+    --accent-orange-muted: rgba(251,146,60,0.14);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Figtree',sans-serif; }
+  body { background:var(--bg); color:var(--text); min-height:100vh; padding:40px; }
+
+  h1 { font-size:36px; font-weight:800; letter-spacing:-1px; margin-bottom:8px; }
+  .subtitle { font-size:14px; color:var(--text-muted); line-height:1.6; margin-bottom:48px; max-width:800px; }
+  .section-title {
+    font-size:9px; font-weight:600; letter-spacing:3px; text-transform:uppercase;
+    color:var(--text-dim); margin-bottom:16px;
+  }
+  .divider { height:1px; background:rgba(255,255,255,0.06); margin:48px 0; }
+
+  /* Four column layout */
+  .comparison-grid { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:24px; }
+  .column-header {
+    background:linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 50%, rgba(255,255,255,0.03) 100%);
+    border:1px solid var(--glass-border); border-radius:12px;
+    padding:16px 20px; margin-bottom:20px;
+  }
+  .column-header h3 { font-size:16px; font-weight:700; letter-spacing:-0.3px; margin-bottom:4px; }
+  .column-header .meta { font-size:11px; color:var(--text-muted); line-height:1.5; }
+  .column-header .tag {
+    display:inline-block; font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase;
+    padding:3px 10px; border-radius:100px; margin-top:8px;
+  }
+  .tag-current { background:var(--accent-blue-muted); color:var(--accent-blue); }
+  .tag-recommended { background:var(--accent-emerald-muted); color:var(--accent-emerald); }
+  .tag-alternative { background:rgba(255,255,255,0.06); color:var(--text-muted); }
+  .tag-caution { background:var(--accent-orange-muted); color:var(--accent-orange); }
+
+  /* Sidebar mock */
+  .sidebar-mock {
+    background:transparent; padding:12px 10px; border-radius:12px;
+    border:1px solid var(--glass-border-subtle); margin-bottom:16px;
+  }
+  .sidebar-mock .sidebar-label {
+    font-size:9px; font-weight:600; letter-spacing:2px; text-transform:uppercase;
+    color:var(--text-dim); padding:0 8px; margin-bottom:10px;
+  }
+  .nav-item {
+    display:flex; align-items:center; gap:10px; padding:9px 10px;
+    border-radius:8px; cursor:pointer; transition:all 0.15s;
+    font-size:13px; font-weight:500; color:var(--text-muted);
+  }
+  .nav-item:hover { background:var(--glass-bg-3); color:var(--text); }
+  .nav-item.active { background:var(--glass-bg-4); color:var(--text-bright); }
+  .nav-item svg, .nav-item i { flex-shrink:0; }
+  .nav-item i { font-size:20px; width:20px; text-align:center; line-height:1; display:inline-flex; align-items:center; justify-content:center; }
+  /* Tabler icons use their own sizing */
+  .nav-item i.ti { font-size:22px; width:20px; }
+
+  /* Table mock */
+  .table-mock {
+    border:1px solid var(--glass-border-subtle); border-radius:12px;
+    overflow:hidden; margin-bottom:16px;
+  }
+  .table-header {
+    display:grid; grid-template-columns:32px 1fr 90px 70px;
+    gap:8px; padding:8px 12px; background:var(--glass-bg-3);
+    font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--text-dim); align-items:center;
+  }
+  .table-row {
+    display:grid; grid-template-columns:32px 1fr 90px 70px;
+    gap:8px; padding:10px 12px; border-top:1px solid var(--glass-bg-1);
+    font-size:12px; font-weight:500; align-items:center;
+  }
+  .table-row:first-child { border-top:none; }
+  .table-row .icon-cell { display:flex; align-items:center; justify-content:center; }
+  .table-row .icon-cell svg { color:var(--text-muted); }
+  .table-row .icon-cell i { font-size:18px; color:var(--text-muted); line-height:1; }
+  .table-row .icon-cell i.ti { font-size:20px; }
+  .table-row .name-cell { color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .table-row .status-badge {
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:10px; font-weight:500; padding:2px 8px; border-radius:100px;
+  }
+  .badge-emerald { background:var(--accent-emerald-muted); color:var(--accent-emerald); }
+  .badge-amber { background:var(--accent-amber-muted); color:var(--accent-amber); }
+  .badge-red { background:var(--accent-red-muted); color:var(--accent-red); }
+  .table-row .amount { color:var(--text); font-variant-numeric:tabular-nums; font-weight:600; font-size:12px; }
+  .dot { width:5px; height:5px; border-radius:50%; display:inline-block; }
+
+  /* Button row */
+  .button-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .btn {
+    display:inline-flex; align-items:center; gap:7px;
+    padding:9px 18px; border-radius:12px; font-size:12px; font-weight:600;
+    border:none; cursor:pointer; transition:all 0.15s;
+  }
+  .btn-primary {
+    background:rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.16);
+    color:#fff; box-shadow:inset 0 1px 0 var(--glass-inset-bright);
+  }
+  .btn-secondary {
+    background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.12);
+    color:var(--text); font-weight:500;
+  }
+  .btn-ghost {
+    background:transparent; border:1px solid transparent;
+    color:var(--text-muted); font-weight:500;
+  }
+  .btn svg, .btn i { flex-shrink:0; }
+  .btn i { font-size:16px; line-height:1; display:inline-flex; align-items:center; }
+  .btn i.ti { font-size:18px; }
+
+  /* Active state demo */
+  .state-demo { display:flex; gap:20px; margin-bottom:16px; }
+  .state-box { text-align:center; }
+  .state-box .label {
+    font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--text-dim); margin-bottom:6px;
+  }
+  .state-icon-wrap {
+    width:42px; height:42px; display:flex; align-items:center; justify-content:center;
+    border-radius:10px; margin:0 auto;
+  }
+  .state-inactive { background:transparent; }
+  .state-inactive svg, .state-inactive i { color:var(--text-muted); }
+  .state-active { background:var(--glass-bg-4); }
+  .state-active svg, .state-active i { color:var(--text-bright); }
+  .state-icon-wrap i { font-size:20px; line-height:1; }
+  .state-icon-wrap i.ti { font-size:22px; }
+
+  /* Note */
+  .note-box {
+    background:rgba(59,130,246,0.04); border:1px solid rgba(59,130,246,0.12);
+    border-radius:10px; padding:16px 20px; margin-top:40px;
+  }
+  .note-box h4 {
+    font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--accent-blue); margin-bottom:8px;
+  }
+  .note-box ul { font-size:13px; color:var(--text-muted); line-height:1.8; padding-left:16px; margin-top:4px; }
+
+  /* Size reference */
+  .size-ref {
+    display:flex; gap:24px; align-items:flex-end;
+    padding:20px; background:var(--glass-bg-1); border-radius:10px;
+    border:1px solid var(--glass-border-subtle);
+  }
+  .size-item { text-align:center; }
+  .size-item .size-label {
+    font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--text-dim); margin-top:8px;
+  }
+  .size-item svg { color:var(--text); }
+</style>
+</head>
+<body>
+<!-- ═══ Site Nav ═══ -->
+<nav style="position:sticky;top:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:56px;background:rgba(26,26,26,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06);font-family:'Figtree',sans-serif;">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="../index.html" style="font-weight:900;font-size:18px;color:#3b82f6;letter-spacing:-0.03em;text-decoration:none;">Rx</a>
+    <span style="font-size:13px;color:rgba(255,255,255,0.45);">
+      <a href="../process.html" style="color:rgba(255,255,255,0.45);text-decoration:none;">Process</a>
+      <span style="margin:0 8px;color:rgba(255,255,255,0.25);">→</span>
+      <span style="color:rgba(255,255,255,0.95);font-weight:600;">Iconography</span>
+    </span>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <a href="../reference.html" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.45);padding:6px 14px;border-radius:6px;text-decoration:none;">Reference</a>
+    <a href="../process.html" style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.95);background:rgba(255,255,255,0.06);padding:6px 14px;border-radius:6px;text-decoration:none;">Process</a>
+  </div>
+</nav>
+<!-- ═══ Decision Summary ═══ -->
+<div style="margin:24px 32px;padding:16px 20px;background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:8px;font-family:'Figtree',sans-serif;">
+  <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#3b82f6;margin-bottom:4px;">Decision #9-10</div>
+  <div style="font-size:16px;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:-0.01em;margin-bottom:4px;">Iconography</div>
+  <div style="font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6;">Lucide 1.5px stroke. Semantic colors. Weight-based active states. Workflow nodes.</div>
+</div>
+<div style="margin:16px 24px;padding:12px 16px;background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.03));border:1px solid rgba(255,255,255,0.06);border-radius:8px;font-family:'Figtree',sans-serif;">
+  <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#3b82f6;margin-bottom:3px;">Decision #9-10</div>
+  <div style="font-size:15px;font-weight:700;color:rgba(255,255,255,0.95);letter-spacing:-0.01em;margin-bottom:3px;">Iconography</div>
+  <div style="font-size:12px;color:rgba(255,255,255,0.45);line-height:1.5;">Lucide 1.5px, 4 library comparison, semantic colors</div>
+</div>
+
+<h1>Iconography — 4 Libraries Compared</h1>
+<p class="subtitle">
+  Lucide (current), Phosphor Light (recommended), Phosphor Regular, and Tabler — all in real UI context.
+  Phosphor and Tabler loaded from official CDNs for accurate rendering.
+</p>
+
+<!-- ==================== SIZE SCALE ==================== -->
+<div class="section-title">Proposed Icon Sizes</div>
+<div style="display:flex; gap:40px; margin-bottom:48px;">
+  <div class="size-ref" style="flex:1;">
+    <div class="size-item">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+      <div class="size-label">14px<br>Compact</div>
+    </div>
+    <div class="size-item">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+      <div class="size-label">16px<br>Button</div>
+    </div>
+    <div class="size-item">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+      <div class="size-label">18px<br>Table</div>
+    </div>
+    <div class="size-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+      <div class="size-label">20px<br>Sidebar</div>
+    </div>
+    <div class="size-item">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+      <div class="size-label">24px<br>Empty st.</div>
+    </div>
+    <div class="size-item">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+      <div class="size-label">32px<br>Hero</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ==================== FOUR COLUMNS ==================== -->
+<div class="comparison-grid">
+
+  <!-- ===== COLUMN A: LUCIDE 1.5px ===== -->
+  <div class="column">
+    <div class="column-header">
+      <h3>A — Lucide 1.5px</h3>
+      <div class="meta">Current library. Stroke: 2px → 1.5px. 1,600+ icons.</div>
+      <span class="tag tag-current">Current</span>
+    </div>
+
+    <div class="section-title">Sidebar</div>
+    <div class="sidebar-mock">
+      <div class="sidebar-label">Main</div>
+      <div class="nav-item active">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        Dashboards
+      </div>
+      <div class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>
+        Transactions
+      </div>
+      <div class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg>
+        Reconciliation
+      </div>
+      <div class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+        Imports
+      </div>
+      <div class="nav-item">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        Settings
+      </div>
+    </div>
+
+    <div class="section-title">Active vs Inactive</div>
+    <div class="state-demo">
+      <div class="state-box">
+        <div class="label">Inactive</div>
+        <div class="state-icon-wrap state-inactive">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        </div>
+      </div>
+      <div class="state-box">
+        <div class="label">Active (bold)</div>
+        <div class="state-icon-wrap state-active">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Table (18px)</div>
+    <div class="table-mock">
+      <div class="table-header"><div></div><div>Name</div><div>Status</div><div>Amount</div></div>
+      <div class="table-row">
+        <div class="icon-cell"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg></div>
+        <div class="name-cell">Wire Transfer — Acme</div>
+        <div><span class="status-badge badge-emerald"><span class="dot" style="background:var(--accent-emerald);"></span>Matched</span></div>
+        <div class="amount">$12,450</div>
+      </div>
+      <div class="table-row">
+        <div class="icon-cell"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg></div>
+        <div class="name-cell">Card Payment — AWS</div>
+        <div><span class="status-badge badge-amber"><span class="dot" style="background:var(--accent-amber);"></span>Pending</span></div>
+        <div class="amount">$3,200</div>
+      </div>
+      <div class="table-row">
+        <div class="icon-cell"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg></div>
+        <div class="name-cell">ACH — Payroll #47</div>
+        <div><span class="status-badge badge-red"><span class="dot" style="background:var(--accent-red);"></span>Unmatched</span></div>
+        <div class="amount">$89,100</div>
+      </div>
+    </div>
+
+    <div class="section-title">Buttons</div>
+    <div class="button-row">
+      <button class="btn btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+        New Import
+      </button>
+      <button class="btn btn-secondary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+        Export
+      </button>
+      <button class="btn btn-ghost">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+        Delete
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== COLUMN B: PHOSPHOR LIGHT ===== -->
+  <div class="column">
+    <div class="column-header">
+      <h3>B — Phosphor Light</h3>
+      <div class="meta">~1px stroke. 9,000+ icons. Fill for active. Mercury-like.</div>
+      <span class="tag tag-recommended">Recommended</span>
+    </div>
+
+    <div class="section-title">Sidebar</div>
+    <div class="sidebar-mock">
+      <div class="sidebar-label">Main</div>
+      <div class="nav-item active"><i class="ph-light ph-squares-four"></i> Dashboards</div>
+      <div class="nav-item"><i class="ph-light ph-receipt"></i> Transactions</div>
+      <div class="nav-item"><i class="ph-light ph-arrows-left-right"></i> Reconciliation</div>
+      <div class="nav-item"><i class="ph-light ph-upload-simple"></i> Imports</div>
+      <div class="nav-item"><i class="ph-light ph-gear-six"></i> Settings</div>
+    </div>
+
+    <div class="section-title">Active vs Inactive (Light → Fill)</div>
+    <div class="state-demo">
+      <div class="state-box">
+        <div class="label">Inactive (Light)</div>
+        <div class="state-icon-wrap state-inactive"><i class="ph-light ph-squares-four"></i></div>
+      </div>
+      <div class="state-box">
+        <div class="label">Active (Fill)</div>
+        <div class="state-icon-wrap state-active"><i class="ph-fill ph-squares-four"></i></div>
+      </div>
+    </div>
+
+    <div class="section-title">Table (18px)</div>
+    <div class="table-mock">
+      <div class="table-header"><div></div><div>Name</div><div>Status</div><div>Amount</div></div>
+      <div class="table-row">
+        <div class="icon-cell"><i class="ph-light ph-receipt" style="font-size:18px;"></i></div>
+        <div class="name-cell">Wire Transfer — Acme</div>
+        <div><span class="status-badge badge-emerald"><span class="dot" style="background:var(--accent-emerald);"></span>Matched</span></div>
+        <div class="amount">$12,450</div>
+      </div>
+      <div class="table-row">
+        <div class="icon-cell"><i class="ph-light ph-credit-card" style="font-size:18px;"></i></div>
+        <div class="name-cell">Card Payment — AWS</div>
+        <div><span class="status-badge badge-amber"><span class="dot" style="background:var(--accent-amber);"></span>Pending</span></div>
+        <div class="amount">$3,200</div>
+      </div>
+      <div class="table-row">
+        <div class="icon-cell"><i class="ph-light ph-bank" style="font-size:18px;"></i></div>
+        <div class="name-cell">ACH — Payroll #47</div>
+        <div><span class="status-badge badge-red"><span class="dot" style="background:var(--accent-red);"></span>Unmatched</span></div>
+        <div class="amount">$89,100</div>
+      </div>
+    </div>
+
+    <div class="section-title">Buttons</div>
+    <div class="button-row">
+      <button class="btn btn-primary"><i class="ph-light ph-plus"></i> New Import</button>
+      <button class="btn btn-secondary"><i class="ph-light ph-download-simple"></i> Export</button>
+      <button class="btn btn-ghost"><i class="ph-light ph-trash"></i> Delete</button>
+    </div>
+  </div>
+
+  <!-- ===== COLUMN C: PHOSPHOR REGULAR ===== -->
+  <div class="column">
+    <div class="column-header">
+      <h3>C — Phosphor Regular</h3>
+      <div class="meta">~1.5px stroke. Same library, more weight. Fill for active.</div>
+      <span class="tag tag-alternative">Alternative</span>
+    </div>
+
+    <div class="section-title">Sidebar</div>
+    <div class="sidebar-mock">
+      <div class="sidebar-label">Main</div>
+      <div class="nav-item active"><i class="ph ph-squares-four"></i> Dashboards</div>
+      <div class="nav-item"><i class="ph ph-receipt"></i> Transactions</div>
+      <div class="nav-item"><i class="ph ph-arrows-left-right"></i> Reconciliation</div>
+      <div class="nav-item"><i class="ph ph-upload-simple"></i> Imports</div>
+      <div class="nav-item"><i class="ph ph-gear-six"></i> Settings</div>
+    </div>
+
+    <div class="section-title">Active vs Inactive (Regular → Fill)</div>
+    <div class="state-demo">
+      <div class="state-box">
+        <div class="label">Inactive (Regular)</div>
+        <div class="state-icon-wrap state-inactive"><i class="ph ph-squares-four"></i></div>
+      </div>
+      <div class="state-box">
+        <div class="label">Active (Fill)</div>
+        <div class="state-icon-wrap state-active"><i class="ph-fill ph-squares-four"></i></div>
+      </div>
+    </div>
+
+    <div class="section-title">Table (18px)</div>
+    <div class="table-mock">
+      <div class="table-header"><div></div><div>Name</div><div>Status</div><div>Amount</div></div>
+      <div class="table-row">
+        <div class="icon-cell"><i class="ph ph-receipt" style="font-size:18px;"></i></div>
+        <div class="name-cell">Wire Transfer — Acme</div>
+        <div><span class="status-badge badge-emerald"><span class="dot" style="background:var(--accent-emerald);"></span>Matched</span></div>
+        <div class="amount">$12,450</div>
+      </div>
+      <div class="table-row">
+        <div class="icon-cell"><i class="ph ph-credit-card" style="font-size:18px;"></i></div>
+        <div class="name-cell">Card Payment — AWS</div>
+        <div><span class="status-badge badge-amber"><span class="dot" style="background:var(--accent-amber);"></span>Pending</span></div>
+        <div class="amount">$3,200</div>
+      </div>
+      <div class="table-row">
+        <div class="icon-cell"><i class="ph ph-bank" style="font-size:18px;"></i></div>
+        <div class="name-cell">ACH — Payroll #47</div>
+        <div><span class="status-badge badge-red"><span class="dot" style="background:var(--accent-red);"></span>Unmatched</span></div>
+        <div class="amount">$89,100</div>
+      </div>
+    </div>
+
+    <div class="section-title">Buttons</div>
+    <div class="button-row">
+      <button class="btn btn-primary"><i class="ph ph-plus"></i> New Import</button>
+      <button class="btn btn-secondary"><i class="ph ph-download-simple"></i> Export</button>
+      <button class="btn btn-ghost"><i class="ph ph-trash"></i> Delete</button>
+    </div>
+  </div>
+
+  <!-- ===== COLUMN D: TABLER 2px ===== -->
+  <div class="column">
+    <div class="column-header">
+      <h3>D — Tabler 2px</h3>
+      <div class="meta">6,074 icons. 2px stroke (fixed). 1,053 filled. No native shadcn.</div>
+      <span class="tag tag-caution">Heavy Stroke</span>
+    </div>
+
+    <div class="section-title">Sidebar</div>
+    <div class="sidebar-mock">
+      <div class="sidebar-label">Main</div>
+      <div class="nav-item active"><i class="ti ti-layout-dashboard"></i> Dashboards</div>
+      <div class="nav-item"><i class="ti ti-receipt"></i> Transactions</div>
+      <div class="nav-item"><i class="ti ti-arrows-left-right"></i> Reconciliation</div>
+      <div class="nav-item"><i class="ti ti-upload"></i> Imports</div>
+      <div class="nav-item"><i class="ti ti-settings"></i> Settings</div>
+    </div>
+
+    <div class="section-title">Active vs Inactive (Outline → Filled)</div>
+    <div class="state-demo">
+      <div class="state-box">
+        <div class="label">Inactive (Outline)</div>
+        <div class="state-icon-wrap state-inactive"><i class="ti ti-layout-dashboard"></i></div>
+      </div>
+      <div class="state-box">
+        <div class="label">Active (Filled)</div>
+        <div class="state-icon-wrap state-active"><i class="ti ti-layout-dashboard-filled"></i></div>
+      </div>
+    </div>
+
+    <div class="section-title">Table (18px)</div>
+    <div class="table-mock">
+      <div class="table-header"><div></div><div>Name</div><div>Status</div><div>Amount</div></div>
+      <div class="table-row">
+        <div class="icon-cell"><i class="ti ti-receipt" style="font-size:20px;"></i></div>
+        <div class="name-cell">Wire Transfer — Acme</div>
+        <div><span class="status-badge badge-emerald"><span class="dot" style="background:var(--accent-emerald);"></span>Matched</span></div>
+        <div class="amount">$12,450</div>
+      </div>
+      <div class="table-row">
+        <div class="icon-cell"><i class="ti ti-credit-card" style="font-size:20px;"></i></div>
+        <div class="name-cell">Card Payment — AWS</div>
+        <div><span class="status-badge badge-amber"><span class="dot" style="background:var(--accent-amber);"></span>Pending</span></div>
+        <div class="amount">$3,200</div>
+      </div>
+      <div class="table-row">
+        <div class="icon-cell"><i class="ti ti-building-bank" style="font-size:20px;"></i></div>
+        <div class="name-cell">ACH — Payroll #47</div>
+        <div><span class="status-badge badge-red"><span class="dot" style="background:var(--accent-red);"></span>Unmatched</span></div>
+        <div class="amount">$89,100</div>
+      </div>
+    </div>
+
+    <div class="section-title">Buttons</div>
+    <div class="button-row">
+      <button class="btn btn-primary"><i class="ti ti-plus"></i> New Import</button>
+      <button class="btn btn-secondary"><i class="ti ti-download"></i> Export</button>
+      <button class="btn btn-ghost"><i class="ti ti-trash"></i> Delete</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="divider"></div>
+
+<!-- ==================== COMPARISON TABLE ==================== -->
+<div class="section-title">Feature Comparison</div>
+<div style="max-width:100%;">
+  <table style="width:100%; border-collapse:collapse; font-size:12px;">
+    <thead>
+      <tr style="border-bottom:1px solid var(--glass-border);">
+        <th style="text-align:left; padding:10px 12px; font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim);"></th>
+        <th style="text-align:center; padding:10px 12px; font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim);">A — Lucide</th>
+        <th style="text-align:center; padding:10px 12px; font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--accent-emerald);">B — Phosphor Light</th>
+        <th style="text-align:center; padding:10px 12px; font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim);">C — Phosphor Regular</th>
+        <th style="text-align:center; padding:10px 12px; font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--accent-orange);">D — Tabler</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:1px solid var(--glass-bg-1);">
+        <td style="padding:8px 12px; color:var(--text-muted);">Icon count</td>
+        <td style="padding:8px 12px; text-align:center;">1,600+</td>
+        <td style="padding:8px 12px; text-align:center;">9,000+</td>
+        <td style="padding:8px 12px; text-align:center;">9,000+</td>
+        <td style="padding:8px 12px; text-align:center;">6,074</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--glass-bg-1);">
+        <td style="padding:8px 12px; color:var(--text-muted);">Visual stroke</td>
+        <td style="padding:8px 12px; text-align:center;">~1.5px</td>
+        <td style="padding:8px 12px; text-align:center;">~1px</td>
+        <td style="padding:8px 12px; text-align:center;">~1.5px</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-orange);">2px (heavy)</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--glass-bg-1);">
+        <td style="padding:8px 12px; color:var(--text-muted);">Weight variants</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--text-muted);">1</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-emerald);">6 per icon</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-emerald);">6 per icon</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--text-muted);">2 (outline+filled)</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--glass-bg-1);">
+        <td style="padding:8px 12px; color:var(--text-muted);">Fill variant</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-red);">No</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-emerald);">Fill + Duotone</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-emerald);">Fill + Duotone</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-amber);">1,053 filled</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--glass-bg-1);">
+        <td style="padding:8px 12px; color:var(--text-muted);">Active state</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--text-muted);">Stroke hack</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-emerald);">Light → Fill</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-emerald);">Regular → Fill</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-amber);">Outline → Filled</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--glass-bg-1);">
+        <td style="padding:8px 12px; color:var(--text-muted);">Glass match</td>
+        <td style="padding:8px 12px; text-align:center;">Good</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-emerald);">Excellent</td>
+        <td style="padding:8px 12px; text-align:center;">Good</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-red);">Poor — too heavy</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--glass-bg-1);">
+        <td style="padding:8px 12px; color:var(--text-muted);">shadcn/ui</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-emerald);">Native</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-amber);">Hybrid</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-amber);">Hybrid</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-amber);">Hybrid</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--glass-bg-1);">
+        <td style="padding:8px 12px; color:var(--text-muted);">Next.js bundle</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-emerald);">Best</td>
+        <td style="padding:8px 12px; text-align:center;">OK</td>
+        <td style="padding:8px 12px; text-align:center;">OK</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-red);">Issues reported</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 12px; color:var(--text-muted);">Migration</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-emerald);">None</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-amber);">Medium</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-amber);">Medium</td>
+        <td style="padding:8px 12px; text-align:center; color:var(--accent-amber);">Medium</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="note-box" style="margin-top:40px;">
+  <h4>Recommendation: Phosphor Light (B)</h4>
+  <ul>
+    <li><strong>Light → Fill</strong> — Native active state pattern. No hacks. One library, two clear visual states.</li>
+    <li><strong>Glass aesthetic</strong> — The ~1px stroke harmonizes with glass borders (4-6% white). Tabler's 2px visually dominates the subtle glass surfaces.</li>
+    <li><strong>Premium differentiation</strong> — Neither Lucide (ubiquitous) nor Tabler (dashboard-template feel) differentiate Rexi. Phosphor Light feels refined and distinctive.</li>
+    <li><strong>shadcn/ui reality check</strong> — Tabler does NOT have native shadcn support either. Both Tabler and Phosphor require the same hybrid approach (Lucide for shadcn internals, your library for app code). There is no advantage to Tabler here.</li>
+    <li><strong>Bundle</strong> — Tabler has documented Next.js bundle issues. Phosphor is clean.</li>
+  </ul>
+</div>
+
+<div class="note-box" style="margin-top:20px; background:rgba(251,191,36,0.04); border-color:rgba(251,191,36,0.12);">
+  <h4 style="color:var(--accent-amber);">Why Not Tabler?</h4>
+  <ul>
+    <li><strong>2px stroke fights the glass system</strong> — Your borders are 4-6% white opacity. A 2px icon stroke has more visual weight than the border itself, breaking the hierarchy.</li>
+    <li><strong>No native shadcn/ui support</strong> — Despite common belief, Tabler is NOT supported in shadcn's <code>iconLibrary</code> config. Same hybrid approach needed as Phosphor.</li>
+    <li><strong>Bundle size issues</strong> — Documented problems with Next.js/Vite builds (5-10MB bloat in development).</li>
+    <li><strong>Aesthetic mismatch</strong> — Tabler's geometric, utilitarian feel is designed for admin panels, not premium glass morphism UIs.</li>
+  </ul>
+</div>
+<!-- ═══ Footer Nav ═══ -->
+<div style="display:flex;justify-content:space-between;align-items:center;padding:24px 32px;border-top:1px solid rgba(255,255,255,0.04);font-family:'Figtree',sans-serif;margin-top:40px;">
+  <a href="06-status-indicators.html" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);text-decoration:none;">← Status Indicators</a>
+  <a href="08-feedback-overlays.html" style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.45);padding:8px 16px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);text-decoration:none;">Feedback & Overlays →</a>
+</div>
+</body>
+</html>
