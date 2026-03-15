@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Demo — Rexi Design System V3c</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root {
+    --bg: #1a1a1a;
+    --bg-elevated: #1e1e1e;
+    --glass-bg-1: rgba(255,255,255,0.03);
+    --glass-bg-2: rgba(255,255,255,0.04);
+    --glass-bg-3: rgba(255,255,255,0.06);
+    --glass-bg-4: rgba(255,255,255,0.10);
+    --glass-border-subtle: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-border-hover: rgba(255,255,255,0.14);
+    --glass-inset: rgba(255,255,255,0.04);
+    --glass-inset-bright: rgba(255,255,255,0.08);
+    --text-bright: rgba(255,255,255,0.95);
+    --text: #e5e5e5;
+    --text-muted: rgba(255,255,255,0.45);
+    --text-dim: rgba(255,255,255,0.25);
+    --text-faint: rgba(255,255,255,0.16);
+    --accent-emerald: #34d399;
+    --accent-emerald-muted: rgba(52,211,153,0.08);
+    --accent-amber: #fbbf24;
+    --accent-amber-muted: rgba(251,191,36,0.08);
+    --accent-red: #f87171;
+    --accent-red-muted: rgba(248,113,113,0.08);
+    --accent-blue: #3b82f6;
+    --accent-blue-muted: rgba(59,130,246,0.08);
+    --accent-purple: #8b5cf6;
+    --accent-purple-muted: rgba(139,92,246,0.08);
+    --accent-orange: #fb923c;
+    --transition-fast: 120ms ease;
+    --transition-normal: 180ms ease;
+    --transition-slow: 280ms ease;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text); font-family:'Figtree',sans-serif;
+    line-height:1.5; height:100vh; display:flex; flex-direction:column; overflow:hidden;
+    -webkit-font-smoothing:antialiased; cursor:pointer;
+  }
+
+  /* ── Site Nav ── */
+  .site-nav { height:44px; display:flex; align-items:center; justify-content:space-between; padding:0 24px; background:rgba(26,26,26,0.92); backdrop-filter:blur(20px); border-bottom:1px solid var(--glass-border); flex-shrink:0; cursor:default; }
+  .site-nav-left { display:flex; align-items:center; gap:10px; }
+  .site-nav-logo { font-weight:900; font-size:16px; color:var(--accent-blue); letter-spacing:-0.03em; text-decoration:none; }
+  .site-nav-title { font-size:12px; font-weight:600; color:var(--text-bright); text-decoration:none; }
+  .site-nav-links { display:flex; align-items:center; gap:6px; }
+  .site-nav-links a { font-size:11px; font-weight:500; color:var(--text-muted); text-decoration:none; padding:5px 12px; border-radius:6px; transition:all var(--transition-fast); cursor:pointer; }
+  .site-nav-links a:hover { color:var(--text); background:var(--glass-bg-3); }
+  .site-nav-links a.active { color:var(--text-bright); background:var(--glass-bg-3); }
+
+  .app-layout { display:flex; flex:1; overflow:hidden; }
+
+  /* ── Sidebar (V3c: 64px collapsed) ── */
+  .sidebar { width:64px; display:flex; flex-direction:column; align-items:center; padding:20px 0; justify-content:space-between; flex-shrink:0; }
+  .sidebar-logo { font-family:'Merriweather',serif; font-style:italic; font-weight:700; font-size:18px; color:rgba(255,255,255,0.60); }
+  .sidebar-nav { display:flex; flex-direction:column; align-items:center; gap:20px; }
+  .sidebar-icon { width:22px; height:22px; color:rgba(255,255,255,0.30); }
+  .sidebar-active { width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,rgba(255,255,255,0.063),rgba(255,255,255,0.024)); border:1px solid rgba(255,255,255,0.07); box-shadow:0 4px 16px rgba(0,0,0,0.12); display:flex; align-items:center; justify-content:center; position:relative; }
+  .sidebar-active::before { content:''; position:absolute; left:0; top:50%; transform:translateY(-50%); width:3px; height:18px; border-radius:2px; background:rgba(255,255,255,0.62); }
+  .sidebar-active svg { width:20px; height:20px; color:rgba(255,255,255,0.82); }
+  .sidebar-avatar { width:36px; height:36px; border-radius:100px; background:var(--glass-bg-3); border:1px solid var(--glass-border); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; color:var(--text-muted); }
+
+  /* ── Dashboard ── */
+  .dashboard { flex:1; display:flex; flex-direction:column; overflow:hidden; border-left:1px solid var(--glass-border-subtle); }
+  .dash-header { padding:20px 32px; border-bottom:1px solid var(--glass-border-subtle); display:flex; align-items:center; justify-content:space-between; }
+  .dash-title { font-size:18px; font-weight:700; color:var(--text-bright); letter-spacing:-0.02em; }
+  .dash-meta { font-size:11px; color:var(--text-dim); margin-top:2px; }
+
+  /* ── Buttons (V3c: radius 12px) ── */
+  .btn { padding:10px 22px; border-radius:12px; font-family:'Figtree',sans-serif; font-size:13px; cursor:pointer; transition:all var(--transition-fast); border:1px solid; display:inline-flex; align-items:center; gap:8px; background:none; }
+  .btn:active { transform:scale(0.97); }
+  .btn svg { width:16px; height:16px; }
+  .btn-primary { background:var(--glass-bg-4); border-color:rgba(255,255,255,0.16); color:#fff; font-weight:600; box-shadow:inset 0 1px 0 var(--glass-inset-bright); }
+  .btn-primary:hover { background:rgba(255,255,255,0.14); border-color:rgba(255,255,255,0.20); }
+
+  .widget-grid { flex:1; padding:24px 32px; display:grid; grid-template-columns:1fr 1fr; gap:16px; align-content:start; overflow-y:auto; }
+
+  /* ── Widget Card (matches rexi-app WidgetCard) ── */
+  .widget-card {
+    background:linear-gradient(135deg,rgba(255,255,255,0.05) 0%,rgba(255,255,255,0.01) 50%,rgba(255,255,255,0.03) 100%);
+    border:1px solid var(--glass-border-subtle);
+    border-radius:12px;
+    box-shadow:0 1px 3px rgba(0,0,0,0.125);
+    overflow:hidden;
+    display:flex; flex-direction:column;
+    transition:all var(--transition-normal);
+  }
+  .widget-card:hover { border-color:var(--glass-border-hover); }
+  .widget-card.ghost {
+    border:1px dashed rgba(59,130,246,0.35);
+    background:linear-gradient(135deg,rgba(59,130,246,0.04) 0%,rgba(59,130,246,0.01) 50%,rgba(59,130,246,0.02) 100%);
+    transition:border 0.5s ease, background 0.5s ease;
+  }
+  .widget-card.ghost.solid {
+    border:1px solid var(--glass-border-subtle);
+    background:linear-gradient(135deg,rgba(255,255,255,0.05) 0%,rgba(255,255,255,0.01) 50%,rgba(255,255,255,0.03) 100%);
+  }
+  .widget-card-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 12px;
+    background:var(--glass-bg-2);
+    border-bottom:1px solid var(--glass-border-subtle);
+    cursor:move;
+  }
+  .widget-card-title { font-size:13px; font-weight:500; color:var(--text); }
+  .widget-card-actions { display:flex; align-items:center; gap:2px; }
+  .widget-card-actions .icon-btn {
+    width:24px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center;
+    color:var(--text-dim); cursor:pointer; transition:all var(--transition-fast);
+  }
+  .widget-card-actions .icon-btn:hover { color:var(--text-muted); background:var(--glass-bg-3); }
+  .widget-card-actions .icon-btn svg { width:14px; height:14px; }
+  .widget-card-badge {
+    font-size:9px; font-weight:600; padding:2px 8px; border-radius:100px;
+    background:rgba(59,130,246,0.12); color:var(--accent-blue);
+  }
+  .widget-card-content { padding:16px; flex:1; }
+
+  /* ── KPI content ── */
+  .kpi-label { font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); }
+  .kpi-value { font-size:28px; font-weight:900; color:var(--text-bright); letter-spacing:-0.04em; font-variant-numeric:tabular-nums; margin-top:4px; }
+  .kpi-trend { font-size:11px; font-weight:500; margin-top:2px; }
+
+  /* ── Chat Panel (V3c: 420px) ── */
+  .chat-panel { width:420px; border-left:1px solid var(--glass-border); display:flex; flex-direction:column; background:var(--bg); flex-shrink:0; }
+  .chat-header-bar { padding:16px 20px; border-bottom:1px solid var(--glass-border-subtle); display:flex; align-items:center; justify-content:space-between; }
+  .chat-header-left { display:flex; align-items:center; gap:8px; }
+  .chat-header-icon { width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg,rgba(139,92,246,0.15),rgba(59,130,246,0.15)); display:flex; align-items:center; justify-content:center; }
+  .chat-header-icon svg { width:14px; height:14px; color:var(--accent-purple); }
+  .chat-header-name { font-size:13px; font-weight:600; color:var(--text); }
+  .chat-header-badge { font-size:9px; padding:2px 8px; border-radius:100px; background:var(--accent-emerald-muted); color:var(--accent-emerald); font-weight:600; }
+  .chat-close { width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--text-dim); cursor:pointer; }
+  .chat-close svg { width:16px; height:16px; }
+
+  /* ── Chat messages ── */
+  .chat-messages-area { flex:1; padding:20px; display:flex; flex-direction:column; gap:20px; overflow-y:auto; }
+  .chat-msg { display:flex; gap:10px; max-width:92%; }
+  .chat-msg.ai { align-self:flex-start; }
+  .chat-msg.user { align-self:flex-end; flex-direction:row-reverse; }
+  .chat-msg-avatar { width:24px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+  .chat-msg-avatar.ai { background:linear-gradient(135deg,rgba(139,92,246,0.20),rgba(59,130,246,0.20)); }
+  .chat-msg-avatar.ai svg { width:12px; height:12px; color:var(--accent-purple); }
+  .chat-msg-avatar.user { background:var(--glass-bg-4); font-size:10px; font-weight:700; color:var(--text-muted); }
+  .chat-msg-bubble { padding:14px 18px; border-radius:12px; font-size:13px; line-height:1.7; }
+  .chat-msg.ai .chat-msg-bubble { border-top-left-radius:4px; background:var(--glass-bg-2); border:1px solid var(--glass-border-subtle); color:var(--text-muted); }
+  .chat-msg.user .chat-msg-bubble { border-top-right-radius:4px; background:var(--glass-bg-4); border:1px solid rgba(255,255,255,0.12); color:var(--text-bright); }
+
+  /* ── Chat rich content ── */
+  .chat-inline-kpi { margin-top:14px; padding:16px 18px; border-radius:10px; background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01)); border:1px solid var(--glass-border-subtle); }
+  .chat-inline-kpi-title { font-size:13px; font-weight:600; color:var(--text); margin-bottom:2px; }
+  .chat-inline-kpi-label { font-size:8px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); }
+  .chat-inline-kpi-value { font-size:26px; font-weight:900; color:var(--text-bright); letter-spacing:-0.04em; font-variant-numeric:tabular-nums; }
+
+  .chat-inline-table { margin-top:14px; border:1px solid var(--glass-border-subtle); border-radius:8px; overflow:hidden; }
+  .chat-inline-table table { width:100%; border-collapse:collapse; font-size:12px; }
+  .chat-inline-table th { text-align:left; padding:8px 12px; background:var(--glass-bg-3); color:var(--text-dim); font-weight:600; font-size:10px; letter-spacing:0.5px; text-transform:uppercase; }
+  .chat-inline-table td { padding:8px 12px; border-top:1px solid var(--glass-bg-1); color:var(--text-muted); }
+  .chat-inline-table .expand-hint { padding:8px 12px; font-size:11px; color:var(--accent-blue); cursor:pointer; display:flex; align-items:center; gap:4px; }
+  .chat-inline-table .expand-hint svg { width:12px; height:12px; }
+
+  .chat-progress-label { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); margin-top:14px; margin-bottom:8px; }
+  .chat-progress-steps { display:flex; flex-direction:column; gap:0; }
+  .chat-progress-step { display:flex; align-items:center; gap:10px; padding:8px 0; font-size:12px; color:var(--text-muted); }
+  .chat-progress-step .step-icon { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .chat-progress-step .step-icon svg { width:12px; height:12px; }
+  .chat-progress-step.done .step-icon { background:rgba(52,211,153,0.15); color:var(--accent-emerald); }
+  .chat-progress-step.done { color:var(--text-dim); }
+  .chat-progress-step.active .step-icon { background:rgba(59,130,246,0.15); color:var(--accent-blue); }
+  .chat-progress-step.active { color:var(--text); background:var(--glass-bg-2); border-radius:8px; padding:8px 10px; margin:0 -10px; }
+  .chat-progress-step.pending .step-icon { background:var(--glass-bg-3); color:var(--text-dim); }
+
+  .chat-decision-label { font-size:12px; font-weight:600; color:var(--text); margin-top:14px; margin-bottom:6px; }
+  .chat-decision-group { display:flex; flex-direction:column; gap:6px; }
+  .chat-decision-btn { display:flex; align-items:center; gap:8px; padding:10px 14px; border-radius:8px; border:1px solid var(--glass-border); background:var(--glass-bg-1); color:var(--text); font-size:12px; font-weight:500; cursor:pointer; transition:all var(--transition-fast); }
+  .chat-decision-btn:hover { background:var(--glass-bg-2); border-color:var(--glass-border-hover); }
+  .chat-decision-btn.primary { border-color:rgba(59,130,246,0.30); background:var(--accent-blue-muted); }
+  .chat-decision-btn svg { width:14px; height:14px; }
+  .chat-decision-btn.primary svg { color:var(--accent-blue); }
+
+  /* md rich text */
+  .md-stat-row { display:flex; gap:16px; margin:12px 0; }
+  .md-stat { flex:1; }
+  .md-stat-label { font-size:8px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); }
+  .md-stat-value { font-size:20px; font-weight:800; margin-top:2px; }
+
+  /* ── Chat input ── */
+  .chat-input-bar { padding:12px 16px 16px; border-top:1px solid var(--glass-border-subtle); }
+  .chat-input-wrap { display:flex; align-items:flex-end; gap:8px; padding:8px 12px; border-radius:10px; border:1px solid var(--glass-border); background:var(--glass-bg-1); }
+  .chat-input-text { flex:1; font-size:13px; color:var(--text-faint); line-height:1.5; padding:2px 0; }
+  .chat-send-btn { width:28px; height:28px; border-radius:6px; background:var(--glass-bg-4); border:1px solid rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; flex-shrink:0; cursor:pointer; transition:all var(--transition-fast); }
+  .chat-send-btn:hover { background:rgba(255,255,255,0.14); border-color:rgba(255,255,255,0.20); }
+  .chat-send-btn svg { width:14px; height:14px; color:var(--text); }
+
+  /* ── Step visibility system ── */
+  [data-step] { display:none; }
+  [data-step].step-visible { display:flex; animation:fadeSlideIn 0.4s ease forwards; }
+  .chat-msg[data-step].step-visible { display:flex; }
+  .widget-card[data-step].step-visible { display:flex; }
+  @keyframes fadeSlideIn {
+    from { opacity:0; transform:translateY(8px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* ── Empty grid placeholder ── */
+  .widget-grid-empty {
+    grid-column:span 2; display:flex; align-items:center; justify-content:center;
+    min-height:200px; border:1px dashed rgba(255,255,255,0.08); border-radius:12px;
+    color:var(--text-faint); font-size:13px; transition:opacity 0.3s ease;
+  }
+
+  /* ── Welcome state ── */
+  .chat-welcome {
+    flex:1; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:12px;
+    text-align:center; padding:40px; transition:opacity 0.3s ease;
+  }
+  .chat-welcome-icon {
+    width:48px; height:48px; border-radius:16px;
+    background:linear-gradient(135deg,rgba(139,92,246,0.15),rgba(59,130,246,0.15));
+    display:flex; align-items:center; justify-content:center;
+  }
+  .chat-welcome-icon svg { width:24px; height:24px; color:var(--accent-purple); }
+  .chat-welcome-title { font-size:16px; font-weight:700; color:var(--text-bright); }
+  .chat-welcome-subtitle { font-size:13px; color:var(--text-dim); max-width:280px; line-height:1.6; }
+
+  /* ── Inline chart suggestion ── */
+  .chat-inline-chart { margin-top:14px; padding:16px 18px; border-radius:10px; background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01)); border:1px solid var(--glass-border-subtle); }
+  .chat-inline-chart-title { font-size:13px; font-weight:600; color:var(--text); margin-bottom:2px; }
+  .chat-inline-chart-label { font-size:8px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); margin-bottom:10px; }
+
+  /* ── Restart button ── */
+  .restart-btn {
+    padding:8px 20px; border-radius:12px; font-family:'Figtree',sans-serif;
+    font-size:12px; font-weight:600; cursor:pointer; border:1px solid rgba(59,130,246,0.30);
+    background:var(--accent-blue-muted); color:var(--accent-blue);
+    display:inline-flex; align-items:center; gap:6px; transition:all var(--transition-fast);
+    margin-top:14px;
+  }
+  .restart-btn:hover { background:rgba(59,130,246,0.15); }
+  .restart-btn svg { width:14px; height:14px; }
+
+  /* ── Progress bar ── */
+  .progress-bar { height:40px; background:rgba(26,26,26,0.95); backdrop-filter:blur(10px); border-top:1px solid var(--glass-border); display:flex; align-items:center; justify-content:center; gap:16px; flex-shrink:0; cursor:default; }
+  .progress-dots { display:flex; gap:6px; }
+  .progress-dot { width:6px; height:6px; border-radius:50%; background:var(--glass-bg-4); transition:all 0.3s; }
+  .progress-dot.active { background:var(--accent-blue); width:20px; border-radius:3px; }
+  .progress-dot.done { background:var(--accent-emerald); }
+  .progress-label { font-size:11px; color:var(--text-dim); }
+  .progress-hint { font-size:11px; color:var(--text-faint); }
+</style>
+</head>
+<body>
+
+<!-- ═══ Site Nav ═══ -->
+<div class="site-nav">
+  <div class="site-nav-left">
+    <a href="index.html" class="site-nav-logo">Rx</a>
+    <a href="index.html" class="site-nav-title">Rexi Design System</a>
+  </div>
+  <div class="site-nav-links">
+    <a href="index.html">Home</a>
+    <a href="reference.html">Reference</a>
+    <a href="process.html">Process</a>
+    <a href="demo.html" class="active">Demo</a>
+    <a href="https://github.com/rexi-finance/rexi-design-system-v3c" target="_blank">GitHub</a>
+  </div>
+</div>
+
+<div class="app-layout">
+
+  <!-- ═══ Sidebar ═══ -->
+  <div class="sidebar">
+    <div class="sidebar-logo">Rx</div>
+    <div class="sidebar-nav">
+      <i data-lucide="layout-dashboard" class="sidebar-icon"></i>
+      <div class="sidebar-active"><i data-lucide="git-compare-arrows"></i></div>
+      <i data-lucide="sparkles" class="sidebar-icon"></i>
+      <i data-lucide="file-text" class="sidebar-icon"></i>
+      <i data-lucide="settings" class="sidebar-icon"></i>
+    </div>
+    <div class="sidebar-avatar">AT</div>
+  </div>
+
+  <!-- ═══ Dashboard ═══ -->
+  <div class="dashboard">
+    <div class="dash-header">
+      <div>
+        <div class="dash-title">Stripe vs Modern Treasury</div>
+        <div class="dash-meta">Updated 2 min ago &middot; 4,380 transactions</div>
+      </div>
+      <button class="btn btn-primary"><i data-lucide="plus"></i> Add Widget</button>
+    </div>
+    <div class="widget-grid">
+
+      <!-- Empty grid placeholder (visible until step 5) -->
+      <div class="widget-grid-empty" id="grid-empty">
+        <span>Widgets will appear here as you build...</span>
+      </div>
+
+      <!-- Widget 1: Match Rate KPI — ghost at step 5, solid at step 6 -->
+      <div class="widget-card ghost" data-step="5" id="widget-kpi-match">
+        <div class="widget-card-header">
+          <span class="widget-card-title">Match Rate</span>
+          <div class="widget-card-actions">
+            <span class="widget-card-badge">NEW</span>
+            <div class="icon-btn"><i data-lucide="info"></i></div>
+            <div class="icon-btn"><i data-lucide="ellipsis-vertical"></i></div>
+          </div>
+        </div>
+        <div class="widget-card-content">
+          <div class="kpi-label">CURRENT PERIOD</div>
+          <div class="kpi-value" style="color:var(--accent-emerald);">96.8<span style="font-weight:400;color:var(--text-dim);font-size:14px;">%</span></div>
+          <div class="kpi-trend" style="color:rgba(52,211,153,0.60);">+0.3% vs last run</div>
+        </div>
+      </div>
+
+      <!-- Widget 2: Total Unmatched KPI — ghost at step 7, solid at step 8 -->
+      <div class="widget-card ghost" data-step="7" id="widget-kpi-unmatched">
+        <div class="widget-card-header">
+          <span class="widget-card-title">Total Unmatched</span>
+          <div class="widget-card-actions">
+            <span class="widget-card-badge">NEW</span>
+            <div class="icon-btn"><i data-lucide="info"></i></div>
+            <div class="icon-btn"><i data-lucide="ellipsis-vertical"></i></div>
+          </div>
+        </div>
+        <div class="widget-card-content">
+          <div class="kpi-label">EXCEPTIONS TO REVIEW</div>
+          <div class="kpi-value">142</div>
+          <div class="kpi-trend" style="color:rgba(248,113,113,0.60);">-12 from last run</div>
+        </div>
+      </div>
+
+      <!-- Widget 3: Area chart — ghost at step 7, solid at step 8 -->
+      <div class="widget-card ghost" data-step="7" id="widget-chart" style="grid-column:span 2;">
+        <div class="widget-card-header">
+          <span class="widget-card-title">Match Rate — Last 7 Days</span>
+          <div class="widget-card-actions">
+            <span class="widget-card-badge">NEW</span>
+            <div class="icon-btn"><i data-lucide="info"></i></div>
+            <div class="icon-btn"><i data-lucide="ellipsis-vertical"></i></div>
+          </div>
+        </div>
+        <div class="widget-card-content">
+          <svg width="100%" height="120" viewBox="0 0 460 120">
+            <defs>
+              <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#34d399" stop-opacity="0.30"/>
+                <stop offset="100%" stop-color="#34d399" stop-opacity="0.02"/>
+              </linearGradient>
+            </defs>
+            <line x1="0" y1="30" x2="460" y2="30" stroke="rgba(255,255,255,0.04)" />
+            <line x1="0" y1="60" x2="460" y2="60" stroke="rgba(255,255,255,0.04)" />
+            <line x1="0" y1="90" x2="460" y2="90" stroke="rgba(255,255,255,0.04)" />
+            <path d="M0,80 C40,75 80,60 130,55 C180,50 220,40 270,30 C320,20 360,22 410,15 C440,12 460,10 460,10 L460,120 L0,120 Z" fill="url(#areaGrad)" />
+            <path d="M0,80 C40,75 80,60 130,55 C180,50 220,40 270,30 C320,20 360,22 410,15 C440,12 460,10 460,10" fill="none" stroke="#34d399" stroke-width="2" />
+            <text x="0" y="115" fill="rgba(255,255,255,0.25)" font-size="10" font-family="Figtree" font-weight="500">Mon</text>
+            <text x="76" y="115" fill="rgba(255,255,255,0.25)" font-size="10" font-family="Figtree" font-weight="500">Tue</text>
+            <text x="152" y="115" fill="rgba(255,255,255,0.25)" font-size="10" font-family="Figtree" font-weight="500">Wed</text>
+            <text x="228" y="115" fill="rgba(255,255,255,0.25)" font-size="10" font-family="Figtree" font-weight="500">Thu</text>
+            <text x="304" y="115" fill="rgba(255,255,255,0.25)" font-size="10" font-family="Figtree" font-weight="500">Fri</text>
+            <text x="380" y="115" fill="rgba(255,255,255,0.25)" font-size="10" font-family="Figtree" font-weight="500">Sat</text>
+            <text x="440" y="115" fill="rgba(255,255,255,0.25)" font-size="10" font-family="Figtree" font-weight="500">Sun</text>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ Chat Panel (V3c: 420px) ═══ -->
+  <div class="chat-panel">
+    <div class="chat-header-bar">
+      <div class="chat-header-left">
+        <div class="chat-header-icon"><i data-lucide="sparkles"></i></div>
+        <span class="chat-header-name">Rexi AI</span>
+        <span class="chat-header-badge">ONLINE</span>
+      </div>
+      <div class="chat-close"><i data-lucide="panel-right-close"></i></div>
+    </div>
+    <div class="chat-messages-area">
+
+      <!-- Step 1: Welcome state -->
+      <div class="chat-welcome" id="chat-welcome">
+        <div class="chat-welcome-icon"><i data-lucide="sparkles"></i></div>
+        <div class="chat-welcome-title">Dashboard Assistant</div>
+        <div class="chat-welcome-subtitle">I can help you build dashboards with widgets, KPIs, and charts. Tell me what you need.</div>
+      </div>
+
+      <!-- Step 2: User asks to build dashboard -->
+      <div class="chat-msg user" data-step="2">
+        <div class="chat-msg-avatar user">AT</div>
+        <div class="chat-msg-bubble">Build me a dashboard for the Stripe vs Modern Treasury reconciliation</div>
+      </div>
+
+      <!-- Step 3: AI progress steps -->
+      <div class="chat-msg ai" data-step="3">
+        <div class="chat-msg-avatar ai"><i data-lucide="sparkles"></i></div>
+        <div class="chat-msg-bubble">
+          <span>Checking data sources for <strong style="color:var(--text);">Stripe vs Modern Treasury</strong>:</span>
+          <div class="chat-progress-label">Data Discovery</div>
+          <div class="chat-progress-steps">
+            <div class="chat-progress-step done"><div class="step-icon"><i data-lucide="check"></i></div><span>Found reconciliation (4,380 txns)</span></div>
+            <div class="chat-progress-step done"><div class="step-icon"><i data-lucide="check"></i></div><span>Loaded Exact Match rule schema</span></div>
+            <div class="chat-progress-step done"><div class="step-icon"><i data-lucide="check"></i></div><span>Queried current match statistics</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: AI rich markdown briefing with inline stats -->
+      <div class="chat-msg ai" data-step="4" style="max-width:96%;">
+        <div class="chat-msg-avatar ai"><i data-lucide="sparkles"></i></div>
+        <div class="chat-msg-bubble" style="padding:18px 20px;">
+          <span>Here's a quick health overview before we start building:</span>
+          <div class="md-stat-row">
+            <div class="md-stat"><div class="md-stat-label">MATCH RATE</div><div class="md-stat-value" style="color:var(--accent-emerald);">96.8%</div></div>
+            <div class="md-stat"><div class="md-stat-label">UNMATCHED</div><div class="md-stat-value" style="color:var(--accent-red);">142</div></div>
+            <div class="md-stat"><div class="md-stat-label">EXCEPTIONS</div><div class="md-stat-value" style="color:var(--accent-amber);">23</div></div>
+          </div>
+          <span>Stripe side has <strong style="color:var(--text);">59%</strong> of unmatched transactions. Most are <strong style="color:var(--text);">no_key_match</strong> (84 txns). I'll build 3 widgets covering the key metrics.</span>
+        </div>
+      </div>
+
+      <!-- Step 5: AI suggests KPI with sparkline + decision buttons -->
+      <div class="chat-msg ai" data-step="5">
+        <div class="chat-msg-avatar ai"><i data-lucide="sparkles"></i></div>
+        <div class="chat-msg-bubble">
+          <span>Starting with the most important metric:</span>
+          <div class="chat-inline-kpi">
+            <div class="chat-inline-kpi-title">Match Rate</div>
+            <div class="chat-inline-kpi-label">KPI &middot; RECONCILIATION &middot; EXACT MATCH</div>
+            <div style="display:flex;align-items:baseline;gap:10px;margin-top:6px;">
+              <span class="chat-inline-kpi-value" style="color:var(--accent-emerald);">96.8<span style="font-weight:400;font-size:12px;color:var(--text-dim);">%</span></span>
+              <span style="font-size:11px;color:rgba(52,211,153,0.60);font-weight:500;">+0.3% vs last run</span>
+            </div>
+            <div style="margin-top:10px;">
+              <svg width="100%" height="28" viewBox="0 0 320 28"><defs><linearGradient id="chatsg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#34d399" stop-opacity="0.20"/><stop offset="100%" stop-color="#34d399" stop-opacity="0"/></linearGradient></defs><path d="M0,22 C40,20 80,18 120,15 C160,12 200,14 240,10 C280,7 300,5 320,3 L320,28 L0,28 Z" fill="url(#chatsg)"/><path d="M0,22 C40,20 80,18 120,15 C160,12 200,14 240,10 C280,7 300,5 320,3" fill="none" stroke="#34d399" stroke-width="1.5"/></svg>
+            </div>
+          </div>
+          <div class="chat-decision-label">Add this widget to your dashboard?</div>
+          <div class="chat-decision-group">
+            <div class="chat-decision-btn primary"><i data-lucide="plus" style="color:var(--accent-blue);"></i> Add to dashboard</div>
+            <div class="chat-decision-btn"><i data-lucide="skip-forward" style="color:var(--text-muted);"></i> Skip</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 6: User confirms + AI shows inline table + suggests next -->
+      <div class="chat-msg user" data-step="6">
+        <div class="chat-msg-avatar user">AT</div>
+        <div class="chat-msg-bubble">Add it</div>
+      </div>
+      <div class="chat-msg ai" data-step="6" style="max-width:96%;">
+        <div class="chat-msg-avatar ai"><i data-lucide="sparkles"></i></div>
+        <div class="chat-msg-bubble">
+          <span>Added. Now let's see <strong style="color:var(--text);">where</strong> the unmatched transactions are coming from:</span>
+          <div class="chat-inline-table">
+            <table>
+              <thead><tr><th>Side</th><th>Count</th><th>Reason</th><th>Impact</th></tr></thead>
+              <tbody>
+                <tr><td style="font-weight:500;color:var(--text);">Stripe</td><td style="font-weight:600;">84</td><td>no_key_match</td><td style="font-weight:600;">$47,200</td></tr>
+                <tr><td style="font-weight:500;color:var(--text);">Modern Treasury</td><td style="font-weight:600;">58</td><td>comparison_failed</td><td style="font-weight:600;">$12,800</td></tr>
+              </tbody>
+            </table>
+            <div class="expand-hint"><i data-lucide="maximize-2"></i> View full breakdown (142 txns)</div>
+          </div>
+          <div class="chat-decision-label">Add "Total Unmatched" KPI widget?</div>
+          <div class="chat-decision-group">
+            <div class="chat-decision-btn primary"><i data-lucide="plus" style="color:var(--accent-blue);"></i> Add to dashboard</div>
+            <div class="chat-decision-btn"><i data-lucide="skip-forward" style="color:var(--text-muted);"></i> Skip</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 7: User confirms + AI suggests area chart -->
+      <div class="chat-msg user" data-step="7">
+        <div class="chat-msg-avatar user">AT</div>
+        <div class="chat-msg-bubble">Add it too</div>
+      </div>
+      <div class="chat-msg ai" data-step="7">
+        <div class="chat-msg-avatar ai"><i data-lucide="sparkles"></i></div>
+        <div class="chat-msg-bubble">
+          <span>Added. Last one — a trend chart to track match rate over time:</span>
+          <div class="chat-inline-chart">
+            <div class="chat-inline-chart-title">Match Rate — Last 7 Days</div>
+            <div class="chat-inline-chart-label">AREA CHART &middot; TREND &middot; 7D</div>
+            <svg width="100%" height="48" viewBox="0 0 320 48"><defs><linearGradient id="chatcg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#34d399" stop-opacity="0.20"/><stop offset="100%" stop-color="#34d399" stop-opacity="0"/></linearGradient></defs><path d="M0,38 C40,35 80,28 120,24 C160,20 200,22 240,16 C280,11 300,8 320,5 L320,48 L0,48 Z" fill="url(#chatcg)"/><path d="M0,38 C40,35 80,28 120,24 C160,20 200,22 240,16 C280,11 300,8 320,5" fill="none" stroke="#34d399" stroke-width="1.5"/><text x="0" y="46" fill="rgba(255,255,255,0.20)" font-size="8" font-family="Figtree">Mon</text><text x="90" y="46" fill="rgba(255,255,255,0.20)" font-size="8" font-family="Figtree">Wed</text><text x="190" y="46" fill="rgba(255,255,255,0.20)" font-size="8" font-family="Figtree">Fri</text><text x="290" y="46" fill="rgba(255,255,255,0.20)" font-size="8" font-family="Figtree">Sun</text></svg>
+          </div>
+          <div class="chat-decision-label">Add this trend chart?</div>
+          <div class="chat-decision-group">
+            <div class="chat-decision-btn primary"><i data-lucide="plus" style="color:var(--accent-blue);"></i> Add to dashboard</div>
+            <div class="chat-decision-btn"><i data-lucide="skip-forward" style="color:var(--text-muted);"></i> Skip</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 8: User confirms + AI summary + restart -->
+      <div class="chat-msg user" data-step="8">
+        <div class="chat-msg-avatar user">AT</div>
+        <div class="chat-msg-bubble">Yes, add the chart</div>
+      </div>
+      <div class="chat-msg ai" data-step="8" style="max-width:96%;">
+        <div class="chat-msg-avatar ai"><i data-lucide="sparkles"></i></div>
+        <div class="chat-msg-bubble" style="padding:18px 20px;">
+          <span>Your reconciliation dashboard is ready. I've added:</span>
+          <div style="margin-top:10px; display:flex; flex-direction:column; gap:6px;">
+            <div style="display:flex; align-items:center; gap:8px; font-size:12px;">
+              <div style="width:18px;height:18px;border-radius:50%;background:rgba(52,211,153,0.15);display:flex;align-items:center;justify-content:center;"><i data-lucide="check" style="width:10px;height:10px;color:var(--accent-emerald);"></i></div>
+              <span><strong style="color:var(--text);">Match Rate</strong> KPI — 96.8%</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px; font-size:12px;">
+              <div style="width:18px;height:18px;border-radius:50%;background:rgba(52,211,153,0.15);display:flex;align-items:center;justify-content:center;"><i data-lucide="check" style="width:10px;height:10px;color:var(--accent-emerald);"></i></div>
+              <span><strong style="color:var(--text);">Total Unmatched</strong> — 142 exceptions</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px; font-size:12px;">
+              <div style="width:18px;height:18px;border-radius:50%;background:rgba(52,211,153,0.15);display:flex;align-items:center;justify-content:center;"><i data-lucide="check" style="width:10px;height:10px;color:var(--accent-emerald);"></i></div>
+              <span><strong style="color:var(--text);">7-Day Trend</strong> — match rate over time</span>
+            </div>
+          </div>
+          <div style="margin-top:12px;font-size:13px;">You can ask me to adjust any widget at any time.</div>
+          <button class="restart-btn" onclick="restartDemo(event)"><i data-lucide="rotate-ccw"></i> Restart Demo</button>
+        </div>
+      </div>
+
+    </div>
+    <div class="chat-input-bar">
+      <div class="chat-input-wrap">
+        <span class="chat-input-text" id="input-hint">Click anywhere to start the demo...</span>
+        <div class="chat-send-btn"><i data-lucide="arrow-up"></i></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ Progress bar ═══ -->
+<div class="progress-bar">
+  <div class="progress-dots">
+    <div class="progress-dot"></div>
+    <div class="progress-dot"></div>
+    <div class="progress-dot"></div>
+    <div class="progress-dot"></div>
+    <div class="progress-dot"></div>
+    <div class="progress-dot"></div>
+    <div class="progress-dot"></div>
+    <div class="progress-dot"></div>
+  </div>
+  <span class="progress-label">Step 1 of 8</span>
+  <span class="progress-hint">Click anywhere to advance</span>
+</div>
+
+<script>
+  lucide.createIcons();
+
+  const TOTAL_STEPS = 8;
+  let currentStep = 1;
+
+  function updateDemo() {
+    // Show/hide step elements
+    document.querySelectorAll('[data-step]').forEach(el => {
+      const step = parseInt(el.dataset.step);
+      if (step <= currentStep) {
+        el.classList.add('step-visible');
+      } else {
+        el.classList.remove('step-visible');
+      }
+    });
+
+    // Welcome state: visible only at step 1
+    const welcome = document.getElementById('chat-welcome');
+    if (welcome) welcome.style.display = currentStep >= 2 ? 'none' : '';
+
+    // Grid empty placeholder: hide when widgets appear (step 5+)
+    const gridEmpty = document.getElementById('grid-empty');
+    if (gridEmpty) gridEmpty.style.display = currentStep >= 5 ? 'none' : '';
+
+    // Ghost → solid transitions
+    const w1 = document.getElementById('widget-kpi-match');
+    if (w1) w1.classList.toggle('solid', currentStep >= 6);
+
+    const w2 = document.getElementById('widget-kpi-unmatched');
+    if (w2) w2.classList.toggle('solid', currentStep >= 8);
+
+    const w3 = document.getElementById('widget-chart');
+    if (w3) w3.classList.toggle('solid', currentStep >= 8);
+
+    // Update progress bar
+    document.querySelectorAll('.progress-dot').forEach((dot, i) => {
+      dot.classList.remove('done', 'active');
+      if (i + 1 < currentStep) dot.classList.add('done');
+      else if (i + 1 === currentStep) dot.classList.add('active');
+    });
+    const label = document.querySelector('.progress-label');
+    if (label) label.textContent = 'Step ' + currentStep + ' of ' + TOTAL_STEPS;
+
+    // Update input hint text
+    const hint = document.getElementById('input-hint');
+    if (hint) {
+      if (currentStep === 1) hint.textContent = 'Click anywhere to start the demo...';
+      else if (currentStep >= TOTAL_STEPS) hint.textContent = 'Demo complete. Click Restart to replay.';
+      else hint.textContent = 'Click anywhere to continue...';
+    }
+
+    // Auto-scroll chat to bottom
+    const chatArea = document.querySelector('.chat-messages-area');
+    if (chatArea) {
+      setTimeout(() => { chatArea.scrollTop = chatArea.scrollHeight; }, 50);
+    }
+
+    // Re-init lucide icons for newly visible elements
+    lucide.createIcons();
+  }
+
+  function advance() {
+    if (currentStep < TOTAL_STEPS) {
+      currentStep++;
+      updateDemo();
+    }
+  }
+
+  function goBack() {
+    if (currentStep > 1) {
+      currentStep--;
+      updateDemo();
+    }
+  }
+
+  function restartDemo(e) {
+    e.stopPropagation();
+    currentStep = 1;
+    updateDemo();
+    // Scroll chat back to top
+    const chatArea = document.querySelector('.chat-messages-area');
+    if (chatArea) chatArea.scrollTop = 0;
+  }
+
+  // Click anywhere to advance
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('.restart-btn')) return;
+    if (e.target.closest('.site-nav')) return;
+    if (e.target.closest('.progress-bar')) return;
+    advance();
+  });
+
+  // Keyboard navigation
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); advance(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); goBack(); }
+  });
+
+  // Initialize
+  updateDemo();
+</script>
+</body>
+</html>
