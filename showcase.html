@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>Rexi Dashboards — Showcase</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@0.474.0"></script>
+<style>
+  /* ── V3c Tokens ── */
+  :root {
+    --bg: #1a1a1a;
+    --bg-elevated: #1e1e1e;
+    --glass-bg-1: rgba(255,255,255,0.03);
+    --glass-bg-2: rgba(255,255,255,0.04);
+    --glass-bg-3: rgba(255,255,255,0.06);
+    --glass-bg-4: rgba(255,255,255,0.10);
+    --glass-border-subtle: rgba(255,255,255,0.04);
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-border-hover: rgba(255,255,255,0.14);
+    --glass-inset: rgba(255,255,255,0.04);
+    --glass-inset-bright: rgba(255,255,255,0.08);
+    --text-bright: rgba(255,255,255,0.95);
+    --text: #e5e5e5;
+    --text-muted: rgba(255,255,255,0.45);
+    --text-dim: rgba(255,255,255,0.25);
+    --text-faint: rgba(255,255,255,0.16);
+    --accent-emerald: #34d399;
+    --accent-emerald-muted: rgba(52,211,153,0.08);
+    --accent-amber: #fbbf24;
+    --accent-red: #f87171;
+    --accent-blue: #3b82f6;
+    --accent-blue-muted: rgba(59,130,246,0.08);
+    --accent-purple: #8b5cf6;
+    --accent-purple-muted: rgba(139,92,246,0.08);
+    --ease-enter: cubic-bezier(0.2, 0, 0, 1);
+    --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  /* ── Base ── */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    width: 1280px;
+    height: 720px;
+    overflow: hidden;
+    background: var(--bg);
+    font-family: 'Figtree', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+
+  /* ── Scene System ── */
+  .scene {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 300ms var(--ease-enter);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .scene.active { opacity: 1; }
+  .scene.exiting { opacity: 0; transition: opacity 300ms var(--ease-exit); }
+
+  /* ══════════════════════════════════════════
+     SCENE 1 — Hook
+     ══════════════════════════════════════════ */
+  .mesh-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 600px 400px at 70% 30%, rgba(59,130,246,0.10), transparent),
+      radial-gradient(ellipse 500px 350px at 30% 70%, rgba(139,92,246,0.08), transparent);
+    animation: meshDrift 8s ease-in-out infinite alternate;
+  }
+  @keyframes meshDrift {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(20px, -15px) scale(1.05); }
+    100% { transform: translate(-15px, 10px) scale(0.98); }
+  }
+  .hook-text {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .hook-eyebrow {
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #8b5cf6;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 600ms var(--ease-enter), transform 600ms var(--ease-enter);
+  }
+  .hook-title {
+    font-weight: 900;
+    font-size: 52px;
+    color: rgba(255,255,255,0.95);
+    letter-spacing: -0.03em;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 600ms var(--ease-enter), transform 600ms var(--ease-enter);
+  }
+  .hook-subtitle {
+    font-weight: 400;
+    font-size: 18px;
+    color: rgba(255,255,255,0.45);
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 600ms var(--ease-enter), transform 600ms var(--ease-enter);
+  }
+  .hook-eyebrow.visible,
+  .hook-title.visible,
+  .hook-subtitle.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ══════════════════════════════════════════
+     SCENE 2 — Contrast
+     ══════════════════════════════════════════ */
+  .contrast-browser {
+    width: 900px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: var(--bg-elevated);
+    box-shadow: 0 40px 120px rgba(0,0,0,0.8), 0 0 80px rgba(59,130,246,0.08);
+    overflow: hidden;
+    margin-top: -40px;
+  }
+  .contrast-content {
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    filter: saturate(0.3) brightness(0.6);
+  }
+  .contrast-rect {
+    background: var(--glass-bg-2);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 12px;
+    min-height: 80px;
+  }
+  .contrast-rect:nth-child(1) { min-height: 110px; }
+  .contrast-rect:nth-child(4) { min-height: 70px; }
+  .contrast-rect:nth-child(5) { min-height: 100px; }
+  .contrast-line {
+    height: 2px;
+    background: var(--text-faint);
+    margin: 6px 0;
+    border-radius: 1px;
+  }
+  .contrast-line:nth-child(odd) { width: 80%; }
+  .contrast-line:nth-child(even) { width: 55%; }
+  .contrast-text-block {
+    font-size: 8px;
+    color: var(--text-faint);
+    margin-top: 4px;
+  }
+  .contrast-overlay-text {
+    margin-top: 32px;
+    font-weight: 600;
+    font-size: 24px;
+    color: rgba(255,255,255,0.95);
+    text-align: center;
+  }
+
+  /* ── Browser Chrome (shared) ── */
+  .browser-chrome {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--glass-border-subtle);
+  }
+  .chrome-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .chrome-dot.red { background: #f87171; }
+  .chrome-dot.yellow { background: #fbbf24; }
+  .chrome-dot.green { background: #34d399; }
+  .chrome-url {
+    margin-left: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.25);
+  }
+
+  /* ══════════════════════════════════════════
+     SCENE 3-4-5 — Main + Second + Outro
+     ══════════════════════════════════════════ */
+  .browser-wrap {
+    width: 900px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: var(--bg-elevated);
+    box-shadow: 0 40px 120px rgba(0,0,0,0.8), 0 0 80px rgba(59,130,246,0.08);
+    overflow: hidden;
+    position: relative;
+    transition: transform 800ms var(--ease-enter);
+  }
+  .browser-wrap.zoomed {
+    transform: scale(1.4);
+    transform-origin: 35% 60%;
+  }
+  .browser-wrap.scaled-down {
+    transform: scale(0.6);
+    transition: transform 800ms var(--ease-enter);
+  }
+  .browser-content {
+    display: flex;
+    height: 480px;
+  }
+
+  /* ── Sidebar (64px, from demo.html) ── */
+  .sc-sidebar {
+    width: 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    justify-content: space-between;
+    flex-shrink: 0;
+    border-right: 1px solid var(--glass-border-subtle);
+  }
+  .sc-sidebar-logo {
+    font-family: 'Merriweather', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 18px;
+    color: rgba(255,255,255,0.60);
+  }
+  .sc-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  .sc-sidebar-icon { width: 22px; height: 22px; color: rgba(255,255,255,0.30); }
+  .sc-sidebar-active {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.063), rgba(255,255,255,0.024));
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .sc-sidebar-active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 50%;
+    transform: translateY(-50%);
+    width: 3px; height: 18px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.62);
+  }
+  .sc-sidebar-active svg { width: 20px; height: 20px; color: rgba(255,255,255,0.82); }
+  .sc-sidebar-avatar {
+    width: 36px; height: 36px; border-radius: 100px;
+    background: var(--glass-bg-3);
+    border: 1px solid var(--glass-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; color: var(--text-muted);
+  }
+
+  /* ── Dashboard ── */
+  .sc-dashboard {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-right: 1px solid var(--glass-border-subtle);
+  }
+  .sc-dash-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--glass-border-subtle);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: -0.02em;
+  }
+  .sc-widget-grid {
+    flex: 1;
+    padding: 16px 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-content: start;
+  }
+
+  /* ── Skeleton Widgets ── */
+  .sc-skeleton {
+    background: var(--glass-bg-1);
+    border: 1px dashed rgba(59,130,246,0.25);
+    border-radius: 12px;
+    min-height: 160px;
+    position: relative;
+    overflow: hidden;
+  }
+  .sc-skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.02), transparent);
+    animation: shimmer 2s infinite;
+  }
+  @keyframes shimmer {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  /* ── Built Widget Card ── */
+  .sc-widget-built {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 50%, rgba(255,255,255,0.03) 100%);
+    border: 1px solid var(--glass-border-subtle);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 200ms var(--ease-enter);
+    z-index: 1;
+  }
+  .sc-widget-built.visible { opacity: 1; }
+  .sc-widget-built-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--glass-bg-2);
+    border-bottom: 1px solid var(--glass-border-subtle);
+  }
+  .sc-widget-built-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    opacity: 0;
+    transition: opacity 200ms var(--ease-enter);
+  }
+  .sc-widget-built-title.visible { opacity: 1; }
+  .sc-widget-built-content {
+    flex: 1;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── Bar Chart ── */
+  .bar-chart-svg { width: 100%; height: 100%; }
+  .bar-axis {
+    stroke: rgba(255,255,255,0.12);
+    stroke-width: 1;
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+    transition: stroke-dashoffset 400ms var(--ease-enter);
+  }
+  .bar-axis.drawn { stroke-dashoffset: 0; }
+  .bar-rect {
+    transition: height 500ms var(--ease-spring), y 500ms var(--ease-spring);
+  }
+  .bar-label {
+    font-family: 'Figtree', sans-serif;
+    font-size: 7px;
+    fill: rgba(255,255,255,0.25);
+  }
+  .chart-badge {
+    font-family: 'Figtree', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    fill: #34d399;
+    transform: scale(0);
+    transform-origin: center;
+    transition: transform 400ms var(--ease-spring);
+  }
+  .chart-badge.visible { transform: scale(1); }
+
+  /* ── Area Chart ── */
+  .area-path {
+    stroke-dasharray: 800;
+    stroke-dashoffset: 800;
+    transition: stroke-dashoffset 600ms var(--ease-enter);
+  }
+  .area-path.drawn { stroke-dashoffset: 0; }
+  .area-fill {
+    opacity: 0;
+    transition: opacity 400ms var(--ease-enter);
+  }
+  .area-fill.visible { opacity: 1; }
+  .area-point {
+    opacity: 0;
+    transition: opacity 300ms var(--ease-enter);
+  }
+  .area-point.visible { opacity: 1; }
+
+  /* ── Chat Panel (340px per spec) ── */
+  .sc-chat {
+    width: 340px;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    flex-shrink: 0;
+    border-left: 1px solid var(--glass-border);
+  }
+  .sc-chat-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--glass-border-subtle);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sc-chat-header-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(59,130,246,0.15));
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sc-chat-header-icon svg { width: 14px; height: 14px; color: var(--accent-purple); }
+  .sc-chat-header-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .sc-chat-header-badge {
+    font-size: 9px; padding: 2px 8px; border-radius: 100px;
+    background: var(--accent-emerald-muted); color: var(--accent-emerald); font-weight: 600;
+  }
+
+  /* ── Chat Messages ── */
+  .sc-chat-messages {
+    flex: 1;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+  }
+  .sc-msg {
+    display: flex;
+    gap: 8px;
+    max-width: 92%;
+    animation: msgSlideIn 300ms var(--ease-enter);
+  }
+  @keyframes msgSlideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .sc-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+  .sc-msg.ai { align-self: flex-start; }
+  .sc-msg-avatar {
+    width: 22px; height: 22px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .sc-msg-avatar.ai {
+    background: linear-gradient(135deg, rgba(139,92,246,0.20), rgba(59,130,246,0.20));
+  }
+  .sc-msg-avatar.ai svg { width: 10px; height: 10px; color: var(--accent-purple); }
+  .sc-msg-avatar.user {
+    background: var(--glass-bg-4);
+    font-size: 8px; font-weight: 700; color: var(--text-muted);
+  }
+  .sc-msg-bubble {
+    padding: 10px 14px; border-radius: 10px; font-size: 12px; line-height: 1.6;
+  }
+  .sc-msg.ai .sc-msg-bubble {
+    border-top-left-radius: 4px;
+    background: var(--glass-bg-2);
+    border: 1px solid var(--glass-border-subtle);
+    color: var(--text-muted);
+  }
+  .sc-msg.user .sc-msg-bubble {
+    border-top-right-radius: 4px;
+    background: var(--glass-bg-4);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--text-bright);
+  }
+
+  /* ── Thinking Dots ── */
+  .sc-dots {
+    display: flex;
+    gap: 4px;
+    padding: 10px 14px;
+    background: var(--glass-bg-2);
+    border: 1px solid var(--glass-border-subtle);
+    border-radius: 10px;
+    border-top-left-radius: 4px;
+  }
+  .sc-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    animation: dotBounce 1.2s infinite;
+  }
+  .sc-dot:nth-child(2) { animation-delay: 0.2s; }
+  .sc-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dotBounce {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.3; }
+    40% { transform: translateY(-4px); opacity: 1; }
+  }
+
+  /* ── Chat Input ── */
+  .sc-chat-input {
+    padding: 10px 14px;
+    border-top: 1px solid var(--glass-border-subtle);
+  }
+  .sc-chat-input-wrap {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg-1);
+    display: flex;
+    align-items: center;
+    min-height: 32px;
+  }
+  #inputText {
+    font-size: 12px;
+    color: var(--text-bright);
+    font-family: 'Figtree', sans-serif;
+  }
+  .cursor-blink {
+    display: inline-block;
+    width: 1px;
+    height: 14px;
+    background: rgba(255,255,255,0.45);
+    margin-left: 1px;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ── Spotlight ── */
+  .spotlight {
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: radial-gradient(circle at 35% 60%, transparent 30%, rgba(0,0,0,0.6) 100%);
+    opacity: 0;
+    transition: opacity 800ms var(--ease-enter);
+    pointer-events: none;
+  }
+  .spotlight.active { opacity: 1; }
+
+  /* ── Callouts ── */
+  .callout {
+    position: absolute;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+    opacity: 0;
+    transition: opacity 300ms var(--ease-enter), transform 300ms var(--ease-enter);
+  }
+  .callout.visible { opacity: 1; }
+  #callout1 {
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--accent-blue);
+    background: var(--accent-blue-muted);
+    border: 1px solid rgba(59,130,246,0.20);
+  }
+  #callout1.visible { transform: translateX(-50%) translateY(0); }
+  #callout2 {
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    font-size: 14px;
+    color: rgba(255,255,255,0.95);
+  }
+  #callout2.visible { transform: translateX(-50%) translateY(0); }
+
+  /* ── Outro Overlay ── */
+  .outro-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 400ms var(--ease-enter);
+    pointer-events: none;
+    z-index: 10;
+  }
+  .outro-overlay.visible { opacity: 1; }
+  .outro-title {
+    font-weight: 900;
+    font-size: 36px;
+    color: rgba(255,255,255,0.95);
+  }
+  .outro-url {
+    font-weight: 400;
+    font-size: 14px;
+    color: rgba(255,255,255,0.45);
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ Scene 1 — Hook ═══ -->
+<div id="scene1" class="scene">
+  <div class="mesh-bg"></div>
+  <div class="hook-text">
+    <div class="hook-eyebrow">INTRODUCING</div>
+    <div class="hook-title">Rexi Dashboards</div>
+    <div class="hook-subtitle">Your dashboard. Your words.</div>
+  </div>
+</div>
+
+<!-- ═══ Scene 2 — Contrast ═══ -->
+<div id="scene2" class="scene" style="flex-direction:column;">
+  <div class="contrast-browser">
+    <div class="browser-chrome">
+      <div class="chrome-dot red"></div>
+      <div class="chrome-dot yellow"></div>
+      <div class="chrome-dot green"></div>
+      <span class="chrome-url">app.rexi.finance</span>
+    </div>
+    <div class="contrast-content">
+      <div class="contrast-rect">
+        <div class="contrast-line"></div>
+        <div class="contrast-line"></div>
+        <div class="contrast-line"></div>
+        <div class="contrast-text-block">12,401</div>
+      </div>
+      <div class="contrast-rect">
+        <div class="contrast-line"></div>
+        <div class="contrast-line"></div>
+        <div class="contrast-text-block">Revenue</div>
+      </div>
+      <div class="contrast-rect">
+        <div class="contrast-line"></div>
+        <div class="contrast-line"></div>
+        <div class="contrast-line"></div>
+        <div class="contrast-line"></div>
+      </div>
+      <div class="contrast-rect">
+        <div class="contrast-text-block">Users</div>
+        <div class="contrast-line"></div>
+        <div class="contrast-line"></div>
+      </div>
+      <div class="contrast-rect">
+        <div class="contrast-line"></div>
+        <div class="contrast-line"></div>
+        <div class="contrast-line"></div>
+        <div class="contrast-text-block">$47.2k</div>
+      </div>
+      <div class="contrast-rect">
+        <div class="contrast-line"></div>
+        <div class="contrast-text-block">Growth</div>
+        <div class="contrast-line"></div>
+      </div>
+    </div>
+  </div>
+  <div class="contrast-overlay-text">Building dashboards takes hours.</div>
+</div>
+
+<!-- ═══ Scene 3-4-5 — Main + Second Widget + Outro ═══ -->
+<div id="scene3" class="scene">
+  <div class="browser-wrap">
+    <div class="browser-chrome">
+      <div class="chrome-dot red"></div>
+      <div class="chrome-dot yellow"></div>
+      <div class="chrome-dot green"></div>
+      <span class="chrome-url">app.rexi.finance</span>
+    </div>
+    <div class="browser-content">
+      <!-- Sidebar (64px, from demo.html) -->
+      <div class="sc-sidebar">
+        <div class="sc-sidebar-logo">Rx</div>
+        <div class="sc-sidebar-nav">
+          <i data-lucide="layout-dashboard" class="sc-sidebar-icon"></i>
+          <div class="sc-sidebar-active"><i data-lucide="git-compare-arrows"></i></div>
+          <i data-lucide="sparkles" class="sc-sidebar-icon"></i>
+          <i data-lucide="file-text" class="sc-sidebar-icon"></i>
+          <i data-lucide="settings" class="sc-sidebar-icon"></i>
+        </div>
+        <div class="sc-sidebar-avatar">AT</div>
+      </div>
+
+      <!-- Dashboard -->
+      <div class="sc-dashboard">
+        <div class="sc-dash-header">Stripe vs Modern Treasury</div>
+        <div class="sc-widget-grid">
+          <!-- Skeleton 1 → bar chart -->
+          <div class="sc-skeleton" id="skel1">
+            <div class="sc-widget-built" id="barChartWidget">
+              <div class="sc-widget-built-header">
+                <span class="sc-widget-built-title" id="barTitle">Revenue by Region</span>
+              </div>
+              <div class="sc-widget-built-content">
+                <svg class="bar-chart-svg" viewBox="0 0 200 120">
+                  <line class="bar-axis" id="barAxisY" x1="25" y1="10" x2="25" y2="105" />
+                  <line class="bar-axis" id="barAxisX" x1="25" y1="105" x2="195" y2="105" />
+                  <rect class="bar-rect" id="bar0" x="32"  y="105" width="22" height="0" rx="2" fill="#3b82f6" />
+                  <rect class="bar-rect" id="bar1" x="58"  y="105" width="22" height="0" rx="2" fill="rgba(59,130,246,0.5)" />
+                  <rect class="bar-rect" id="bar2" x="84"  y="105" width="22" height="0" rx="2" fill="#3b82f6" />
+                  <rect class="bar-rect" id="bar3" x="110" y="105" width="22" height="0" rx="2" fill="rgba(59,130,246,0.5)" />
+                  <rect class="bar-rect" id="bar4" x="136" y="105" width="22" height="0" rx="2" fill="#3b82f6" />
+                  <rect class="bar-rect" id="bar5" x="162" y="105" width="22" height="0" rx="2" fill="rgba(59,130,246,0.5)" />
+                  <text class="bar-label" x="36"  y="115">NA</text>
+                  <text class="bar-label" x="63"  y="115">EU</text>
+                  <text class="bar-label" x="86"  y="115">APAC</text>
+                  <text class="bar-label" x="112" y="115">LATAM</text>
+                  <text class="bar-label" x="139" y="115">ME</text>
+                  <text class="bar-label" x="166" y="115">AF</text>
+                  <text class="chart-badge" id="barBadge" x="170" y="20">+23%</text>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <!-- Skeleton 2 → area chart -->
+          <div class="sc-skeleton" id="skel2">
+            <div class="sc-widget-built" id="areaChartWidget">
+              <div class="sc-widget-built-header">
+                <span class="sc-widget-built-title" id="areaTitle">Sales Forecast</span>
+              </div>
+              <div class="sc-widget-built-content">
+                <svg class="area-chart-svg" viewBox="0 0 200 100">
+                  <defs>
+                    <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#34d399" stop-opacity="0.30"/>
+                      <stop offset="100%" stop-color="#34d399" stop-opacity="0.02"/>
+                    </linearGradient>
+                  </defs>
+                  <line class="bar-axis" id="areaAxisY" x1="20" y1="10" x2="20" y2="85" />
+                  <line class="bar-axis" id="areaAxisX" x1="20" y1="85" x2="195" y2="85" />
+                  <path class="area-fill" id="areaFill" d="M20,70 C50,65 80,50 110,45 C140,40 160,30 190,20 L190,85 L20,85 Z" fill="url(#areaGrad)" />
+                  <path class="area-path" id="areaStroke" d="M20,70 C50,65 80,50 110,45 C140,40 160,30 190,20" fill="none" stroke="#34d399" stroke-width="2" />
+                  <circle class="area-point" cx="20"  cy="70" r="3" fill="#34d399" />
+                  <circle class="area-point" cx="62"  cy="60" r="3" fill="#34d399" />
+                  <circle class="area-point" cx="110" cy="45" r="3" fill="#34d399" />
+                  <circle class="area-point" cx="155" cy="33" r="3" fill="#34d399" />
+                  <circle class="area-point" cx="190" cy="20" r="3" fill="#34d399" />
+                  <text class="bar-label" x="20"  y="96">Q1</text>
+                  <text class="bar-label" x="62"  y="96">Q2</text>
+                  <text class="bar-label" x="110" y="96">Q3</text>
+                  <text class="bar-label" x="155" y="96">Q4</text>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Panel (340px per spec) -->
+      <div class="sc-chat">
+        <div class="sc-chat-header">
+          <div class="sc-chat-header-icon"><i data-lucide="sparkles"></i></div>
+          <span class="sc-chat-header-name">Rexi AI</span>
+          <span class="sc-chat-header-badge">ONLINE</span>
+        </div>
+        <div class="sc-chat-messages" id="chatMessages"></div>
+        <div class="sc-chat-input">
+          <div class="sc-chat-input-wrap">
+            <span id="inputText"></span>
+            <span class="cursor-blink" id="cursor"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Spotlight overlay -->
+    <div class="spotlight" id="spotlight"></div>
+  </div>
+  <!-- Callout badges -->
+  <div class="callout" id="callout1">GENERATED IN 3S</div>
+  <div class="callout" id="callout2">Any question. Any chart.</div>
+  <!-- Outro overlay -->
+  <div class="outro-overlay" id="outroOverlay">
+    <div class="outro-title">Rexi Dashboards</div>
+    <div class="outro-url">app.rexi.finance</div>
+  </div>
+</div>
+
+<script>
+  // ══════════════════════════════════════════
+  // UTILITIES
+  // ══════════════════════════════════════════
+  const delay = ms => new Promise(r => setTimeout(r, ms));
+
+  function show(id) { document.getElementById(id).classList.add('active'); }
+  function hide(id) { document.getElementById(id).classList.remove('active', 'exiting'); }
+
+  async function typeText(elementId, text, charDelay = 60) {
+    const el = document.getElementById(elementId);
+    document.getElementById('cursor').style.display = 'none';
+    for (const char of text) {
+      el.textContent += char;
+      await delay(charDelay);
+    }
+  }
+
+  function addChatBubble(type, content) {
+    const area = document.getElementById('chatMessages');
+    const msg = document.createElement('div');
+    msg.className = 'sc-msg ' + type;
+
+    const avatar = document.createElement('div');
+    avatar.className = 'sc-msg-avatar ' + type;
+    if (type === 'ai') {
+      avatar.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>';
+    } else {
+      avatar.textContent = 'AT';
+    }
+
+    const bubble = document.createElement('div');
+    bubble.className = 'sc-msg-bubble';
+    bubble.textContent = content;
+
+    msg.appendChild(avatar);
+    msg.appendChild(bubble);
+    area.appendChild(msg);
+    area.scrollTop = area.scrollHeight;
+  }
+
+  function addThinkingDots() {
+    const area = document.getElementById('chatMessages');
+    const msg = document.createElement('div');
+    msg.className = 'sc-msg ai';
+
+    const avatar = document.createElement('div');
+    avatar.className = 'sc-msg-avatar ai';
+    avatar.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>';
+
+    const dots = document.createElement('div');
+    dots.className = 'sc-dots';
+    dots.innerHTML = '<div class="sc-dot"></div><div class="sc-dot"></div><div class="sc-dot"></div>';
+
+    msg.appendChild(avatar);
+    msg.appendChild(dots);
+    area.appendChild(msg);
+    area.scrollTop = area.scrollHeight;
+    return msg;
+  }
+
+  // ══════════════════════════════════════════
+  // WIDGET BUILDERS
+  // ══════════════════════════════════════════
+
+  async function buildBarChart() {
+    const widget = document.getElementById('barChartWidget');
+    widget.classList.add('visible');
+    await delay(200);
+    document.getElementById('barTitle').classList.add('visible');
+    await delay(200);
+    document.getElementById('barAxisY').classList.add('drawn');
+    document.getElementById('barAxisX').classList.add('drawn');
+    await delay(400);
+    // Heights: NA 85%, EU 70%, APAC 55%, LATAM 40%, ME 30%, AF 20% of 90px range
+    const heights = [76, 63, 49, 36, 27, 18];
+    for (let i = 0; i < 6; i++) {
+      const bar = document.getElementById('bar' + i);
+      bar.setAttribute('height', heights[i]);
+      bar.setAttribute('y', 105 - heights[i]);
+      await delay(80);
+    }
+    document.getElementById('barBadge').classList.add('visible');
+    await delay(200);
+  }
+
+  async function buildAreaChart() {
+    const widget = document.getElementById('areaChartWidget');
+    widget.classList.add('visible');
+    await delay(200);
+    document.getElementById('areaTitle').classList.add('visible');
+    await delay(200);
+    document.getElementById('areaAxisY').classList.add('drawn');
+    document.getElementById('areaAxisX').classList.add('drawn');
+    await delay(300);
+    document.getElementById('areaStroke').classList.add('drawn');
+    await delay(300);
+    document.getElementById('areaFill').classList.add('visible');
+    await delay(300);
+    document.querySelectorAll('.area-point').forEach(p => p.classList.add('visible'));
+    await delay(200);
+  }
+
+  // ══════════════════════════════════════════
+  // SCENE FUNCTIONS
+  // ══════════════════════════════════════════
+
+  // Scene 1 — Hook (2500ms)
+  async function scene1_hook() {
+    show('scene1');
+    document.querySelector('.hook-eyebrow').classList.add('visible');
+    await delay(200);
+    document.querySelector('.hook-title').classList.add('visible');
+    await delay(200);
+    document.querySelector('.hook-subtitle').classList.add('visible');
+    await delay(1800);
+    document.getElementById('scene1').classList.add('exiting');
+    await delay(300);
+    hide('scene1');
+  }
+
+  // Scene 2 — Contrast (1500ms)
+  async function scene2_contrast() {
+    show('scene2');
+    await delay(1200);
+    document.getElementById('scene2').classList.add('exiting');
+    await delay(300);
+    hide('scene2');
+  }
+
+  // Scene 3 — Main Interaction (~6000ms)
+  async function scene3_main() {
+    show('scene3');
+    await delay(600); // cursor blinks via CSS during this
+    await typeText('inputText', 'Show me revenue by region this quarter', 60);
+    await delay(200);
+    document.getElementById('inputText').textContent = '';
+    addChatBubble('user', 'Show me revenue by region this quarter');
+    await delay(200);
+    const dots = addThinkingDots();
+    await delay(500);
+    // ZOOM IN
+    document.querySelector('.browser-wrap').classList.add('zoomed');
+    document.getElementById('spotlight').classList.add('active');
+    await delay(500);
+    // Build bar chart
+    dots.remove();
+    await buildBarChart();
+    // ZOOM OUT
+    document.querySelector('.browser-wrap').classList.remove('zoomed');
+    document.getElementById('spotlight').classList.remove('active');
+    await delay(200);
+    addChatBubble('ai', "Here's your revenue breakdown by region for this quarter.");
+    await delay(300);
+    document.getElementById('callout1').classList.add('visible');
+    await delay(300);
+  }
+
+  // Scene 4 — Second Widget (~3000ms)
+  async function scene4_second() {
+    document.getElementById('callout1').classList.remove('visible');
+    document.getElementById('cursor').style.display = '';
+    await delay(100);
+    await typeText('inputText', 'Sales forecast next quarter', 40);
+    await delay(200);
+    document.getElementById('inputText').textContent = '';
+    addChatBubble('user', 'Sales forecast next quarter');
+    await delay(200);
+    const dots = addThinkingDots();
+    await delay(200);
+    dots.remove();
+    await buildAreaChart();
+    await delay(200);
+    document.getElementById('callout2').classList.add('visible');
+    await delay(300);
+  }
+
+  // Scene 5 — Outro (2500ms)
+  async function scene5_outro() {
+    document.getElementById('callout2').classList.remove('visible');
+    document.querySelector('.browser-wrap').classList.add('scaled-down');
+    await delay(400);
+    document.getElementById('outroOverlay').classList.add('visible');
+    await delay(1600);
+    document.getElementById('scene3').classList.add('exiting');
+    await delay(500);
+  }
+
+  // ══════════════════════════════════════════
+  // RESET & LOOP
+  // ══════════════════════════════════════════
+
+  function resetAll() {
+    ['scene1', 'scene2', 'scene3'].forEach(id => {
+      document.getElementById(id).classList.remove('active', 'exiting');
+    });
+    document.querySelectorAll('.hook-eyebrow, .hook-title, .hook-subtitle').forEach(el => {
+      el.classList.remove('visible');
+    });
+    const bw = document.querySelector('.browser-wrap');
+    bw.classList.remove('zoomed', 'scaled-down');
+    document.getElementById('spotlight').classList.remove('active');
+    document.getElementById('callout1').classList.remove('visible');
+    document.getElementById('callout2').classList.remove('visible');
+    document.getElementById('outroOverlay').classList.remove('visible');
+    document.getElementById('chatMessages').innerHTML = '';
+    document.getElementById('inputText').textContent = '';
+    document.getElementById('cursor').style.display = '';
+    // Reset bar chart
+    document.getElementById('barChartWidget').classList.remove('visible');
+    document.getElementById('barTitle').classList.remove('visible');
+    document.getElementById('barAxisY').classList.remove('drawn');
+    document.getElementById('barAxisX').classList.remove('drawn');
+    for (let i = 0; i < 6; i++) {
+      const bar = document.getElementById('bar' + i);
+      bar.setAttribute('height', '0');
+      bar.setAttribute('y', '105');
+    }
+    document.getElementById('barBadge').classList.remove('visible');
+    // Reset area chart
+    document.getElementById('areaChartWidget').classList.remove('visible');
+    document.getElementById('areaTitle').classList.remove('visible');
+    document.getElementById('areaAxisY').classList.remove('drawn');
+    document.getElementById('areaAxisX').classList.remove('drawn');
+    document.getElementById('areaStroke').classList.remove('drawn');
+    document.getElementById('areaFill').classList.remove('visible');
+    document.querySelectorAll('.area-point').forEach(p => p.classList.remove('visible'));
+  }
+
+  async function runShowcase() {
+    await scene1_hook();
+    await scene2_contrast();
+    await scene3_main();
+    await scene4_second();
+    await scene5_outro();
+    await delay(2000);
+    resetAll();
+    runShowcase();
+  }
+
+  // ── Init ──
+  lucide.createIcons();
+  runShowcase();
+</script>
+
+<!--
+═══════════════════════════════════════════════════════════════
+  RECORDING PIPELINE
+═══════════════════════════════════════════════════════════════
+
+1. Record with Playwright (save as record.js):
+
+const { chromium } = require('playwright');
+const path = require('path');
+
+(async () => {
+  const browser = await chromium.launch();
+  const context = await browser.newContext({
+    viewport: { width: 1280, height: 720 },
+    recordVideo: {
+      dir: './videos/',
+      size: { width: 1280, height: 720 }
+    }
+  });
+  const page = await context.newPage();
+  await page.goto('file://' + path.resolve('./showcase.html'));
+  await page.waitForTimeout(17000);
+  await context.close();
+  await browser.close();
+  console.log('Video saved to ./videos/');
+})();
+
+2. Generate audio with Suno.ai:
+   Prompt: "minimal dark ambient electronic, cinematic product reveal,
+   subtle pulse, no drums, professional SaaS feel, 60 seconds"
+
+3. Merge with ffmpeg:
+   ffmpeg -i videos/showcase.webm -i music.mp3 \
+     -filter_complex "[1:a]afade=t=in:st=0:d=1,afade=t=out:st=13:d=2,volume=0.25[a]" \
+     -map 0:v -map "[a]" -shortest final_video.mp4
+
+═══════════════════════════════════════════════════════════════
+-->
+</body>
+</html>
