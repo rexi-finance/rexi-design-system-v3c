@@ -143,7 +143,7 @@
     padding: 12px 16px;
   }
   .gallery-info-num {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
     color: var(--accent-blue);
     letter-spacing: 0.5px;
@@ -162,9 +162,10 @@
 </style>
 </head>
 <body>
+<a href="#main" class="skip-link">Skip to content</a>
 
 <!-- ═══ Site Nav ═══ -->
-<nav class="site-nav">
+<nav class="site-nav" aria-label="Site navigation">
   <div class="site-nav-brand">
     <a href="index.html" class="site-nav-logo">Rx</a>
     <span class="site-nav-title">Rexi Design System</span>
@@ -178,6 +179,7 @@
 </nav>
 
 <!-- ═══ Header ═══ -->
+<main id="main">
 <div class="page-header">
   <h1>Design Process</h1>
   <p>16 decisions made through iterative exploration. Each linked to the brainstorming artifact that produced it.</p>
@@ -352,6 +354,8 @@
     </a>
   </div>
 </section>
+
+</main>
 
 <!-- ═══ Footer ═══ -->
 <footer class="site-footer">

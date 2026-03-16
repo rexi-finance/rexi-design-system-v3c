@@ -150,7 +150,7 @@
     border: 1px solid var(--glass-border);
   }
   .swatch-name {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 600;
     color: var(--text-muted);
     text-align: center;
@@ -223,9 +223,10 @@
 </style>
 </head>
 <body>
+<a href="#main" class="skip-link">Skip to content</a>
 
 <!-- ═══ Site Nav ═══ -->
-<nav class="site-nav">
+<nav class="site-nav" aria-label="Site navigation">
   <div class="site-nav-brand">
     <a href="index.html" class="site-nav-logo">Rx</a>
     <span class="site-nav-title">Rexi Design System</span>
@@ -239,6 +240,7 @@
 </nav>
 
 <!-- ═══ Hero ═══ -->
+<main id="main">
 <section class="hero">
   <div class="hero-version">V3c Hybrid Glass</div>
   <h1>
@@ -335,7 +337,7 @@
         <div class="swatch-name">blue</div>
       </div>
       <div class="swatch">
-        <div class="swatch-color" style="background:#8b5cf6;"></div>
+        <div class="swatch-color" style="background:#a78bfa;"></div>
         <div class="swatch-name">purple</div>
       </div>
       <div class="swatch">
@@ -382,6 +384,8 @@
     <div class="stat-label">Tokens</div>
   </div>
 </div>
+
+</main>
 
 <!-- ═══ Footer ═══ -->
 <footer class="site-footer">

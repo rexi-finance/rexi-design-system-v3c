@@ -4,58 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Interactive Demo — Rexi Design System V3c</title>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,700;1,300;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/v3c.css">
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
-  :root {
-    --bg: #1a1a1a;
-    --bg-elevated: #1e1e1e;
-    --glass-bg-1: rgba(255,255,255,0.03);
-    --glass-bg-2: rgba(255,255,255,0.04);
-    --glass-bg-3: rgba(255,255,255,0.06);
-    --glass-bg-4: rgba(255,255,255,0.10);
-    --glass-border-subtle: rgba(255,255,255,0.04);
-    --glass-border: rgba(255,255,255,0.06);
-    --glass-border-hover: rgba(255,255,255,0.14);
-    --glass-inset: rgba(255,255,255,0.04);
-    --glass-inset-bright: rgba(255,255,255,0.08);
-    --text-bright: rgba(255,255,255,0.95);
-    --text: #e5e5e5;
-    --text-muted: rgba(255,255,255,0.45);
-    --text-dim: rgba(255,255,255,0.25);
-    --text-faint: rgba(255,255,255,0.16);
-    --accent-emerald: #34d399;
-    --accent-emerald-muted: rgba(52,211,153,0.08);
-    --accent-amber: #fbbf24;
-    --accent-amber-muted: rgba(251,191,36,0.08);
-    --accent-red: #f87171;
-    --accent-red-muted: rgba(248,113,113,0.08);
-    --accent-blue: #3b82f6;
-    --accent-blue-muted: rgba(59,130,246,0.08);
-    --accent-purple: #8b5cf6;
-    --accent-purple-muted: rgba(139,92,246,0.08);
-    --accent-orange: #fb923c;
-    --transition-fast: 120ms ease;
-    --transition-normal: 180ms ease;
-    --transition-slow: 280ms ease;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
   body {
-    background:var(--bg); color:var(--text); font-family:'Figtree',sans-serif;
-    line-height:1.5; height:100vh; display:flex; flex-direction:column; overflow:hidden;
-    -webkit-font-smoothing:antialiased; cursor:pointer;
+    height:100vh; display:flex; flex-direction:column; overflow:hidden;
+    cursor:pointer;
   }
-
-  /* ── Site Nav ── */
-  .site-nav { height:44px; display:flex; align-items:center; justify-content:space-between; padding:0 24px; background:rgba(26,26,26,0.92); backdrop-filter:blur(20px); border-bottom:1px solid var(--glass-border); flex-shrink:0; cursor:default; }
-  .site-nav-left { display:flex; align-items:center; gap:10px; }
-  .site-nav-logo { font-weight:900; font-size:16px; color:var(--accent-blue); letter-spacing:-0.03em; text-decoration:none; }
-  .site-nav-title { font-size:12px; font-weight:600; color:var(--text-bright); text-decoration:none; }
-  .site-nav-links { display:flex; align-items:center; gap:6px; }
-  .site-nav-links a { font-size:11px; font-weight:500; color:var(--text-muted); text-decoration:none; padding:5px 12px; border-radius:6px; transition:all var(--transition-fast); cursor:pointer; }
-  .site-nav-links a:hover { color:var(--text); background:var(--glass-bg-3); }
-  .site-nav-links a.active { color:var(--text-bright); background:var(--glass-bg-3); }
 
   .app-layout { display:flex; flex:1; overflow:hidden; }
 
@@ -76,11 +31,8 @@
   .dash-meta { font-size:11px; color:var(--text-dim); margin-top:2px; }
 
   /* ── Buttons (V3c: radius 12px) ── */
-  .btn { padding:10px 22px; border-radius:12px; font-family:'Figtree',sans-serif; font-size:13px; cursor:pointer; transition:all var(--transition-fast); border:1px solid; display:inline-flex; align-items:center; gap:8px; background:none; }
   .btn:active { transform:scale(0.97); }
   .btn svg { width:16px; height:16px; }
-  .btn-primary { background:var(--glass-bg-4); border-color:rgba(255,255,255,0.16); color:#fff; font-weight:600; box-shadow:inset 0 1px 0 var(--glass-inset-bright); }
-  .btn-primary:hover { background:rgba(255,255,255,0.14); border-color:rgba(255,255,255,0.20); }
 
   .widget-grid { flex:1; padding:24px 32px; display:grid; grid-template-columns:1fr 1fr; gap:16px; align-content:start; overflow-y:auto; }
 
@@ -120,13 +72,13 @@
   .widget-card-actions .icon-btn:hover { color:var(--text-muted); background:var(--glass-bg-3); }
   .widget-card-actions .icon-btn svg { width:14px; height:14px; }
   .widget-card-badge {
-    font-size:9px; font-weight:600; padding:2px 8px; border-radius:100px;
+    font-size:10px; font-weight:600; padding:2px 8px; border-radius:100px;
     background:rgba(59,130,246,0.12); color:var(--accent-blue);
   }
   .widget-card-content { padding:16px; flex:1; }
 
   /* ── KPI content ── */
-  .kpi-label { font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); }
+  .kpi-label { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-label); }
   .kpi-value { font-size:28px; font-weight:900; color:var(--text-bright); letter-spacing:-0.04em; font-variant-numeric:tabular-nums; margin-top:4px; }
   .kpi-trend { font-size:11px; font-weight:500; margin-top:2px; }
 
@@ -137,7 +89,7 @@
   .chat-header-icon { width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg,rgba(139,92,246,0.15),rgba(59,130,246,0.15)); display:flex; align-items:center; justify-content:center; }
   .chat-header-icon svg { width:14px; height:14px; color:var(--accent-purple); }
   .chat-header-name { font-size:13px; font-weight:600; color:var(--text); }
-  .chat-header-badge { font-size:9px; padding:2px 8px; border-radius:100px; background:var(--accent-emerald-muted); color:var(--accent-emerald); font-weight:600; }
+  .chat-header-badge { font-size:10px; padding:2px 8px; border-radius:100px; background:var(--accent-emerald-muted); color:var(--accent-emerald); font-weight:600; }
   .chat-close { width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--text-dim); cursor:pointer; }
   .chat-close svg { width:16px; height:16px; }
 
@@ -157,7 +109,7 @@
   /* ── Chat rich content ── */
   .chat-inline-kpi { margin-top:14px; padding:16px 18px; border-radius:10px; background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01)); border:1px solid var(--glass-border-subtle); }
   .chat-inline-kpi-title { font-size:13px; font-weight:600; color:var(--text); margin-bottom:2px; }
-  .chat-inline-kpi-label { font-size:8px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); }
+  .chat-inline-kpi-label { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-label); }
   .chat-inline-kpi-value { font-size:26px; font-weight:900; color:var(--text-bright); letter-spacing:-0.04em; font-variant-numeric:tabular-nums; }
 
   .chat-inline-table { margin-top:14px; border:1px solid var(--glass-border-subtle); border-radius:8px; overflow:hidden; }
@@ -189,7 +141,7 @@
   /* md rich text */
   .md-stat-row { display:flex; gap:16px; margin:12px 0; }
   .md-stat { flex:1; }
-  .md-stat-label { font-size:8px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); }
+  .md-stat-label { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-label); }
   .md-stat-value { font-size:20px; font-weight:800; margin-top:2px; }
 
   /* ── Chat input ── */
@@ -235,7 +187,7 @@
   /* ── Inline chart suggestion ── */
   .chat-inline-chart { margin-top:14px; padding:16px 18px; border-radius:10px; background:linear-gradient(135deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01)); border:1px solid var(--glass-border-subtle); }
   .chat-inline-chart-title { font-size:13px; font-weight:600; color:var(--text); margin-bottom:2px; }
-  .chat-inline-chart-label { font-size:8px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); margin-bottom:10px; }
+  .chat-inline-chart-label { font-size:10px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-label); margin-bottom:10px; }
 
   /* ── Restart button ── */
   .restart-btn {
@@ -259,10 +211,11 @@
 </style>
 </head>
 <body>
+<a href="#main" class="skip-link">Skip to content</a>
 
 <!-- ═══ Site Nav ═══ -->
-<div class="site-nav">
-  <div class="site-nav-left">
+<nav class="site-nav" aria-label="Site navigation">
+  <div class="site-nav-brand">
     <a href="index.html" class="site-nav-logo">Rx</a>
     <a href="index.html" class="site-nav-title">Rexi Design System</a>
   </div>
@@ -273,7 +226,7 @@
     <a href="demo.html" class="active">Demo</a>
     <a href="https://github.com/rexi-finance/rexi-design-system-v3c" target="_blank">GitHub</a>
   </div>
-</div>
+</nav>
 
 <div class="app-layout">
 
@@ -291,7 +244,7 @@
   </div>
 
   <!-- ═══ Dashboard ═══ -->
-  <div class="dashboard">
+  <main class="dashboard" id="main">
     <div class="dash-header">
       <div>
         <div class="dash-title">Stripe vs Modern Treasury</div>
@@ -375,7 +328,7 @@
       </div>
 
     </div>
-  </div>
+  </main>
 
   <!-- ═══ Chat Panel (V3c: 420px) ═══ -->
   <div class="chat-panel">
